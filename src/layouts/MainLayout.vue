@@ -12,17 +12,18 @@
 
         <!-- User Pic -->
         <q-btn
-          v-if="!user.id"
+          v-if="!user"
           class="q-mr-sm"
           icon="login"
           label="LOGIN"
           push
+          to="/login"
           size="13px"
           color="grey-1"
           text-color="dark"
         />
         <q-btn-dropdown
-          v-if="user.id"
+          v-if="user"
           class="q-mr-sm"
           size="13px"
           color="grey-1"
@@ -41,119 +42,41 @@
           </template>
 
           <div class="row no-wrap q-pa-md">
-            <div class="column">
-              <div class="text-h6 q-mb-md gt-sm">Settings</div>
+            <div class="column items-center" style="min-width: 110px">
+              <q-avatar size="72px">
+                <!-- :src="user.photo ? user.photo : 'user-avatar.png'" -->
+                <q-img
+                  :ratio="1"
+                  :src="user.photo ? user.photo : 'user-avatar.png'"
+                />
+              </q-avatar>
+              <q-chip
+                class="q-mt-md"
+                dense
+                square
+                :label="'@' + user.username"
+              />
+              <div class="text-subtitle1 q-mb-xs">
+                {{ user ? user.first_name + " " + user.last_name : "" }}
+              </div>
 
-              <div class="lt-md items-center" style="min-width: 110px">
-                <q-avatar class="q-mr-md" size="72px">
-                  <img src="user-avatar.png" />
-                </q-avatar>
-                <q-btn
-                  :color="user.id ? 'negative' : 'positive'"
-                  :label="user.id ? 'Logout' : 'Login'"
+              <q-btn-group
+                ><q-btn
+                  :color="user ? 'negative' : 'positive'"
+                  :label="user ? 'Logout' : 'Login'"
                   push
                   size="12px"
+                  @click="logout"
+                  v-close-popup/>
+                <q-btn
+                  v-if="user"
+                  to="/profile"
+                  label="Profile"
+                  push
+                  color="indigo"
+                  size="12px"
                   v-close-popup
-                />
-
-                <q-input
-                  v-model="user.bio"
-                  class="q-mt-md q-mb-xs"
-                  type="textarea"
-                  label="Bio"
-                  style="background-color: #fafad2"
-                  filled
-                  color="indigo"
-                />
-              </div>
-
-              <!-- <q-toggle v-model="switchOne" label="Use Mobile Data" />
-              <q-toggle v-model="switchTwo" label="Bluetooth" /> -->
-
-              <q-input
-                label="Username"
-                class="q-mb-xs"
-                v-model="user.username"
-                dense
-                filled
-                color="indigo"
-              >
-                <!-- <template v-slot:after>
-                  <q-btn round dense flat icon="edit" />
-                </template> -->
-              </q-input>
-              <q-input
-                label="First Name"
-                filled
-                class="q-mb-xs"
-                v-model="user.first_name"
-                dense
-                color="indigo"
-              />
-              <q-input
-                label="Last Name"
-                filled
-                class="q-mb-xs"
-                v-model="user.last_name"
-                dense
-                color="indigo"
-              />
-              <div class="row">
-                <q-input
-                  label="Height"
-                  filled
-                  type="number"
-                  style="max-width: 90px"
-                  class="q-mb-xs"
-                  v-model="user.height"
-                  dense
-                  color="indigo"
-                />
-                <q-input
-                  label="Gender"
-                  filled
-                  style="max-width: 95px"
-                  class="q-mb-xs q-ml-xs"
-                  v-model="user.gender"
-                  dense
-                  color="indigo"
-                />
-              </div>
-              <q-input
-                label="Sport"
-                filled
-                class="q-mb-xs"
-                v-model="user.sport"
-                dense
-                color="indigo"
-              />
-              <q-btn
-                flat
-                class="q-mt-md"
-                label="Save Changes"
-                icon="send"
-                color="indigo"
-              />
-            </div>
-
-            <q-separator vertical inset class="q-mx-lg gt-sm " />
-
-            <div class="column gt-sm items-center" style="min-width: 110px">
-              <q-avatar size="72px">
-                <img src="user-avatar.png" />
-              </q-avatar>
-
-              <div class="text-subtitle1 q-mt-md q-mb-xs">
-                {{ user.id ? user.first_name + " " + user.last_name : "" }}
-              </div>
-
-              <q-btn
-                :color="user.id ? 'negative' : 'positive'"
-                :label="user.id ? 'Logout' : 'Login'"
-                push
-                size="12px"
-                v-close-popup
-              />
+              /></q-btn-group>
 
               <q-input
                 v-model="user.bio"
@@ -163,6 +86,7 @@
                 style="background-color: #fafad2"
                 filled
                 color="indigo"
+                readonly
               />
             </div>
           </div>
@@ -197,13 +121,27 @@
       <!-- drawer content -->
       <q-list padding>
         <q-item
+          to="/profile"
+          clickable
+          v-ripple
+          active-class="active-drawer-link"
+        >
+          <q-item-section avatar>
+            <q-icon size="28px" name="account_box" />
+          </q-item-section>
+
+          <q-item-section>
+            Profile
+          </q-item-section>
+        </q-item>
+        <q-item
           to="courts"
           clickable
           v-ripple
           active-class="active-drawer-link"
         >
           <q-item-section avatar>
-            <q-icon name="sports_basketball" />
+            <q-icon size="28px" name="sports_basketball" />
           </q-item-section>
 
           <q-item-section>
@@ -218,7 +156,7 @@
           active-class="active-drawer-link"
         >
           <q-item-section avatar>
-            <q-icon name="people" />
+            <q-icon size="28px" name="people" />
           </q-item-section>
 
           <q-item-section>
@@ -228,7 +166,7 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawerStatus" side="right" bordered>
+    <q-drawer v-model="rightDrawerStatus" side="right" elevated>
       <!-- drawer content -->
       <events-list></events-list>
     </q-drawer>
@@ -270,7 +208,36 @@ export default {
 
     onItemClick() {
       // console.log('Clicked on an Item')
+    },
+    logout() {
+      this.$store.commit("user/logout");
+      this.$q.notify({
+        color: "light-blue-4",
+        textColor: "white",
+        icon: "logout",
+        message: "Logged out"
+      });
+      this.$router.push("login");
     }
+  },
+  beforeMount() {
+    this.$store.dispatch("user/fetchUserData").then(({ status, message }) => {
+      if (status === "error") {
+        this.$q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message: message
+        });
+      } else if (status === "success") {
+        this.$q.notify({
+          color: "light-blue-4",
+          textColor: "white",
+          icon: "cloud_download",
+          message: message
+        });
+      }
+    });
   },
   components: {
     "events-list": eventsList

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fullscreen bg-deep-orange-10 text-white text-center q-pa-md flex flex-center"
+    class="fullscreen bg-deep-orange-10 text-white text-center q-pa-md  flex-center"
   >
     <div>
       <div style="font-size: 30vh">

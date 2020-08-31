@@ -5,7 +5,22 @@ const routes = [
     children: [
       { path: "/courts", component: () => import("pages/CourtsList.vue") },
       { path: "/players", component: () => import("pages/PlayersList.vue") },
+      { path: "/profile", component: () => import("pages/UserProfile.vue") },
       { path: "", redirect: "/courts" }
+    ]
+  },
+  {
+    path: "/",
+    component: () => import("layouts/LoginLayout.vue"),
+    children: [
+      {
+        path: "/login",
+        component: () => import("pages/Login.vue")
+      },
+      {
+        path: "/signup",
+        component: () => import("pages/Signup.vue")
+      }
     ]
   },
 

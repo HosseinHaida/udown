@@ -1,2 +1,145 @@
-export function someAction (/* context */) {
+import axios from "axios";
+import { apiUrl } from "../variables";
+export async function signup({ state, commit }, newUser) {
+  commit("setSignupPending", true);
+  return await axios.post(apiUrl + "/auth/signup", newUser).then(
+    res => {
+      commit("setSignupPending", false);
+      if (res.data.user) {
+        commit("setUserData", res.data.user);
+        commit("setCookie", res.data.user);
+      }
+      return {
+        status: "success",
+        message: "Created account and signed in as " + res.data.user.username
+      };
+    },
+    error => {
+      commit("setSignupPending", false);
+      if (!error.response) {
+        return {
+          status: "error",
+          message: "No connection"
+        };
+      }
+      return {
+        status: "error",
+        message: error.response.data.error
+      };
+    }
+  );
+}
+
+export async function signin({ state, commit }, userCredentials) {
+  commit("setSigninPending", true);
+  return await axios.post(apiUrl + "/auth/signin", userCredentials).then(
+    res => {
+      commit("setSigninPending", false);
+      if (res.data.user) {
+        commit("setUserData", res.data.user);
+        commit("setCookie", res.data.user);
+      }
+
+      return {
+        status: "success",
+        message: "Signed in as " + res.data.user.username
+      };
+    },
+    error => {
+      commit("setSigninPending", false);
+      if (!error.response) {
+        return {
+          status: "error",
+          message: "No connection"
+        };
+      }
+      return {
+        status: "error",
+        message: error.response.data.error
+      };
+    }
+  );
+}
+
+export async function fetchUserData({ state, commit }) {
+  var name = state.userTCookieName;
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(";");
+  var t = null;
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      t = c.substring(name.length, c.length);
+    }
+  }
+  if (t) {
+    return await axios
+      .get(apiUrl + "/auth/fetch", {
+        headers: {
+          token: t
+        }
+      })
+      .then(
+        res => {
+          if (res.data.user) {
+            commit("setUserData", res.data.user);
+            commit("setToken", t);
+          }
+          return {
+            status: "success",
+            message: "Fetched meta for " + res.data.user.username
+          };
+        },
+        error => {
+          if (!error.response) {
+            return {
+              status: "error",
+              message: "No connection"
+            };
+          }
+          return {
+            status: "error",
+            message: error.response.data.error
+          };
+        }
+      );
+  } else {
+    return false;
+  }
+}
+
+export async function uploadPhoto({ state, commit }, photo) {
+  commit("setPhotoUploadPending", true);
+  return await axios
+    .post(`${apiUrl}/auth/set_photo`, photo, {
+      headers: {
+        token: state.t
+      }
+    })
+    .then(
+      res => {
+        commit("updateUserPhoto", res.data.photoPath);
+        commit("setPhotoUploadPending", false);
+        return {
+          status: "success",
+          message: "Successfully upload photo."
+        };
+      },
+      error => {
+        commit("setPhotoUploadPending", true);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
 }

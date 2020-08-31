@@ -1,5 +1,7 @@
 export default function() {
   return {
-    rightDrawerStatus: false
+    rightDrawerStatus: false,
+    cities: ["Esfahan", "Tehran"],
+    genders: ["Male", "Female", "Trans", "Other"]
   };
 }

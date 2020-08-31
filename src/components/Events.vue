@@ -27,16 +27,17 @@
       </template>
     </q-select>
 
-    <div class="q-pa-md" v-if="searchResults">
-      <q-list bordered class="rounded-borders">
+    <div class="" v-if="searchResults">
+      <q-list class="rounded-borders">
         <q-expansion-item
           v-for="(event, index) in searchResults"
           :key="index"
           expand-separator
           :label="getDay(event.happens_at)"
           :caption="getTime(event.happens_at)"
+          icon="event"
         >
-          <q-card>
+          <q-card class="bg-grey-2">
             <q-card-section>
               <span
                 ><q-chip dense size="15px">
@@ -79,7 +80,7 @@
                 </q-chip></span
               >
             </q-card-section>
-            <q-card-sec>
+            <q-card-section>
               <q-card-actions class="row">
                 <div class="col"></div>
                 <q-btn
@@ -90,7 +91,7 @@
                 />
                 <div class="col"></div>
               </q-card-actions>
-            </q-card-sec>
+            </q-card-section>
           </q-card>
         </q-expansion-item>
       </q-list>
