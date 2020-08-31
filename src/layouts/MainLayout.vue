@@ -121,6 +121,7 @@
       <!-- drawer content -->
       <q-list padding>
         <q-item
+          v-if="user"
           to="/profile"
           clickable
           v-ripple

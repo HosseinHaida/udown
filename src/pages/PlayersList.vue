@@ -86,7 +86,7 @@
               </div>
             </q-item-section>
 
-            <q-item-section v-if="loggedInUser.friends" side class="lt-md">
+            <q-item-section v-if="loggedInUser" side class="lt-md">
               <div class="text-grey-8 q-gutter-xs">
                 <q-btn
                   v-if="loggedInUser.id !== user.id"

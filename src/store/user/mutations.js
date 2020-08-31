@@ -15,6 +15,7 @@ export function setToken(state, t) {
 }
 
 export function updateUserPhoto(state, path) {
+  state.data.photo = null;
   state.data.photo = path;
 }
 

@@ -1,6 +1,12 @@
 <template>
-  <q-page class="q-pa-md">
-    <!--  -->
+  <q-page
+    class="q-pa-md"
+    :class="!user ? 'row items-center justify-center' : ''"
+  >
+    <div v-if="!user" class="col-xs-12 text-center text-h4">
+      Please login first
+    </div>
+
     <q-card v-if="user" flat bordered>
       <q-tabs
         v-model="tab"
@@ -21,14 +27,14 @@
         <q-tab-panel name="personal" class="row justify-between">
           <div class="col-md-3 col-sm-5 col-xs-12 q-px-md">
             <div class="column">
-              <q-avatar size="140px" class="q-mb-lg q-ml-md">
+              <q-avatar size="140px" class="q-mb-lg q-mt-sm q-ml-sm">
                 <q-img
                   :ratio="1"
                   :src="user.photo ? user.photo : 'user-avatar.png'"
                 ></q-img
               ></q-avatar>
-              <div class="row q-mb-md">
-                <q-form class="col-xs-12">
+              <div class="row">
+                <q-form class="col-xs-12 q-mb-md">
                   <q-file
                     v-model="pickedPhoto"
                     filled
@@ -48,51 +54,79 @@
                         dense
                         flat
                         icon="send"
+                        :loading="photoUploadPending"
                       /> </template
                   ></q-file>
                 </q-form>
-              </div>
-
-              <q-checkbox v-model="user.sports" val="basketball" color="primary"
-                ><q-icon
+                <q-checkbox
+                  class="col-xs-12"
+                  v-model="user.sports"
+                  val="basketball"
                   color="primary"
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="sports_basketball"
-                />Basketball
-              </q-checkbox>
-              <q-checkbox v-model="user.sports" val="volleyball" color="blue">
-                <q-icon
+                  ><q-icon
+                    color="primary"
+                    style="margin-top: -5px"
+                    class="q-mr-md"
+                    size="25px"
+                    name="sports_basketball"
+                  />Basketball
+                </q-checkbox>
+                <q-checkbox
+                  class="col-xs-12"
+                  v-model="user.sports"
+                  val="volleyball"
                   color="blue"
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="sports_volleyball"
-                />
-                Volleyball
-              </q-checkbox>
-              <q-checkbox v-model="user.sports" val="soccer" color="black"
-                ><q-icon
+                >
+                  <q-icon
+                    color="blue"
+                    style="margin-top: -5px"
+                    class="q-mr-md"
+                    size="25px"
+                    name="sports_volleyball"
+                  />
+                  Volleyball
+                </q-checkbox>
+                <q-checkbox
+                  class="col-xs-12"
+                  v-model="user.sports"
+                  val="soccer"
                   color="black"
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="sports_soccer"
-                />Soccer
-              </q-checkbox>
-              <q-checkbox v-model="user.sports" val="badminton" color="grey-9"
-                ><q-icon
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="img:badminton.png"
-                />Badminton
-              </q-checkbox>
+                  ><q-icon
+                    color="black"
+                    style="margin-top: -5px"
+                    class="q-mr-md"
+                    size="25px"
+                    name="sports_soccer"
+                  />Soccer
+                </q-checkbox>
+                <q-checkbox
+                  class="col-xs-12"
+                  v-model="user.sports"
+                  val="badminton"
+                  color="grey-9"
+                  ><q-icon
+                    style="margin-top: -5px"
+                    class="q-mr-md"
+                    size="25px"
+                    name="img:badminton.png"
+                  />Badminton
+                </q-checkbox>
+                <q-input
+                  v-model="user.bio"
+                  class="q-mt-md col-xs-12 col-md-12"
+                  type="textarea"
+                  label="Bio"
+                  filled
+                  color="indigo"
+                />
+              </div>
             </div>
           </div>
           <div class="col-md-8 col-xs-12 col-sm-7 q-px-md">
-            <q-form @submit="onSubmit" class="q-gutter-sm row q-pt-xl">
+            <q-form
+              @submit="onFormSubmit"
+              class="q-gutter-sm row items-start q-pt-xl"
+            >
               <q-input
                 class="col-xs-12 col-md-10"
                 v-model="user.username"
@@ -185,6 +219,13 @@
                 color="indigo"
                 :rules="[val => val.length > 0 || 'Please select']"
               />
+              <div class="col"></div>
+              <q-btn
+                class="q-mt-xl"
+                color="indigo"
+                type="submit"
+                label="SAVE"
+              ></q-btn>
             </q-form>
           </div>
         </q-tab-panel>
@@ -199,10 +240,6 @@
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </q-tab-panel>
       </q-tab-panels>
-      <q-card-actions>
-        <q-space></q-space>
-        <q-btn color="indigo" type="submit" label="Submit"></q-btn>
-      </q-card-actions>
     </q-card>
   </q-page>
 </template>
@@ -213,8 +250,6 @@ export default {
     return {
       tab: "personal",
       pickedPhoto: null,
-      submitEmpty: false,
-      submitResult: [],
       oldPassword: null,
       newPassword: null
     };
@@ -233,21 +268,24 @@ export default {
     },
     cities() {
       return this.$store.state.main.cities;
+    },
+    photoUploadPending() {
+      return this.$store.state.user.photoUploadPending;
     }
   },
   methods: {
     checkPhotoSize(files) {
-      return files.filter(file => file.size < 800000);
+      return files.filter(file => file.size < 1000000);
     },
     onRejected(rejectedEntries) {
       this.$q.notify({
         color: "red-5",
         textColor: "white",
         icon: "warning",
-        message: "Please select a 1:1 image and < 800 KB"
+        message: "Please select an image < 1 MB"
       });
     },
-    onSubmit() {},
+    onFormSubmit() {},
     onPhotoUploadClick() {
       if (this.pickedPhoto) {
         const formData = new FormData();

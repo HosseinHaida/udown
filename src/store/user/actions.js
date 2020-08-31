@@ -121,15 +121,15 @@ export async function uploadPhoto({ state, commit }, photo) {
     })
     .then(
       res => {
-        commit("updateUserPhoto", res.data.photoPath);
+        commit("updateUserPhoto", res.data.photo_path);
         commit("setPhotoUploadPending", false);
         return {
           status: "success",
-          message: "Successfully upload photo."
+          message: "Successfully uploaded photo."
         };
       },
       error => {
-        commit("setPhotoUploadPending", true);
+        commit("setPhotoUploadPending", false);
         if (!error.response) {
           return {
             status: "error",
