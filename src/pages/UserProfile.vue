@@ -34,7 +34,7 @@
                 ></q-img
               ></q-avatar>
               <div class="row">
-                <q-form class="col-xs-12 q-mb-md">
+                <q-form class="col-xs-12">
                   <q-file
                     v-model="pickedPhoto"
                     filled
@@ -58,6 +58,16 @@
                       /> </template
                   ></q-file>
                 </q-form>
+                <q-input
+                  v-model="user.bio"
+                  rows="4"
+                  style="max-height: 200px"
+                  class="q-my-md col-xs-12 col-md-12"
+                  type="textarea"
+                  label="Bio"
+                  filled
+                  color="indigo"
+                />
                 <q-checkbox
                   class="col-xs-12"
                   v-model="user.sports"
@@ -111,14 +121,6 @@
                     name="img:badminton.png"
                   />Badminton
                 </q-checkbox>
-                <q-input
-                  v-model="user.bio"
-                  class="q-mt-md col-xs-12 col-md-12"
-                  type="textarea"
-                  label="Bio"
-                  filled
-                  color="indigo"
-                />
               </div>
             </div>
           </div>

@@ -1,16 +1,14 @@
 import axios from "axios";
 import { apiUrl } from "../variables";
 export async function fetchUsersList({ state, commit }, which) {
-  //   commit("setSignupPending", true);
+  commit("setUsersFetchPending", true);
   return await axios
-    .get(`${apiUrl}/users/list/${which.page}/${which.howMany}`)
+    .get(
+      `${apiUrl}/users/list/${which.page}/${which.howMany}/${which.searchText}`
+    )
     .then(
       res => {
-        // commit("setSignupPending", false);
-        // if (res.data.user) {
-        //   commit("setUserData", res.data.user);
-        //   commit("setCookie", res.data.user);
-        // }
+        commit("setUsersFetchPending", false);
         commit("setUsersList", res.data.users);
         commit("setUsersListTotals", {
           pages: res.data.pages,
@@ -22,7 +20,7 @@ export async function fetchUsersList({ state, commit }, which) {
         };
       },
       error => {
-        //   commit("setSignupPending", false);
+        commit("setUsersFetchPending", false);
         if (!error.response) {
           return {
             status: "error",

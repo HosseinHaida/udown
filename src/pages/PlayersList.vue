@@ -4,9 +4,12 @@
       <q-input
         filled
         dense
-        placeholder="Search username"
+        placeholder="Search"
         v-model="searchText"
+        @input="fetchUsers(true)"
         class="q-mb-sm"
+        debounce="200"
+        :loading="usersFetchPending"
       />
       <q-list class="rounded-borders q-py-sm">
         <!-- <q-item-label header>Google Inbox style</q-item-label> -->
@@ -133,7 +136,7 @@ export default {
     return {
       which: {
         page: 1,
-        howMany: 25
+        howMany: 3
       },
       searchText: ""
     };
@@ -147,6 +150,9 @@ export default {
     },
     total() {
       return this.$store.state.users.total;
+    },
+    usersFetchPending() {
+      return this.$store.state.users.usersFetchPending;
     }
   },
   methods: {
@@ -170,9 +176,16 @@ export default {
       ];
       return months[month] + " " + year;
     },
-    fetchUsers() {
+    fetchUsers(goToFirstPage) {
+      if (goToFirstPage === true) {
+        this.which.page = 1;
+      }
       this.$store
-        .dispatch("users/fetchUsersList", this.which)
+        .dispatch("users/fetchUsersList", {
+          page: this.which.page,
+          howMany: this.which.howMany,
+          searchText: this.searchText
+        })
         .then(({ status, message }) => {
           if (status === "error") {
             this.$q.notify({
@@ -186,7 +199,7 @@ export default {
     }
   },
   beforeMount() {
-    this.fetchUsers();
+    this.fetchUsers(true);
   }
 };
 </script>
