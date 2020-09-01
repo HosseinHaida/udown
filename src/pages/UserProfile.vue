@@ -282,9 +282,8 @@ export default {
     onRejected(rejectedEntries) {
       this.$q.notify({
         color: "red-5",
-        textColor: "white",
         icon: "warning",
-        message: "Please select an image < 1 MB"
+        message: "Please select an image less than 1 MB"
       });
     },
     onFormSubmit() {},
@@ -298,14 +297,12 @@ export default {
             if (status === "error") {
               this.$q.notify({
                 color: "red-5",
-                textColor: "white",
                 icon: "warning",
                 message: message
               });
             } else if (status === "success") {
               this.$q.notify({
                 color: "green-4",
-                textColor: "white",
                 icon: "cloud_done",
                 message: message
               });
@@ -313,6 +310,24 @@ export default {
           });
       }
     }
+  },
+  mounted() {
+    this.$store.dispatch("user/fetchUserData").then(({ status, message }) => {
+      if (status === "error") {
+        this.$q.notify({
+          color: "red-5",
+          icon: "warning",
+          message: message
+        });
+      } else if (status === "success") {
+        this.$q.notify({
+          color: "light-blue-4",
+          badgeColor: "indigo",
+          icon: "cloud_download",
+          message: message
+        });
+      }
+    });
   }
 };
 </script>

@@ -68,14 +68,12 @@ export default {
           if (status === "error") {
             this.$q.notify({
               color: "red-5",
-              textColor: "white",
               icon: "warning",
               message: message
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
-              textColor: "white",
               icon: "login",
               message: message
             });

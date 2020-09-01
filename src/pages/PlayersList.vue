@@ -47,10 +47,10 @@
             <q-item-section class="gt-sm" top>
               <q-item-label lines="1">
                 <span class="text-grey-8"></span>{{ user.bio }}
-                <!-- <span class="text-grey-8"> - GitHub repository</span> -->
               </q-item-label>
               <q-item-label v-if="user.created_at" caption lines="1">
-                Joined {{ getYearPlusMonth(user.created_at) }}
+                {{ user.city }}
+                - Joined {{ getYearPlusMonth(user.created_at) }}
               </q-item-label>
               <q-item-label
                 lines="1"
@@ -136,7 +136,7 @@ export default {
     return {
       which: {
         page: 1,
-        howMany: 3
+        howMany: 25
       },
       searchText: ""
     };
@@ -190,7 +190,6 @@ export default {
           if (status === "error") {
             this.$q.notify({
               color: "red-5",
-              textColor: "white",
               icon: "warning",
               message: message
             });

@@ -160,14 +160,12 @@ export default {
           if (status === "error") {
             this.$q.notify({
               color: "red-5",
-              textColor: "white",
               icon: "warning",
               message: message
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
-              textColor: "white",
               icon: "cloud_done",
               message: message
             });
@@ -177,7 +175,8 @@ export default {
     },
     onRejected(rejectedEntries) {
       this.$q.notify({
-        type: "negative",
+        color: "red-5",
+        icon: "warning",
         message: `${rejectedEntries.length} file(s) did not pass validation constraints`
       });
     }

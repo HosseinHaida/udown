@@ -214,7 +214,6 @@ export default {
       this.$store.commit("user/logout");
       this.$q.notify({
         color: "light-blue-4",
-        textColor: "white",
         icon: "logout",
         message: "Logged out"
       });
@@ -226,14 +225,12 @@ export default {
       if (status === "error") {
         this.$q.notify({
           color: "red-5",
-          textColor: "white",
           icon: "warning",
           message: message
         });
       } else if (status === "success") {
         this.$q.notify({
           color: "light-blue-4",
-          textColor: "white",
           icon: "cloud_download",
           message: message
         });
