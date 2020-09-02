@@ -3,6 +3,7 @@ export default function() {
     signupPending: false,
     signinPending: false,
     userFetchPending: false,
+    updatePending: false,
     photoUploadPending: false,
     userTCookieName: "t=",
     data: null,

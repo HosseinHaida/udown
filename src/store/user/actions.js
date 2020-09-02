@@ -143,3 +143,41 @@ export async function uploadPhoto({ state, commit }, photo) {
       }
     );
 }
+
+export async function update({ state, commit }, user) {
+  commit("setUpdatePending", true);
+  return await axios
+    .post(apiUrl + "/auth/update", user, {
+      headers: {
+        token: state.t
+      }
+    })
+    .then(
+      res => {
+        commit("setUpdatePending", false);
+        if (res.data.user) {
+          commit("setUserData", res.data.user);
+          commit("setToken", res.data.user.token);
+          commit("setCookie", res.data.user);
+        }
+
+        return {
+          status: "success",
+          message: "Updated " + res.data.user.username
+        };
+      },
+      error => {
+        commit("setUpdatePending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}

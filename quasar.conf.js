@@ -82,7 +82,7 @@ module.exports = function(/* ctx */) {
       config: {
         notify: {
           textColor: "white",
-          timeout: 1000,
+          timeout: 1500,
           progress: true
         }
       },

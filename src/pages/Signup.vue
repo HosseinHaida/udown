@@ -92,7 +92,7 @@
             label="Gender *"
             lazy-rules
             color="indigo"
-            :rules="[val => val.length > 0 || 'Please select']"
+            required
           />
           <q-input
             filled

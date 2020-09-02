@@ -12,7 +12,7 @@
         :loading="usersFetchPending"
       />
       <q-list class="rounded-borders q-py-sm">
-        <!-- <q-item-label header>Google Inbox style</q-item-label> -->
+        <!-- <q-item-label header>Users</q-item-label> -->
         <div v-for="(user, index) in users" :key="index">
           <q-item>
             <q-item-section avatar top>

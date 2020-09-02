@@ -6,6 +6,10 @@ export function setSigninPending(state, status) {
   state.signinPending = status;
 }
 
+export function setUpdatePending(state, status) {
+  state.updatePending = status;
+}
+
 export function setUserData(state, userPayload) {
   state.data = userPayload;
 }
@@ -17,6 +21,10 @@ export function setToken(state, t) {
 export function updateUserPhoto(state, path) {
   state.data.photo = null;
   state.data.photo = path;
+}
+
+export function updateUserObj(state, { key, value }) {
+  state.data[key] = value;
 }
 
 export function setPhotoUploadPending(state, status) {

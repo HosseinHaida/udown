@@ -27,12 +27,37 @@
         <q-tab-panel name="personal" class="row justify-between">
           <div class="col-md-3 col-sm-5 col-xs-12 q-px-md">
             <div class="column">
-              <q-avatar size="140px" class="q-mb-lg q-mt-sm q-ml-sm">
+              <q-avatar
+                style="cursor: pointer"
+                @click="user.photo ? (showPhoto = true) : (showPhoto = false)"
+                size="140px"
+                class="q-mb-lg q-mt-sm q-ml-sm"
+              >
                 <q-img
                   :ratio="1"
                   :src="user.photo ? user.photo : 'user-avatar.png'"
                 ></q-img
               ></q-avatar>
+              <!-- Modal to show big Photo -->
+              <q-dialog v-if="user.photo" v-model="showPhoto" persistent>
+                <q-card style="width: 700px; max-width: 80vw;">
+                  <q-bar class="bg-white">
+                    <span class="text-subtitle1">{{ user.first_name }}</span>
+                    <q-space />
+
+                    <q-btn size="14px" dense flat icon="close" v-close-popup>
+                      <q-tooltip>Close</q-tooltip>
+                    </q-btn>
+                  </q-bar>
+                  <q-card-section style="padding: 0">
+                    <q-img
+                      class="full-width"
+                      contain
+                      :src="user.photo ? user.photo : 'user-avatar.png'"
+                    ></q-img>
+                  </q-card-section>
+                </q-card>
+              </q-dialog>
               <div class="row">
                 <q-form class="col-xs-12">
                   <q-file
@@ -59,7 +84,8 @@
                   ></q-file>
                 </q-form>
                 <q-input
-                  v-model="user.bio"
+                  :value="user.bio"
+                  @input="updateUser('bio', $event)"
                   rows="4"
                   style="max-height: 200px"
                   class="q-my-md col-xs-12 col-md-12"
@@ -70,7 +96,8 @@
                 />
                 <q-checkbox
                   class="col-xs-12"
-                  v-model="user.sports"
+                  :value="user.sports"
+                  @input="updateUser('sports', $event)"
                   val="basketball"
                   color="primary"
                   ><q-icon
@@ -83,7 +110,8 @@
                 </q-checkbox>
                 <q-checkbox
                   class="col-xs-12"
-                  v-model="user.sports"
+                  :value="user.sports"
+                  @input="updateUser('sports', $event)"
                   val="volleyball"
                   color="blue"
                 >
@@ -98,7 +126,8 @@
                 </q-checkbox>
                 <q-checkbox
                   class="col-xs-12"
-                  v-model="user.sports"
+                  :value="user.sports"
+                  @input="updateUser('sports', $event)"
                   val="soccer"
                   color="black"
                   ><q-icon
@@ -111,7 +140,8 @@
                 </q-checkbox>
                 <q-checkbox
                   class="col-xs-12"
-                  v-model="user.sports"
+                  :value="user.sports"
+                  @input="updateUser('sports', $event)"
                   val="badminton"
                   color="grey-9"
                   ><q-icon
@@ -131,7 +161,8 @@
             >
               <q-input
                 class="col-xs-12 col-md-10"
-                v-model="user.username"
+                :value="user.username"
+                @input="updateUser('username', $event)"
                 label="Username"
                 lazy-rules
                 dense
@@ -143,7 +174,8 @@
               />
               <q-input
                 class="col-xs-12 col-md-5"
-                v-model="user.first_name"
+                :value="user.first_name"
+                @input="updateUser('first_name', $event)"
                 label="First name"
                 lazy-rules
                 dense
@@ -153,7 +185,8 @@
               />
               <q-input
                 class="col-xs-12 col-md-5"
-                v-model="user.last_name"
+                :value="user.last_name"
+                @input="updateUser('last_name', $event)"
                 label="Last name"
                 lazy-rules
                 dense
@@ -189,7 +222,8 @@
               <q-select
                 class="q-mt-sm col-xs-12 col-md-5"
                 :options="genders"
-                v-model="user.gender"
+                :value="user.gender"
+                @input="updateUser('gender', $event)"
                 label="Gender"
                 lazy-rules
                 dense
@@ -198,23 +232,23 @@
               />
               <q-input
                 class="q-mt-sm col-xs-12 col-md-5"
-                v-model="user.height"
+                :value="user.height"
+                @input="updateUser('height', $event)"
                 label="Height"
                 lazy-rules
                 dense
                 type="number"
                 color="indigo"
                 :rules="[
-                  val =>
-                    (val && val.length > 0 && val < 300) ||
-                    'Please type a valid age'
+                  val => (val > 0 && val < 300) || 'Please type a valid age'
                 ]"
                 hint="cm"
               />
               <q-select
                 class="q-mt-sm col-xs-12 col-md-5"
                 :options="cities"
-                v-model="user.city"
+                :value="user.city"
+                @input="updateUser('city', $event)"
                 label="City"
                 lazy-rules
                 dense
@@ -227,6 +261,7 @@
                 color="indigo"
                 type="submit"
                 label="SAVE"
+                :loading="updatePending"
               ></q-btn>
             </q-form>
           </div>
@@ -250,20 +285,16 @@ export default {
   name: "profile",
   data() {
     return {
+      showPhoto: false,
       tab: "personal",
       pickedPhoto: null,
-      oldPassword: null,
-      newPassword: null
+      oldPassword: "",
+      newPassword: ""
     };
   },
   computed: {
-    user: {
-      set: function(val) {
-        this.$store.commit("user/updateUser", val);
-      },
-      get: function() {
-        return this.$store.state.user.data;
-      }
+    user() {
+      return this.$store.state.user.data;
     },
     genders() {
       return this.$store.state.main.genders;
@@ -271,11 +302,17 @@ export default {
     cities() {
       return this.$store.state.main.cities;
     },
+    updatePending() {
+      return this.$store.state.user.updatePending;
+    },
     photoUploadPending() {
       return this.$store.state.user.photoUploadPending;
     }
   },
   methods: {
+    updateUser(key, value) {
+      this.$store.commit("user/updateUserObj", { key, value });
+    },
     checkPhotoSize(files) {
       return files.filter(file => file.size < 1000000);
     },
@@ -286,7 +323,33 @@ export default {
         message: "Please select an image less than 1 MB"
       });
     },
-    onFormSubmit() {},
+    onFormSubmit() {
+      this.$store.commit("user/updateUserObj", {
+        key: "old_password",
+        value: this.oldPassword
+      });
+      this.$store.commit("user/updateUserObj", {
+        key: "new_password",
+        value: this.newPassword
+      });
+      this.$store
+        .dispatch("user/update", this.user)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "cloud_done",
+              message: message
+            });
+          }
+        });
+    },
     onPhotoUploadClick() {
       if (this.pickedPhoto) {
         const formData = new FormData();
