@@ -44,11 +44,11 @@
           <div class="row no-wrap q-pa-md">
             <div class="column items-center" style="min-width: 110px">
               <q-avatar size="72px">
-                <!-- :src="user.photo ? user.photo : 'user-avatar.png'" -->
-                <q-img
-                  :ratio="1"
-                  :src="user.photo ? user.photo : 'user-avatar.png'"
-                />
+                <q-img :ratio="1" :src="user.photo" />
+                <span class="user-photo-placeholder">{{
+                  user.first_name.charAt(0).toUpperCase() +
+                    user.last_name.charAt(0).toUpperCase()
+                }}</span>
               </q-avatar>
               <q-chip
                 class="q-mt-md"
@@ -228,13 +228,14 @@ export default {
           icon: "warning",
           message: message
         });
-      } else if (status === "success") {
-        this.$q.notify({
-          color: "light-blue-4",
-          icon: "cloud_download",
-          message: message
-        });
       }
+      // else if (status === "success") {
+      //   this.$q.notify({
+      //     color: "light-blue-4",
+      //     icon: "cloud_download",
+      //     message: message
+      //   });
+      // }
     });
   },
   components: {

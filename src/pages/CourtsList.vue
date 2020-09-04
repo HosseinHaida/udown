@@ -1,87 +1,93 @@
 <template>
-  <q-page class="q-pa-md row items-start q-gutter-md">
-    <q-card class="court-card" v-for="(court, index) in courts" :key="index">
-      <q-img class="court-poster" :src="court.photo" />
+  <q-page class="q-pa-md row items-start">
+    <div
+      class="court-card col-md-4 col-sm-6 col-xs-12 q-pa-sm"
+      v-for="(court, index) in courts"
+      :key="index"
+    >
+      <q-card>
+        <q-img class="court-poster" :src="court.photo" />
 
-      <q-card-section>
-        <q-btn
-          fab
-          color="primary"
-          icon="place"
-          class="absolute"
-          style="top: 0; right: 12px; transform: translateY(-50%);"
-          type="a"
-          :href="court.maps_url"
-        />
+        <q-card-section>
+          <q-btn
+            fab
+            color="primary"
+            icon="place"
+            class="absolute"
+            style="top: 0; right: 12px; transform: translateY(-50%);"
+            type="a"
+            :href="court.maps_url"
+          />
 
-        <div class="row no-wrap items-center">
-          <div class="col text-h6 ellipsis">
-            {{ court.name }}
+          <div class="row no-wrap items-center">
+            <div class="col text-h6 ellipsis">
+              {{ court.name }}
+            </div>
+            <div
+              class="col-auto text-grey text-caption q-pt-md row no-wrap items-center"
+            >
+              <q-icon size="xs" name="map" />
+              Google
+            </div>
           </div>
-          <div
-            class="col-auto text-grey text-caption q-pt-md row no-wrap items-center"
-          >
-            <q-icon size="xs" name="map" />
-            Google
+
+          <!-- <q-rating v-model="stars" :max="5" size="32px" /> -->
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <div class="text-subtitle1">
+            <q-icon
+              style="color: #85bb65"
+              class="q-mr-sm"
+              size="sm"
+              name="payments"
+            />{{ court.cost }}
           </div>
-        </div>
+          <div class="text-caption text-grey">
+            <div class="q-mt-sm text-h6">
+              <q-chip
+                square
+                dense
+                :label="court.city"
+                text-color="white"
+                color="indigo"
+                style="padding-top: 1px"
+              />
+              <q-chip
+                square
+                dense
+                :label="court.region"
+                text-color="white"
+                color="indigo"
+                style="padding-top: 1px"
+              />
+            </div>
+          </div>
+        </q-card-section>
 
-        <!-- <q-rating v-model="stars" :max="5" size="32px" /> -->
-      </q-card-section>
+        <q-separator />
 
-      <q-card-section class="q-pt-none">
-        <div class="text-subtitle1">
+        <q-card-actions>
+          <!-- <q-btn flat round icon="event" /> -->
+          <q-btn flat color="primary" @click="thisCourt(court.name, court.id)">
+            I'm Down
+          </q-btn>
+          <q-space />
           <q-icon
-            style="color: #85bb65"
-            class="q-mr-sm"
+            class="q-ma-sm"
             size="sm"
-            name="payments"
-          />{{ court.cost }}
-        </div>
-        <div class="text-caption text-grey">
-          <div class="q-mt-sm text-h6">
-            <q-chip
-              square
-              dense
-              :label="court.city"
-              text-color="white"
-              color="indigo"
-              style="padding-top: 1px"
-            />
-            <q-chip
-              square
-              dense
-              :label="court.region"
-              text-color="white"
-              color="indigo"
-              style="padding-top: 1px"
-            />
-          </div>
-        </div>
-      </q-card-section>
-
-      <q-separator />
-
-      <q-card-actions>
-        <!-- <q-btn flat round icon="event" /> -->
-        <q-btn flat color="primary" @click="thisCourt(court.name, court.id)">
-          I'm Down
-        </q-btn>
-        <q-space />
-        <q-icon
-          class="q-ma-sm"
-          size="sm"
-          name="wc"
-          :color="court.girls_allowed ? 'positive' : 'negative'"
-        />
-        <q-icon
-          class="q-mr-sm"
-          size="xs"
-          :name="court.girls_allowed ? 'check' : 'close'"
-          :color="court.girls_allowed ? 'positive' : 'negative'"
-        />
-      </q-card-actions>
-    </q-card>
+            name="wc"
+            :color="court.girls_allowed ? 'positive' : 'negative'"
+          />
+          <q-icon
+            class="q-mr-sm"
+            size="xs"
+            :name="court.girls_allowed ? 'check' : 'close'"
+            :color="court.girls_allowed ? 'positive' : 'negative'"
+          />
+        </q-card-actions>
+      </q-card>
+    </div>
   </q-page>
 </template>
 
@@ -113,11 +119,10 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.court-card
-  width: 100%
-  max-width: 300px
-  .court-poster
-    max-height: 2900px
+// .court-card
+  // max-width: 300px
+  // .court-poster
+    // max-height: 2900px
 
 // @media only screen and (max-width: 414px)
 //   .court-card

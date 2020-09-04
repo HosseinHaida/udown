@@ -17,10 +17,11 @@
           <q-item>
             <q-item-section avatar top>
               <q-avatar>
-                <q-img
-                  :ratio="1"
-                  :src="user.photo ? user.photo : 'user-avatar.png'"
-                />
+                <q-img :ratio="1" :src="user.photo" />
+                <span class="user-photo-placeholder">{{
+                  user.first_name.charAt(0).toUpperCase() +
+                    user.last_name.charAt(0).toUpperCase()
+                }}</span>
               </q-avatar>
             </q-item-section>
 

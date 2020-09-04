@@ -1,7 +1,7 @@
 <template>
   <q-page
     class="q-pa-md"
-    :class="!user ? 'row items-center justify-center' : ''"
+    :class="!user ? 'row items-center justify-evenly' : ''"
   >
     <div v-if="!user" class="col-xs-12 text-center text-h4">
       Please login first
@@ -25,21 +25,22 @@
 
       <q-tab-panels v-model="tab" animated style="min-height: 450px">
         <q-tab-panel name="personal" class="row justify-between">
-          <div class="col-md-3 col-sm-5 col-xs-12 q-px-md">
+          <div class="col-md-4 col-sm-5 col-xs-12 q-px-md">
             <div class="column">
               <q-avatar
                 style="cursor: pointer"
-                @click="user.photo ? (showPhoto = true) : (showPhoto = false)"
+                @click="showPhoto = true"
                 size="140px"
                 class="q-mb-lg q-mt-sm q-ml-sm"
               >
-                <q-img
-                  :ratio="1"
-                  :src="user.photo ? user.photo : 'user-avatar.png'"
-                ></q-img
-              ></q-avatar>
+                <q-img :ratio="1" :src="user.photo"></q-img
+                ><span class="user-photo-placeholder">{{
+                  user.first_name.charAt(0).toUpperCase() +
+                    user.last_name.charAt(0).toUpperCase()
+                }}</span></q-avatar
+              >
               <!-- Modal to show big Photo -->
-              <q-dialog v-if="user.photo" v-model="showPhoto" persistent>
+              <q-dialog v-if="user.photo" v-model="showPhoto">
                 <q-card style="width: 700px; max-width: 80vw;">
                   <q-bar class="bg-white">
                     <span class="text-subtitle1">{{ user.first_name }}</span>
@@ -50,11 +51,7 @@
                     </q-btn>
                   </q-bar>
                   <q-card-section style="padding: 0">
-                    <q-img
-                      class="full-width"
-                      contain
-                      :src="user.photo ? user.photo : 'user-avatar.png'"
-                    ></q-img>
+                    <q-img class="full-width" contain :src="user.photo"></q-img>
                   </q-card-section>
                 </q-card>
               </q-dialog>
@@ -80,8 +77,34 @@
                         flat
                         icon="send"
                         :loading="photoUploadPending"
-                      /> </template
-                  ></q-file>
+                        ><q-tooltip
+                          content-class="bg-info"
+                          content-style="font-size: 14px"
+                          :offset="[10, 10]"
+                        >
+                          Save photo
+                        </q-tooltip></q-btn
+                      >
+                    </template>
+                    <!-- <template v-slot:before>
+                      <q-btn
+                        @click="onPhotoUploadClick"
+                        round
+                        dense
+                        flat
+                        icon="delete"
+                        :loading="photoUploadPending"
+                      >
+                        <q-tooltip
+                          content-class="bg-red-5"
+                          content-style="font-size: 14px"
+                          :offset="[10, 10]"
+                        >
+                          Delete current photo
+                        </q-tooltip>
+                      </q-btn>
+                    </template> -->
+                  </q-file>
                 </q-form>
                 <q-input
                   :value="user.bio"
@@ -157,7 +180,7 @@
           <div class="col-md-8 col-xs-12 col-sm-7 q-px-md">
             <q-form
               @submit="onFormSubmit"
-              class="q-gutter-sm row items-start q-pt-xl"
+              class="q-gutter-sm row items-start q-pt-xl q-px-sm"
             >
               <q-input
                 class="col-xs-12 col-md-10"
@@ -253,11 +276,10 @@
                 lazy-rules
                 dense
                 color="indigo"
-                :rules="[val => val.length > 0 || 'Please select']"
               />
-              <div class="col"></div>
+              <div class="col-xs-9"></div>
               <q-btn
-                class="q-mt-xl"
+                class="q-mt-lg"
                 color="indigo"
                 type="submit"
                 label="SAVE"
@@ -382,14 +404,15 @@ export default {
           icon: "warning",
           message: message
         });
-      } else if (status === "success") {
-        this.$q.notify({
-          color: "light-blue-4",
-          badgeColor: "indigo",
-          icon: "cloud_download",
-          message: message
-        });
       }
+      // else if (status === "success") {
+      //   this.$q.notify({
+      //     color: "light-blue-4",
+      //     badgeColor: "indigo",
+      //     icon: "cloud_download",
+      //     message: message
+      //   });
+      // }
     });
   }
 };
