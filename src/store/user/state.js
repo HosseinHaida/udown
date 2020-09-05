@@ -5,6 +5,7 @@ export default function() {
     userFetchPending: false,
     updatePending: false,
     photoUploadPending: false,
+    friendRequestPending: false,
     userTCookieName: "t=",
     data: null,
     t: null

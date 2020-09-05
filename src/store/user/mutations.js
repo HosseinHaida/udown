@@ -10,6 +10,10 @@ export function setUpdatePending(state, status) {
   state.updatePending = status;
 }
 
+export function setFriendRequestPending(state, status) {
+  state.friendRequestPending = status;
+}
+
 export function setUserData(state, userPayload) {
   state.data = userPayload;
 }
@@ -19,7 +23,6 @@ export function setToken(state, t) {
 }
 
 export function updateUserPhoto(state, path) {
-  state.data.photo = null;
   state.data.photo = path;
 }
 
@@ -41,9 +44,11 @@ export function setCookie(state, user) {
   d.setTime(d.getTime() + 14 * 24 * 60 * 60 * 1000);
   let expires = d.toUTCString();
   document.cookie = "t=" + user.token + ";expires=" + expires + ";path=/";
-  // document.cookie = "uname=" + user.username;
-  // document.cookie = "uid=" + user.id;
-  // document.cookie = "ufname=" + user.first_name;
-  // document.cookie = "ulname=" + user.last_name;
-  // document.cookie = "ubio=" + user.bio;
+}
+
+export function setUserFriends(state, userFriends) {
+  state.data.friends = userFriends;
+}
+export function setUserRequests(state, requests) {
+  state.data.requests = requests;
 }

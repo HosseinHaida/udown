@@ -181,3 +181,47 @@ export async function update({ state, commit }, user) {
       }
     );
 }
+
+export async function sendFriendRequestTo({ state, commit }, id) {
+  commit("setFriendRequestPending", true);
+  return await axios
+    .post(
+      apiUrl + "/auth/friend/request",
+      { requestee_id: id },
+      {
+        headers: {
+          token: state.t
+        }
+      }
+    )
+    .then(
+      res => {
+        commit("setFriendRequestPending", false);
+        if (res.data) {
+          if (res.data.user_friends) {
+            commit("setUserFriends", res.data.user_friends);
+          }
+          if (res.data.user_outbound_requests) {
+            commit("setUserRequests", res.data.user_outbound_requests);
+          }
+        }
+        return {
+          status: "success",
+          message: res.data.message ? res.data.message : "Sent request"
+        };
+      },
+      error => {
+        commit("setFriendRequestPending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}

@@ -50,8 +50,8 @@
                 <span class="text-grey-8"></span>{{ user.bio }}
               </q-item-label>
               <q-item-label v-if="user.created_at" caption lines="1">
-                {{ user.city }}
-                - Joined {{ getYearPlusMonth(user.created_at) }}
+                {{ user.city ? user.city + " - " : "" }}
+                Joined {{ getYearPlusMonth(user.created_at) }}
               </q-item-label>
               <q-item-label
                 lines="1"
@@ -61,49 +61,33 @@
               </q-item-label>
             </q-item-section>
 
-            <q-item-section v-if="loggedInUser" top side class="q-ml-md gt-sm">
+            <q-item-section v-if="loggedInUser" top side class="q-ml-md">
               <div
                 v-if="loggedInUser.id !== user.id"
                 class="text-grey-8 q-gutter-xs"
               >
                 <q-btn
                   v-if="loggedInUser.friends"
-                  style="width: 110px"
-                  class="bg-grey-2 q-ml-sm"
-                  size="12px"
-                  flat
-                  :label="
-                    loggedInUser.friends.includes(user.id)
-                      ? 'FOLLOWING'
-                      : 'FOLLOW'
-                  "
-                  :disabled="loggedInUser.friends.includes(user.id)"
-                />
-                <q-btn
-                  v-else
-                  style="width: 110px"
-                  class="bg-grey-2 q-ml-sm"
-                  size="12px"
-                  flat
-                  label="FOLLOW"
-                ></q-btn>
-              </div>
-            </q-item-section>
-
-            <q-item-section v-if="loggedInUser" side class="lt-md">
-              <div class="text-grey-8 q-gutter-xs">
-                <q-btn
-                  v-if="loggedInUser.id !== user.id"
                   class="bg-grey-2"
                   size="12px"
                   flat
-                  :icon="
-                    loggedInUser.friends.includes(user.id)
-                      ? 'how_to_reg'
-                      : 'person_add'
+                  :color="
+                    loggedInUser.friends.includes(user.id) ? 'positive' : ''
                   "
-                  :disabled="loggedInUser.friends.includes(user.id)"
-                />
+                  :loading="friendRequestPending"
+                  :icon="whichIconToShow(user.id)"
+                  :disabled="
+                    loggedInUser.friends.includes(user.id) ||
+                      loggedInUser.requests.includes(user.id)
+                  "
+                  @click="sendFriendRequestTo(user.id)"
+                >
+                  <span class="q-px-sm gt-sm">{{
+                    loggedInUser.friends.includes(user.id)
+                      ? "Friends"
+                      : isRequested(user.id)
+                  }}</span>
+                </q-btn>
               </div>
             </q-item-section>
           </q-item>
@@ -154,6 +138,9 @@ export default {
     },
     usersFetchPending() {
       return this.$store.state.users.usersFetchPending;
+    },
+    friendRequestPending() {
+      return this.$store.state.friendRequestPending;
     }
   },
   methods: {
@@ -196,6 +183,43 @@ export default {
             });
           }
         });
+    },
+    sendFriendRequestTo(id) {
+      this.$store
+        .dispatch("user/sendFriendRequestTo", id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "cloud_done",
+              message: message
+            });
+          }
+        });
+    },
+    whichIconToShow(id) {
+      if (this.loggedInUser.friends.includes(id)) {
+        return "how_to_reg";
+      } else {
+        if (this.loggedInUser.requests.includes(id)) {
+          return "hourglass_top";
+        } else {
+          return "person_add";
+        }
+      }
+    },
+    isRequested(id) {
+      if (this.loggedInUser.requests.includes(id)) {
+        return "Requested";
+      } else {
+        return "Request";
+      }
     }
   },
   beforeMount() {
