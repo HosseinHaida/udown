@@ -1,6 +1,6 @@
 <template>
-  <q-page class="q-py-md row">
-    <div class="column col-xs-12">
+  <div class="q-py-md column">
+    <div class="col-xs-12">
       <q-input
         filled
         dense
@@ -29,8 +29,8 @@
           "
           :isRequested="
             loggedInUser &&
-            loggedInUser.requests &&
-            loggedInUser.requests.includes(user.id)
+            loggedInUser.outbound_requests &&
+            loggedInUser.outbound_requests.includes(user.id)
               ? true
               : false
           "
@@ -54,7 +54,7 @@
         >
       </div>
     </div>
-  </q-page>
+  </div>
 </template>
 <script>
 import PlayerComponent from "./Player.vue";

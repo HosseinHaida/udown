@@ -17,7 +17,11 @@
         align="justify"
       >
         <q-tab name="personal" label="Personal" />
-        <q-tab name="friends" label="Friends" />
+        <q-tab
+          name="friends"
+          label="Friends"
+          @click="fetchInboundRequestsCount()"
+        />
         <q-tab name="photos" label="Photos" />
       </q-tabs>
 
@@ -301,11 +305,22 @@
             class="col-auto"
             toggle-color="indigo"
             push
+            size="13px"
             :options="[
-              { label: 'All', value: 'all' },
-              { label: 'Requests', value: 'requests' }
+              { label: 'All', value: 'all', icon: 'list' },
+              {
+                label: 'Requests',
+                value: 'requests',
+                icon: 'pending_actions',
+                slot: 'reqs',
+                class: 'q-pb-xs'
+              }
             ]"
-          />
+          >
+            <template v-slot:reqs>
+              <q-badge color="indigo" floating :label="inboundRequestsCount" />
+            </template>
+          </q-btn-toggle>
           <div class="col-xs-12">
             <players-component
               :type="'friends'"
@@ -330,11 +345,6 @@ export default {
   data() {
     return {
       friendsRequestsToggle: "all",
-      splitterModel: 3,
-      friends: {
-        page: 1,
-        howMany: 25
-      },
       showPhoto: false,
       tab: "personal",
       pickedPhoto: null,
@@ -357,6 +367,9 @@ export default {
     },
     photoUploadPending() {
       return this.$store.state.user.photoUploadPending;
+    },
+    inboundRequestsCount() {
+      return this.$store.state.user.inboundRequestsCount;
     }
   },
   methods: {
@@ -398,6 +411,26 @@ export default {
               message: message
             });
           }
+        });
+    },
+    fetchInboundRequestsCount() {
+      this.$store
+        .dispatch("user/fetchInboundRequestsCount")
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          }
+          // else if (status === "success") {
+          //   this.$q.notify({
+          //     color: "green-4",
+          //     icon: "cloud_done",
+          //     message: message
+          //   });
+          // }
         });
     },
     onPhotoUploadClick() {

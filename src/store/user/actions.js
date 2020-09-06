@@ -201,8 +201,8 @@ export async function sendFriendRequestTo({ state, commit }, id) {
           if (res.data.user_friends) {
             commit("setUserFriends", res.data.user_friends);
           }
-          if (res.data.user_outbound_requests) {
-            commit("setUserRequests", res.data.user_outbound_requests);
+          if (res.data.outbound_requests) {
+            commit("setUserRequests", res.data.outbound_requests);
           }
         }
         return {
@@ -212,6 +212,48 @@ export async function sendFriendRequestTo({ state, commit }, id) {
       },
       error => {
         commit("setFriendRequestPending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function fetchInboundRequestsCount({ state, commit }) {
+  commit("setInboundRequestsCountPending", true);
+  return await axios
+    .get(apiUrl + "/auth/inbound_requests_count", {
+      headers: {
+        token: state.t
+      }
+    })
+    .then(
+      res => {
+        commit("setInboundRequestsCountPending", false);
+        if (res.data) {
+          if (res.data.inbound_requests_count) {
+            commit(
+              "setUserInboundRequestsCount",
+              res.data.inbound_requests_count
+            );
+          }
+        }
+        return {
+          status: "success",
+          message: res.data.message
+            ? res.data.message
+            : "Fetched inbound requests count"
+        };
+      },
+      error => {
+        commit("setInboundRequestsCountPending", false);
         if (!error.response) {
           return {
             status: "error",

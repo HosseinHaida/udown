@@ -50,5 +50,13 @@ export function setUserFriends(state, userFriends) {
   state.data.friends = userFriends;
 }
 export function setUserRequests(state, requests) {
-  state.data.requests = requests;
+  state.data.outbound_requests = requests;
+}
+
+export function setUserInboundRequestsCount(state, count) {
+  state.inboundRequestsCount = count;
+}
+
+export function setInboundRequestsCountPending(state, status) {
+  state.inboundRequestsCountPending = status;
 }

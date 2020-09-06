@@ -1,7 +1,7 @@
 <template>
-  <div class="q-px-md">
+  <q-page class="q-px-md">
     <players-component :type="'none'" :howMany="25"></players-component>
-  </div>
+  </q-page>
 </template>
 <script>
 import PlayersComponent from "../components/Players.vue";

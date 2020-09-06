@@ -1,26 +1,22 @@
 import axios from "axios";
 import { apiUrl } from "../variables";
-import userStore from "../user";
 export async function fetchUsersList({ rootState, commit }, which) {
   commit("setUsersFetchPending", true);
   let type = "";
   if (which.type === "friends") {
-    type = "/friends";
+    type = "/friends_only";
   } else {
     type = "";
   }
+  const url = `${apiUrl}/users/list${type}/${which.page}/${which.howMany}/${which.searchText}`;
   return await axios
-    .get(
-      `${apiUrl}/users/list/${which.page}/${which.howMany}${type}/${which.searchText}`,
-      {
-        headers: {
-          token: rootState.user.t
-        }
+    .get(url, {
+      headers: {
+        token: rootState.user.t
       }
-    )
+    })
     .then(
       res => {
-        // console.log(res.data.users);
         commit("setUsersFetchPending", false);
         commit("setUsersList", res.data.users);
         commit("setUsersListTotals", {
