@@ -29,7 +29,6 @@
           color="grey-1"
           push
           no-caps
-          @click="onMainClick"
           text-color="dark"
         >
           <template v-slot:label>
@@ -203,13 +202,6 @@ export default {
     }
   },
   methods: {
-    onMainClick() {
-      // console.log('Clicked on main button')
-    },
-
-    onItemClick() {
-      // console.log('Clicked on an Item')
-    },
     logout() {
       this.$store.commit("user/logout");
       this.$q.notify({
@@ -245,6 +237,6 @@ export default {
 </script>
 <style lang="sass" scoped>
 .active-drawer-link
-  background-color: $dark
-  color: $deep-orange-10
+  background-color: $primary
+  color: white
 </style>

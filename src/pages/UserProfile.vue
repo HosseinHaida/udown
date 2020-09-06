@@ -23,7 +23,13 @@
 
       <q-separator />
 
-      <q-tab-panels v-model="tab" animated style="min-height: 450px">
+      <q-tab-panels
+        v-model="tab"
+        transition-prev="jump-up"
+        transition-next="jump-down"
+        animated
+        style="min-height: 450px"
+      >
         <q-tab-panel name="personal" class="row justify-between">
           <div class="col-md-4 col-sm-5 col-xs-12 q-px-md">
             <div class="column">
@@ -78,8 +84,7 @@
                         icon="send"
                         :loading="photoUploadPending"
                         ><q-tooltip
-                          content-class="bg-info"
-                          content-style="font-size: 14px"
+                          content-style="font-size: 12px"
                           :offset="[10, 10]"
                         >
                           Save photo
@@ -289,9 +294,24 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="friends">
-          <div class="text-h6">Alarms</div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panel class="row" name="friends">
+          <div class="col"></div>
+          <q-btn-toggle
+            v-model="friendsRequestsToggle"
+            class="col-auto"
+            toggle-color="indigo"
+            push
+            :options="[
+              { label: 'All', value: 'all' },
+              { label: 'Requests', value: 'requests' }
+            ]"
+          />
+          <div class="col-xs-12">
+            <players-component
+              :type="'friends'"
+              :howMany="25"
+            ></players-component>
+          </div>
         </q-tab-panel>
 
         <q-tab-panel name="photos">
@@ -303,10 +323,18 @@
   </q-page>
 </template>
 <script>
+import PlayersComponent from "../components/Players.vue";
 export default {
   name: "profile",
+  components: { "players-component": PlayersComponent },
   data() {
     return {
+      friendsRequestsToggle: "all",
+      splitterModel: 3,
+      friends: {
+        page: 1,
+        howMany: 25
+      },
       showPhoto: false,
       tab: "personal",
       pickedPhoto: null,
@@ -336,13 +364,13 @@ export default {
       this.$store.commit("user/updateUserObj", { key, value });
     },
     checkPhotoSize(files) {
-      return files.filter(file => file.size < 1000000);
+      return files.filter(file => file.size < 2000000);
     },
     onRejected(rejectedEntries) {
       this.$q.notify({
         color: "red-5",
         icon: "warning",
-        message: "Please select an image less than 1 MB"
+        message: "Please select an image less than 2 MBs"
       });
     },
     onFormSubmit() {
@@ -405,14 +433,6 @@ export default {
           message: message
         });
       }
-      // else if (status === "success") {
-      //   this.$q.notify({
-      //     color: "light-blue-4",
-      //     badgeColor: "indigo",
-      //     icon: "cloud_download",
-      //     message: message
-      //   });
-      // }
     });
   }
 };
