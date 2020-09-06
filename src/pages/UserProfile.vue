@@ -21,7 +21,14 @@
           name="friends"
           label="Friends"
           @click="fetchInboundRequestsCount()"
-        />
+          ><q-badge
+            v-if="inboundRequestsCount > 0"
+            color="indigo"
+            floating
+            transparent
+            :label="inboundRequestsCount"
+            style="margin-right: -10px"
+        /></q-tab>
         <q-tab name="photos" label="Photos" />
       </q-tabs>
 
@@ -318,7 +325,12 @@
             ]"
           >
             <template v-slot:reqs>
-              <q-badge color="indigo" floating :label="inboundRequestsCount" />
+              <q-badge
+                v-if="inboundRequestsCount > 0"
+                color="indigo"
+                floating
+                :label="inboundRequestsCount"
+              />
             </template>
           </q-btn-toggle>
           <div class="col-xs-12">
@@ -466,6 +478,7 @@ export default {
           message: message
         });
       }
+      this.fetchInboundRequestsCount();
     });
   }
 };
