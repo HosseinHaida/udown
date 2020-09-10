@@ -72,6 +72,9 @@
           <q-btn flat color="primary" @click="thisCourt(court.name, court.id)">
             I'm Down
           </q-btn>
+          <q-btn flat color="indigo" :to="'/courts/' + court.id">
+            View
+          </q-btn>
           <q-space />
           <q-icon
             class="q-ma-sm"

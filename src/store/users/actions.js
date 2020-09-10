@@ -2,13 +2,8 @@ import axios from "axios";
 import { apiUrl } from "../variables";
 export async function fetchUsersList({ rootState, commit }, which) {
   commit("setUsersFetchPending", true);
-  let type = "";
-  if (which.type === "friends") {
-    type = "/friends_only";
-  } else {
-    type = "";
-  }
-  const url = `${apiUrl}/users/list${type}/${which.page}/${which.howMany}/${which.searchText}`;
+  if (which.type === "all") which.type = "";
+  const url = `${apiUrl}/users/list/${which.type}?page=${which.page}&how_many=${which.howMany}&search_text=${which.searchText}`;
   return await axios
     .get(url, {
       headers: {

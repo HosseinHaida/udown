@@ -37,13 +37,13 @@
         </q-item-label>
         <q-item-label v-if="user.created_at" caption lines="1">
           {{ user.city ? user.city + " - " : "" }}
-          Joined {{ getYearPlusMonth(user.created_at) }}
+          Joined {{ getFullDate(user.created_at) }}
         </q-item-label>
         <q-item-label
           lines="1"
           class="q-mt-xs text-body2 text-weight-bold text-primary text-uppercase"
         >
-          <q-btn dense flat class="cursor-pointer" label="VIEW" />
+          <q-btn dense flat class="cursor-pointer" label="Scopes" />
         </q-item-label>
       </q-item-section>
 
@@ -51,7 +51,6 @@
 
       <q-item-section
         v-if="isUserLoggedIn && !isMyself && haveFriends"
-        top
         side
         class="q-ml-md col-auto"
       >
@@ -61,15 +60,26 @@
             size="12px"
             flat
             :loading="friendRequestPending"
-            :color="isFriend ? 'positive' : ''"
+            :color="isFriend ? 'positive' : isRequesting ? 'indigo' : ''"
             :icon="whichIconToShow(user.id)"
-            :disabled="isFriend || isRequested"
-            @click="sendFriendRequestTo(user.id)"
+            :disabled="(isFriend && type !== 'friends') || isRequested"
+            @click="
+              isFriend
+                ? confirmUnfriend(user.id, user.username)
+                : sendFriendRequestTo(user.id)
+            "
           >
             <span class="q-px-sm gt-sm">{{
-              isFriend ? "Friends" : isRequested ? "Requested" : "Request"
+              isFriend
+                ? "Friends"
+                : isRequested
+                ? "Requested"
+                : isRequesting
+                ? "Accept"
+                : "Request"
             }}</span>
           </q-btn>
+          <br />
         </div>
       </q-item-section>
     </q-item>
@@ -81,17 +91,36 @@ export default {
   name: "PlayerComponent",
   props: [
     "user",
+    "type",
     "isFriend",
     "isUserLoggedIn",
     "isMyself",
     "haveFriends",
-    "isRequested"
+    "isRequested",
+    "isRequesting"
   ],
   methods: {
-    getYearPlusMonth(timestamp) {
+    confirmUnfriend(id, username) {
+      this.$q
+        .dialog({
+          title: "Confirm",
+          message: `Are you sure you want to remove <span style="color: #bf360c">${username}</span> from your friends?`,
+          cancel: true,
+          persistent: true,
+          html: true,
+          ok: {
+            label: "Yes"
+          }
+        })
+        .onOk(() => {
+          this.sendFriendRequestTo(id);
+        });
+    },
+    getFullDate(timestamp) {
       let date = new Date(timestamp);
       let year = date.getFullYear();
       let month = date.getMonth();
+      let day = date.getDate();
       let months = [
         "Jan",
         "Feb",
@@ -106,17 +135,17 @@ export default {
         "Nov",
         "Dec"
       ];
-      return months[month] + " " + year;
+      return `${months[month]} ${day}. ${year}`;
     },
     whichIconToShow(id) {
       if (this.isFriend) {
         return "how_to_reg";
+      } else if (this.isRequested) {
+        return "hourglass_top";
+      } else if (this.isRequesting) {
+        return "check";
       } else {
-        if (this.isRequested) {
-          return "hourglass_top";
-        } else {
-          return "person_add";
-        }
+        return "person_add";
       }
     },
     sendFriendRequestTo(id) {

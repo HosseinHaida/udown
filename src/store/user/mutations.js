@@ -53,10 +53,10 @@ export function setUserRequests(state, requests) {
   state.data.outbound_requests = requests;
 }
 
-export function setUserInboundRequestsCount(state, count) {
-  state.inboundRequestsCount = count;
+export function setUserRequestsInbound(state, requests) {
+  state.data.inbound_requests = requests;
 }
 
-export function setInboundRequestsCountPending(state, status) {
-  state.inboundRequestsCountPending = status;
+export function setUserInboundRequestsCount(state, count) {
+  state.inboundRequestsCount = count;
 }

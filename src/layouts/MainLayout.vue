@@ -135,7 +135,7 @@
           </q-item-section>
         </q-item>
         <q-item
-          to="courts"
+          to="/courts"
           clickable
           v-ripple
           active-class="active-drawer-link"
@@ -209,7 +209,7 @@ export default {
         icon: "logout",
         message: "Logged out"
       });
-      this.$router.push("login");
+      this.$router.push("/login");
     }
   },
   beforeMount() {

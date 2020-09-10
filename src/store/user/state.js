@@ -6,7 +6,6 @@ export default function() {
     updatePending: false,
     photoUploadPending: false,
     friendRequestPending: false,
-    inboundRequestsCountPending: false,
     inboundRequestsCount: null,
     userTCookieName: "t=",
     data: null,

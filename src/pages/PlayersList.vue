@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-px-md">
-    <players-component :type="'none'" :howMany="25"></players-component>
+    <players-component type="all" :howMany="25"></players-component>
   </q-page>
 </template>
 <script>

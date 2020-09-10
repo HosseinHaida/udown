@@ -50,7 +50,14 @@
                 size="140px"
                 class="q-mb-lg q-mt-sm q-ml-sm"
               >
-                <q-img :ratio="1" :src="user.photo"></q-img
+                <q-img :ratio="1" :src="user.photo">
+                  <template v-slot:error>
+                    <div
+                      class="absolute-full flex flex-center bg-primary text-subtitle2 text-white"
+                    >
+                      Upload another photo
+                    </div>
+                  </template></q-img
                 ><span class="user-photo-placeholder">{{
                   user.first_name.charAt(0).toUpperCase() +
                     user.last_name.charAt(0).toUpperCase()
@@ -78,7 +85,6 @@
                     v-model="pickedPhoto"
                     filled
                     label="Pick a photo"
-                    dense
                     accept=".jpg, image/*"
                     :filter="checkPhotoSize"
                     @rejected="onRejected"
@@ -90,7 +96,6 @@
                       <q-btn
                         @click="onPhotoUploadClick"
                         round
-                        dense
                         flat
                         icon="send"
                         :loading="photoUploadPending"
@@ -126,7 +131,7 @@
                   :value="user.bio"
                   @input="updateUser('bio', $event)"
                   rows="4"
-                  style="max-height: 200px"
+                  style="max-height: 300px"
                   class="q-my-md col-xs-12 col-md-12"
                   type="textarea"
                   label="Bio"
@@ -196,111 +201,135 @@
           <div class="col-md-8 col-xs-12 col-sm-7 q-px-md">
             <q-form
               @submit="onFormSubmit"
-              class="q-gutter-sm row items-start q-pt-xl q-px-sm"
+              class="q-gutter-sm row justify-center q-pt-xl q-px-sm"
             >
-              <q-input
-                class="col-xs-12 col-md-10"
-                :value="user.username"
-                @input="updateUser('username', $event)"
-                label="Username"
-                lazy-rules
-                dense
-                color="indigo"
-                :icon="user.verified === true ? 'verified' : 'person'"
-                :rules="[
-                  val => (val && val.length > 0) || 'Please type something'
-                ]"
-              />
-              <q-input
-                class="col-xs-12 col-md-5"
-                :value="user.first_name"
-                @input="updateUser('first_name', $event)"
-                label="First name"
-                lazy-rules
-                dense
-                color="indigo"
-                :rules="[val => (val && val.length > 0) || 'Required']"
-                style="min-width: 150px"
-              />
-              <q-input
-                class="col-xs-12 col-md-5"
-                :value="user.last_name"
-                @input="updateUser('last_name', $event)"
-                label="Last name"
-                lazy-rules
-                dense
-                color="indigo"
-                :rules="[val => (val && val.length > 0) || 'Required']"
-                style="min-width: 150px"
-              />
-              <q-input
-                class="col-xs-12 col-md-5"
-                type="password"
-                v-model="oldPassword"
-                label="Old password"
-                lazy-rules
-                dense
-                color="indigo"
-                :rules="[
-                  val =>
-                    val.length > 8 || val.length === 0 || 'Minimum 8 characters'
-                ]"
-              /><q-input
-                class="col-xs-12 col-md-5"
-                type="password"
-                v-model="newPassword"
-                label="New password"
-                lazy-rules
-                dense
-                color="indigo"
-                :rules="[
-                  val =>
-                    val.length > 8 || val.length === 0 || 'Minimum 8 characters'
-                ]"
-              />
-              <q-select
-                class="q-mt-sm col-xs-12 col-md-5"
-                :options="genders"
-                :value="user.gender"
-                @input="updateUser('gender', $event)"
-                label="Gender"
-                lazy-rules
-                dense
-                color="indigo"
-                :rules="[val => val.length > 0 || 'Please select']"
-              />
-              <q-input
-                class="q-mt-sm col-xs-12 col-md-5"
-                :value="user.height"
-                @input="updateUser('height', $event)"
-                label="Height"
-                lazy-rules
-                dense
-                type="number"
-                color="indigo"
-                :rules="[
-                  val => (val > 0 && val < 300) || 'Please type a valid age'
-                ]"
-                hint="cm"
-              />
-              <q-select
-                class="q-mt-sm col-xs-12 col-md-5"
-                :options="cities"
-                :value="user.city"
-                @input="updateUser('city', $event)"
-                label="City"
-                lazy-rules
-                dense
-                color="indigo"
-              />
-              <div class="col-xs-9"></div>
-              <q-btn
-                class="q-mt-lg"
-                color="indigo"
-                type="submit"
-                label="SAVE"
-                :loading="updatePending"
-              ></q-btn>
+              <div class="col-xs-12">
+                <div class="row">
+                  <q-input
+                    class="col-xs-12 q-px-sm"
+                    :value="user.username"
+                    @input="updateUser('username', $event)"
+                    label="Username"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    :rules="[
+                      val => (val && val.length > 0) || 'Please type something'
+                    ]"
+                    bottom-slots
+                  >
+                    <template v-slot:prepend>
+                      <q-icon
+                        class="q-mr-xs"
+                        :name="user.verified ? 'verified' : 'person'"
+                      />
+                    </template>
+                  </q-input>
+                  <q-input
+                    class="col-xs-12 col-md-6 q-px-sm"
+                    :value="user.first_name"
+                    @input="updateUser('first_name', $event)"
+                    label="First name"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    :rules="[val => (val && val.length > 0) || 'Required']"
+                    style="min-width: 150px"
+                  />
+                  <q-input
+                    class="col-xs-12 col-md-6 q-px-sm"
+                    :value="user.last_name"
+                    @input="updateUser('last_name', $event)"
+                    label="Last name"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    :rules="[val => (val && val.length > 0) || 'Required']"
+                    style="min-width: 150px"
+                  />
+                  <q-input
+                    class="col-xs-12 col-md-6 q-px-sm"
+                    type="password"
+                    v-model="oldPassword"
+                    label="Old password"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    :rules="[
+                      val =>
+                        val.length > 8 ||
+                        val.length === 0 ||
+                        'Minimum 8 characters'
+                    ]"
+                  /><q-input
+                    class="col-xs-12 col-md-6 q-px-sm"
+                    type="password"
+                    v-model="newPassword"
+                    label="New password"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    :rules="[
+                      val =>
+                        val.length > 8 ||
+                        val.length === 0 ||
+                        'Minimum 8 characters'
+                    ]"
+                  />
+                  <q-select
+                    class="q-mt-sm col-xs-12 col-md-6 q-px-sm"
+                    :options="genders"
+                    :value="user.gender"
+                    @input="updateUser('gender', $event)"
+                    label="Gender"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    :rules="[val => val.length > 0 || 'Please select']"
+                  />
+                  <q-input
+                    class="q-mt-sm col-xs-12 col-md-6 q-px-sm"
+                    :value="user.height"
+                    @input="updateUser('height', $event)"
+                    label="Height"
+                    lazy-rules
+                    filled
+                    type="number"
+                    color="indigo"
+                    :rules="[
+                      val => (val > 0 && val < 300) || 'Please type a valid age'
+                    ]"
+                    hint="cm"
+                  />
+                  <q-select
+                    class="q-mt-sm col-xs-12 q-px-sm"
+                    :options="cities"
+                    :value="user.city"
+                    @input="updateUser('city', $event)"
+                    label="City"
+                    lazy-rules
+                    filled
+                    color="indigo"
+                    bottom-slots
+                  >
+                    <template v-slot:after>
+                      <q-icon class="q-mr-xs" name="place" />
+                    </template>
+                  </q-select>
+                  <div class="col-xs-12 q-px-sm">
+                    <div class="row">
+                      <div class="col"></div>
+                      <q-btn
+                        class="q-mt-lg col-auto"
+                        color="indigo"
+                        type="submit"
+                        label="SAVE"
+                        :loading="updatePending"
+                      ></q-btn>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </q-form>
           </div>
         </q-tab-panel>
@@ -308,13 +337,14 @@
         <q-tab-panel class="row" name="friends">
           <div class="col"></div>
           <q-btn-toggle
-            v-model="friendsRequestsToggle"
-            class="col-auto"
+            v-model="usersType"
+            class="col-auto q-mb-sm"
             toggle-color="indigo"
             push
             size="13px"
+            @input="fetchInboundRequestsCount()"
             :options="[
-              { label: 'All', value: 'all', icon: 'list' },
+              { value: 'friends', icon: 'list' },
               {
                 label: 'Requests',
                 value: 'requests',
@@ -335,7 +365,7 @@
           </q-btn-toggle>
           <div class="col-xs-12">
             <players-component
-              :type="'friends'"
+              :type="usersType"
               :howMany="25"
             ></players-component>
           </div>
@@ -356,7 +386,7 @@ export default {
   components: { "players-component": PlayersComponent },
   data() {
     return {
-      friendsRequestsToggle: "all",
+      usersType: "friends",
       showPhoto: false,
       tab: "personal",
       pickedPhoto: null,

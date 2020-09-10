@@ -204,6 +204,15 @@ export async function sendFriendRequestTo({ state, commit }, id) {
           if (res.data.outbound_requests) {
             commit("setUserRequests", res.data.outbound_requests);
           }
+          if (res.data.inbound_requests) {
+            commit("setUserRequestsInbound", res.data.inbound_requests);
+          }
+          if (res.data.inbound_requests_count) {
+            commit(
+              "setUserInboundRequestsCount",
+              res.data.inbound_requests_count
+            );
+          }
         }
         return {
           status: "success",
@@ -227,7 +236,6 @@ export async function sendFriendRequestTo({ state, commit }, id) {
 }
 
 export async function fetchInboundRequestsCount({ state, commit }) {
-  commit("setInboundRequestsCountPending", true);
   return await axios
     .get(apiUrl + "/auth/inbound_requests_count", {
       headers: {
@@ -236,7 +244,6 @@ export async function fetchInboundRequestsCount({ state, commit }) {
     })
     .then(
       res => {
-        commit("setInboundRequestsCountPending", false);
         if (res.data) {
           if (res.data.inbound_requests_count) {
             commit(
@@ -253,7 +260,6 @@ export async function fetchInboundRequestsCount({ state, commit }) {
         };
       },
       error => {
-        commit("setInboundRequestsCountPending", false);
         if (!error.response) {
           return {
             status: "error",

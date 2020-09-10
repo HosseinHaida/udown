@@ -3,7 +3,6 @@
     <div class="col-xs-12">
       <q-input
         filled
-        dense
         placeholder="Search"
         v-model="searchText"
         @input="fetchUsers(true)"
@@ -17,6 +16,7 @@
           v-for="(user, index) in users"
           :key="index"
           :user="user"
+          :type="type"
           :isUserLoggedIn="loggedInUser ? true : false"
           :haveFriends="loggedInUser && loggedInUser.friends ? true : false"
           :isMyself="loggedInUser && loggedInUser.id !== user.id ? false : true"
@@ -31,6 +31,13 @@
             loggedInUser &&
             loggedInUser.outbound_requests &&
             loggedInUser.outbound_requests.includes(user.id)
+              ? true
+              : false
+          "
+          :isRequesting="
+            loggedInUser &&
+            loggedInUser.inbound_requests &&
+            loggedInUser.inbound_requests.includes(user.id)
               ? true
               : false
           "
@@ -50,7 +57,13 @@
             text-color="white"
             class="text-weight-bold"
             >{{ total.count }}</q-avatar
-          ><span class="q-ml-xs">Users</span></q-chip
+          ><span class="q-ml-xs">{{
+            type === "requests"
+              ? "Requests"
+              : type === "friends"
+              ? "Friends"
+              : "Users"
+          }}</span></q-chip
         >
       </div>
     </div>
@@ -105,6 +118,11 @@ export default {
             });
           }
         });
+    }
+  },
+  watch: {
+    type: function() {
+      this.fetchUsers(true);
     }
   },
   mounted() {
