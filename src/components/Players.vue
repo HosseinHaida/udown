@@ -41,6 +41,11 @@
               ? true
               : false
           "
+          :canEditScopes="
+            loggedInUser &&
+              loggedInUser.scopes &&
+              loggedInUser.scopes.includes('edit_users_scopes')
+          "
         />
       </q-list>
       <div class="row">

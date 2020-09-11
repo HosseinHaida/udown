@@ -38,3 +38,40 @@ export async function fetchUsersList({ rootState, commit }, which) {
       }
     );
 }
+
+export async function updateUserScopes({ rootState, commit }, { scopes, id }) {
+  commit("setUserScopesUpdatePending", true);
+  return await axios
+    .post(
+      `${apiUrl}/user/scopes`,
+      { scopes, id },
+      {
+        headers: {
+          token: rootState.user.t
+        }
+      }
+    )
+    .then(
+      res => {
+        commit("setUserScopesUpdatePending", false);
+        commit("setUserScopes", { scopes: res.data.scopes, id: id });
+        return {
+          status: "success",
+          message: "Updated their scopes"
+        };
+      },
+      error => {
+        commit("setUserScopesUpdatePending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}

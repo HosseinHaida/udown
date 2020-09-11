@@ -8,11 +8,11 @@
           </div>
           <div
             class="col-xs-12 col-md-12 q-px-xs q-mb-sm"
-            v-for="(input, index) in photos"
+            v-for="(photo, index) in photos"
             :key="index"
           >
             <q-img
-              :src="'lkjasdfs.dlfj'"
+              :src="photo"
               placeholder-src="placeholder-image.png"
               style="border-radius: 4px"
             >
@@ -23,8 +23,10 @@
                 text-color="black"
                 dense
                 style="top: 8px; left: 8px"
+                push
+                @click="photosInputToShow = index"
               >
-                <q-tooltip>
+                <q-tooltip content-style="font-size: 12px">
                   Pick a photo
                 </q-tooltip>
               </q-btn>
@@ -47,7 +49,7 @@
                     class="col-xs-12"
                     color="white"
                     text-color="black"
-                    label="Enable"
+                    label="Pick"
                     icon="expand_more"
                     dense
                     @click="photosInputToShow = index"
@@ -57,7 +59,7 @@
                     class="col-xs-12"
                     color="white"
                     text-color="black"
-                    label="Disable"
+                    label="Hide"
                     icon="close"
                     dense
                     @click="photosInputToShow = null"
@@ -96,7 +98,7 @@
                 </template>
                 <template v-slot:before>
                   <q-btn
-                    v-if="input !== ''"
+                    v-if="photo !== ''"
                     @click="onPhotoUploadClick"
                     round
                     flat
@@ -137,60 +139,71 @@
         </div>
         <div class="row justify-center ">
           <div class="col-xs-12 col-md-11">
-            <q-icon name="payments" color="indigo" size="26px"></q-icon>
-            <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">{{
-              court.cost
-            }}</span>
-          </div>
-          <div class="col-xs-12 col-md-11 q-pt-sm">
-            <q-icon name="wc" color="indigo" size="26px"></q-icon>
-            <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">{{
-              court.girls_allowed ? "Girls are allowed" : "Girls aren't allowed"
-            }}</span>
-          </div>
-          <div class="col-xs-12 col-md-11 q-pt-sm">
-            <q-icon name="person" color="indigo" size="26px"></q-icon>
-            <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">
-              {{ court.city + ", " + court.region }}
-            </span>
-          </div>
-          <div class="col-xs-12 col-md-11 q-pt-xs">
-            <q-input
-              type="textarea"
-              :value="court.meta"
-              readonly
-              style="font-size: 16px"
-              borderless
-              color="indigo"
-              ><template v-slot:prepend>
-                <q-icon name="more_vert" />
-              </template>
-            </q-input>
-          </div>
-          <div class="col-xs-12 col-md-11 q-pt-xs">
-            <!-- Sport types the location supports -->
-            <div class="q-mt-sm">
-              <q-icon
-                v-for="(sport, index) in court.sport_types"
-                :key="index"
-                :name="'sports_' + sport"
-                :color="
-                  sport === 'basketball'
-                    ? 'primary'
-                    : sport === 'volleyball'
-                    ? 'blue'
-                    : sport === 'soccer'
-                    ? 'black'
-                    : sport === 'badminton'
-                    ? 'grey-9'
-                    : 'indigo'
-                "
-                size="30px"
-                class="q-mr-xs"
-                ><q-tooltip content-style="font-size: 12px">{{
-                  sport.charAt(0).toUpperCase() + sport.substring(1)
-                }}</q-tooltip></q-icon
-              >
+            <div class="row items-start">
+              <div class="col-xs-12 col-md-6 q-mb-md">
+                <div>
+                  <q-icon name="payments" color="indigo" size="26px"></q-icon>
+                  <span
+                    class="text-subtitle-1 q-ml-md"
+                    style="font-size: 16px"
+                    >{{ court.cost }}</span
+                  >
+                </div>
+                <div class="q-pt-sm">
+                  <q-icon name="wc" color="indigo" size="26px"></q-icon>
+                  <span
+                    class="text-subtitle-1 q-ml-md"
+                    style="font-size: 16px"
+                    >{{
+                      court.girls_allowed
+                        ? "Girls are allowed"
+                        : "Girls aren't allowed"
+                    }}</span
+                  >
+                </div>
+                <div class="q-pt-sm">
+                  <q-icon name="person" color="indigo" size="26px"></q-icon>
+                  <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">
+                    {{ court.city + ", " + court.region }}
+                  </span>
+                </div>
+                <div class="q-mt-md">
+                  <q-icon
+                    v-for="(sport, index) in court.sport_types"
+                    :key="index"
+                    :name="'sports_' + sport"
+                    :color="
+                      sport === 'basketball'
+                        ? 'primary'
+                        : sport === 'volleyball'
+                        ? 'blue'
+                        : sport === 'soccer'
+                        ? 'black'
+                        : sport === 'badminton'
+                        ? 'grey-9'
+                        : 'indigo'
+                    "
+                    size="30px"
+                    class="q-mr-xs"
+                    ><q-tooltip content-style="font-size: 12px">{{
+                      sport.charAt(0).toUpperCase() + sport.substring(1)
+                    }}</q-tooltip></q-icon
+                  >
+                </div>
+              </div>
+              <div class="col-xs-12 col-md-6">
+                <q-input
+                  type="textarea"
+                  :value="court.meta"
+                  readonly
+                  style="font-size: 16px"
+                  color="indigo"
+                  borderless
+                  ><template v-slot:prepend>
+                    <q-icon size="26px" name="more_vert" />
+                  </template>
+                </q-input>
+              </div>
             </div>
           </div>
         </div>
@@ -501,8 +514,9 @@
             </q-card-section>
           </q-card>
         </div>
-      </div></div></q-page
-></template>
+      </div></div
+  ></q-page>
+</template>
 <script>
 export default {
   data() {
@@ -519,7 +533,7 @@ export default {
         "sentiment_very_satisfied"
       ],
       photosInputToShow: null,
-      photos: ["", ""],
+      photos: ["kejsc_pic_1.jpg", "kejsc_pic_2.PNG"],
       viewEditToggle: "view",
       text: "",
       court: {

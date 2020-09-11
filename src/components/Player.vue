@@ -40,10 +40,56 @@
           Joined {{ getFullDate(user.created_at) }}
         </q-item-label>
         <q-item-label
+          v-if="isUserLoggedIn && user !== undefined && user.scopes"
           lines="1"
           class="q-mt-xs text-body2 text-weight-bold text-primary text-uppercase"
         >
-          <q-btn dense flat class="cursor-pointer" label="Scopes" />
+          <q-btn-dropdown
+            color="primary"
+            flat
+            @click="fillThisUsersScopes(user.scopes)"
+          >
+            <template v-slot:label>
+              <div class="row items-center no-wrap">
+                <!-- <q-icon left name="map" /> -->
+                <div class="text-center">Scopes</div>
+              </div>
+            </template>
+
+            <div class="column q-py-xs">
+              <q-checkbox
+                v-for="(scope, index) in scopes"
+                :key="index"
+                v-model="userScopes"
+                :val="scope.name"
+                :color="scope.color"
+                class="q-pl-xs q-pr-md"
+                :disable="
+                  scope.name == 'add_events' ||
+                    (isMyself && !canEditScopes) ||
+                    (!isMyself && !canEditScopes)
+                "
+              >
+                <q-icon
+                  class="col-auto q-mr-sm"
+                  size="sm"
+                  :name="scope.icon"
+                  :color="scope.color"
+                  text-color="white"
+                />
+                <span class="col-auto">{{ scope.desc }}</span>
+              </q-checkbox>
+              <q-btn
+                color="positive"
+                class="q-mx-sm q-mb-xs q-mt-md"
+                icon="check"
+                label="Save"
+                @click="saveUserScopes(user.id)"
+                v-if="canEditScopes"
+                :loading="userScopesUpdatePending"
+              />
+            </div>
+          </q-btn-dropdown>
         </q-item-label>
       </q-item-section>
 
@@ -87,8 +133,15 @@
   </div>
 </template>
 <script>
+import { scopes } from "../store/scopes";
 export default {
   name: "PlayerComponent",
+  data() {
+    return {
+      scopes: scopes,
+      userScopes: []
+    };
+  },
   props: [
     "user",
     "type",
@@ -97,9 +150,35 @@ export default {
     "isMyself",
     "haveFriends",
     "isRequested",
-    "isRequesting"
+    "isRequesting",
+    "canEditScopes"
   ],
   methods: {
+    fillThisUsersScopes(scopes) {
+      this.userScopes = scopes;
+    },
+    saveUserScopes(userId) {
+      this.$store
+        .dispatch("users/updateUserScopes", {
+          scopes: this.userScopes,
+          id: userId
+        })
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "cloud_done",
+              message: message
+            });
+          }
+        });
+    },
     confirmUnfriend(id, username) {
       this.$q
         .dialog({
@@ -170,7 +249,10 @@ export default {
   },
   computed: {
     friendRequestPending() {
-      return this.$store.state.friendRequestPending;
+      return this.$store.state.user.friendRequestPending;
+    },
+    userScopesUpdatePending() {
+      return this.$store.state.users.userScopesUpdatePending;
     }
   }
 };
