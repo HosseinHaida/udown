@@ -84,7 +84,7 @@ export async function fetchUserData({ state, commit }) {
       })
       .then(
         res => {
-          if (res.data.user) {
+          if (res.data && res.data.user) {
             commit("setUserData", res.data.user);
             commit("setToken", t);
           }

@@ -51,42 +51,25 @@
           ]"
         />
         <div class="row q-gutter-sm justify-between q-mb-md">
-          <q-checkbox v-model="sports" val="basketball" color="primary"
+          <q-checkbox
+            v-for="(sport, index) in sport_types"
+            :key="index + sport"
+            v-model="sports"
+            :val="sport.val"
+            :color="sport.color"
             ><q-icon
-              color="primary"
+              :color="sport.color"
               style="margin-top: -5px"
               class="q-mr-md"
               size="25px"
-              name="sports_basketball"
-          /></q-checkbox>
-          <q-checkbox v-model="sports" val="volleyball" color="blue"
-            ><q-icon
-              color="blue"
-              style="margin-top: -5px"
-              class="q-mr-md"
-              size="25px"
-              name="sports_volleyball"
-          /></q-checkbox>
-          <q-checkbox v-model="sports" val="soccer" color="black"
-            ><q-icon
-              color="black"
-              style="margin-top: -5px"
-              class="q-mr-md"
-              size="25px"
-              name="sports_soccer"
-          /></q-checkbox>
-          <q-checkbox v-model="sports" val="badminton" color="grey-9"
-            ><q-icon
-              style="margin-top: -5px"
-              class="q-mr-md"
-              size="25px"
-              name="img:badminton.png"
-          /></q-checkbox>
+              :name="sport.icon"
+            />
+          </q-checkbox>
         </div>
-        <div class="row justify-between">
+        <div class="row justify-between q-gutter-md items-start">
           <q-select
             filled
-            class="q-mt-sm col-xs-12 col-md-5"
+            class="q-pt-md col-xs-12 col-md-5"
             :options="genders"
             v-model="gender"
             label="Gender *"
@@ -96,7 +79,7 @@
           />
           <q-input
             filled
-            class="q-mt-sm col-xs-12 col-md-5"
+            class="q-pt-md col-xs-12 col-md-5"
             v-model="height"
             label="Height *"
             lazy-rules
@@ -131,6 +114,7 @@
   </q-page>
 </template>
 <script>
+import { sports } from "../store/sports";
 export default {
   name: "signup",
   data() {
@@ -141,6 +125,7 @@ export default {
       lastName: null,
       gender: null,
       height: null,
+      sport_types: sports,
       sports: ["basketball"]
     };
   },

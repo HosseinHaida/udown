@@ -1,17 +1,5 @@
 export const scopes = [
   {
-    name: "add_locations",
-    desc: "Add locations",
-    icon: "add_location",
-    color: "primary"
-  },
-  {
-    name: "edit_locations",
-    desc: "Edit locations",
-    icon: "edit_location",
-    color: "primary"
-  },
-  {
     name: "add_events",
     desc: "Add events",
     icon: "insert_invitation",
@@ -24,6 +12,18 @@ export const scopes = [
     color: "secondary"
   },
   {
+    name: "add_locations",
+    desc: "Add locations",
+    icon: "add_location",
+    color: "primary"
+  },
+  {
+    name: "edit_locations",
+    desc: "Edit locations",
+    icon: "edit_location",
+    color: "primary"
+  },
+  {
     name: "edit_users_scopes",
     desc: "Edit scopes",
     icon: "admin_panel_settings",
@@ -32,7 +32,19 @@ export const scopes = [
   {
     name: "suspend_admins",
     desc: "Suspend admins",
-    icon: "admin_panel_settings",
+    icon: "local_police",
     color: "dark"
+  },
+  {
+    name: "add_comments",
+    desc: "Add comments",
+    icon: "comment",
+    color: "accent"
+  },
+  {
+    name: "delete_comments",
+    desc: "Delete comments",
+    icon: "speaker_notes_off",
+    color: "accent"
   }
 ];

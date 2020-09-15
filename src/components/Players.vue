@@ -1,15 +1,20 @@
 <template>
-  <div class="q-py-md column">
+  <div class="q-py-md row">
     <div class="col-xs-12">
       <q-input
         filled
+        dense
         placeholder="Search"
         v-model="searchText"
+        hint="Username, first name, last name"
         @input="fetchUsers(true)"
         class="q-mb-sm"
         debounce="200"
         :loading="usersFetchPending"
-      />
+        bottom-slots
+      >
+        <template v-slot:prepend> <q-icon name="search"/></template
+      ></q-input>
       <q-list class="rounded-borders q-py-sm">
         <!-- <q-item-label header>Users</q-item-label> -->
         <single-player
@@ -54,6 +59,7 @@
           :max="total.pages"
           @input="fetchUsers"
           :input="true"
+          size="16px"
         />
         <div class="col"></div>
         <q-chip square class="q-mt-sm q-pr-sm" dense

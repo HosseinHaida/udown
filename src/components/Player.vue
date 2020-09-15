@@ -48,6 +48,7 @@
             color="primary"
             flat
             @click="fillThisUsersScopes(user.scopes)"
+            v-model="showScopes"
           >
             <template v-slot:label>
               <div class="row items-center no-wrap">
@@ -56,7 +57,19 @@
               </div>
             </template>
 
-            <div class="column q-py-xs">
+            <div class="column q-pb-xs">
+              <div class="row justify-center text-bold q-px-xs">
+                <q-chip
+                  color="primary"
+                  text-color="white"
+                  icon="alternate_email"
+                  class="q-mb-xs col-xs-12"
+                  square
+                >
+                  {{ user.username }}
+                </q-chip>
+              </div>
+
               <q-checkbox
                 v-for="(scope, index) in scopes"
                 :key="index"
@@ -65,9 +78,7 @@
                 :color="scope.color"
                 class="q-pl-xs q-pr-md"
                 :disable="
-                  scope.name == 'add_events' ||
-                    (isMyself && !canEditScopes) ||
-                    (!isMyself && !canEditScopes)
+                  (isMyself && !canEditScopes) || (!isMyself && !canEditScopes)
                 "
               >
                 <q-icon
@@ -79,6 +90,7 @@
                 />
                 <span class="col-auto">{{ scope.desc }}</span>
               </q-checkbox>
+
               <q-btn
                 color="positive"
                 class="q-mx-sm q-mb-xs q-mt-md"
@@ -108,7 +120,6 @@
             :loading="friendRequestPending"
             :color="isFriend ? 'positive' : isRequesting ? 'indigo' : ''"
             :icon="whichIconToShow(user.id)"
-            :disabled="(isFriend && type !== 'friends') || isRequested"
             @click="
               isFriend
                 ? confirmUnfriend(user.id, user.username)
@@ -126,6 +137,12 @@
             }}</span>
           </q-btn>
           <br />
+          <q-btn
+            class="lt-sm"
+            @click="showScopesMenu(user.scopes)"
+            icon="settings"
+            flat
+          />
         </div>
       </q-item-section>
     </q-item>
@@ -139,6 +156,7 @@ export default {
   data() {
     return {
       scopes: scopes,
+      showScopes: false,
       userScopes: []
     };
   },
@@ -154,6 +172,10 @@ export default {
     "canEditScopes"
   ],
   methods: {
+    showScopesMenu(scopes) {
+      this.fillThisUsersScopes(scopes);
+      this.showScopes = !this.showScopes;
+    },
     fillThisUsersScopes(scopes) {
       this.userScopes = scopes;
     },

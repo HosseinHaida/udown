@@ -139,61 +139,20 @@
                   color="indigo"
                 />
                 <q-checkbox
+                  v-for="(sport, index) in sports"
+                  :key="index + sport"
                   class="col-xs-12"
                   :value="user.sports"
+                  :val="sport.val"
+                  :color="sport.color"
                   @input="updateUser('sports', $event)"
-                  val="basketball"
-                  color="primary"
                   ><q-icon
-                    color="primary"
+                    :color="sport.color"
                     style="margin-top: -5px"
                     class="q-mr-md"
                     size="25px"
-                    name="sports_basketball"
-                  />Basketball
-                </q-checkbox>
-                <q-checkbox
-                  class="col-xs-12"
-                  :value="user.sports"
-                  @input="updateUser('sports', $event)"
-                  val="volleyball"
-                  color="blue"
-                >
-                  <q-icon
-                    color="blue"
-                    style="margin-top: -5px"
-                    class="q-mr-md"
-                    size="25px"
-                    name="sports_volleyball"
-                  />
-                  Volleyball
-                </q-checkbox>
-                <q-checkbox
-                  class="col-xs-12"
-                  :value="user.sports"
-                  @input="updateUser('sports', $event)"
-                  val="soccer"
-                  color="black"
-                  ><q-icon
-                    color="black"
-                    style="margin-top: -5px"
-                    class="q-mr-md"
-                    size="25px"
-                    name="sports_soccer"
-                  />Soccer
-                </q-checkbox>
-                <q-checkbox
-                  class="col-xs-12"
-                  :value="user.sports"
-                  @input="updateUser('sports', $event)"
-                  val="badminton"
-                  color="grey-9"
-                  ><q-icon
-                    style="margin-top: -5px"
-                    class="q-mr-md"
-                    size="25px"
-                    name="img:badminton.png"
-                  />Badminton
+                    :name="sport.icon"
+                  />{{ sport.label }}
                 </q-checkbox>
               </div>
             </div>
@@ -381,6 +340,7 @@
 </template>
 <script>
 import PlayersComponent from "../components/Players.vue";
+import { sports } from "../store/sports";
 export default {
   name: "profile",
   components: { "players-component": PlayersComponent },
@@ -391,7 +351,8 @@ export default {
       tab: "personal",
       pickedPhoto: null,
       oldPassword: "",
-      newPassword: ""
+      newPassword: "",
+      sports: sports
     };
   },
   computed: {
