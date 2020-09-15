@@ -1,58 +1,65 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="row">
-      <div class="col-xs-12 col-md-3 q-pa-xs">
+    <div class="row justify-evenly" v-if="court">
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- //////////////////// Photos ///////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <div class="col-xs-12 col-sm-6 col-md-3 q-pa-xs photos-column">
         <div class="row">
           <div class="text-h5 q-mb-lg q-mt-md text-grey-7 col-xs-12 q-px-sm">
             Photos
           </div>
-          <div
-            class="col-xs-12 col-md-12 q-px-xs q-mb-sm"
-            v-for="(photo, index) in photos"
-            :key="index"
-          >
+          <div v-if="court.photo" class="col-xs-12 col-md-12 q-px-xs q-mb-sm">
             <q-img
-              :src="photo"
+              :src="court.photo"
               placeholder-src="placeholder-image.png"
               style="border-radius: 4px"
             >
               <q-btn
                 class="absolute all-pointer-events"
+                v-if="
+                  user && user.scopes && user.scopes.includes('edit_locations')
+                "
                 icon="attach_file"
                 color="white"
                 text-color="black"
                 dense
                 style="top: 8px; left: 8px"
                 push
-                @click="photosInputToShow = index"
+                @click="showCoverPhotoInput = true"
               >
-                <q-tooltip content-style="font-size: 12px">
-                  Pick a photo
+                <q-tooltip content-style="font-size: 13px">
+                  Pick a cover photo
                 </q-tooltip>
               </q-btn>
+              <div class="absolute-bottom text-subtitle1 text-center">
+                Cover
+              </div>
               <template v-slot:error>
                 <div
                   class="fit row wrap justify-center items-end bg-primary text-subtitle2"
+                  style="border-radius: 4px"
                 >
                   <div class="text-subtitle1">
                     <q-icon
-                      v-if="index > 0"
-                      :name="index <= 9 ? 'filter_' + index : ''"
+                      name="photo"
+                      color="white"
                       style="margin-top: -4px"
-                      size="30px"
+                      size="lg"
                     />
-                    <q-icon name="photo" style="margin-top: -4px" size="30px" />
-                    {{ index === 0 ? "Cover" : "" }}
+                    <span style="color: white">Cover</span>
                   </div>
                   <q-btn
-                    v-if="photosInputToShow !== index"
+                    v-if="!showCoverPhotoInput"
                     class="col-xs-12"
                     color="white"
                     text-color="black"
                     label="Pick"
                     icon="expand_more"
                     dense
-                    @click="photosInputToShow = index"
+                    @click="showCoverPhotoInput = true"
                   />
                   <q-btn
                     v-else
@@ -62,12 +69,20 @@
                     label="Hide"
                     icon="close"
                     dense
-                    @click="photosInputToShow = null"
+                    @click="showCoverPhotoInput = false"
                   />
                 </div>
               </template>
             </q-img>
-            <q-form v-if="photosInputToShow === index" class="q-pt-sm">
+            <q-form
+              v-if="
+                showCoverPhotoInput &&
+                  user &&
+                  user.scopes &&
+                  user.scopes.includes('edit_locations')
+              "
+              class="q-pt-sm"
+            >
               <q-file
                 v-model="pickedPhoto"
                 filled
@@ -83,74 +98,276 @@
                 </template>
                 <template v-slot:after>
                   <q-btn
-                    @click="onPhotoUploadClick"
+                    @click="onPhotoUploadClick('cover', court.id)"
+                    dense
                     round
-                    flat
-                    icon="send"
+                    outline
+                    color="positive"
+                    icon="check"
                     :loading="photoUploadPending"
                     ><q-tooltip
-                      content-style="font-size: 12px"
+                      content-style="font-size: 13px"
                       :offset="[10, 10]"
                     >
                       Save photo
                     </q-tooltip></q-btn
                   >
                 </template>
-                <template v-slot:before>
+              </q-file>
+            </q-form>
+          </div>
+          <!-- in case no photos could be shown as cover photo -->
+          <div v-else class="col-xs-12 col-md-12 q-px-xs q-mb-sm">
+            <div>
+              <div
+                class="fit row wrap justify-center bg-primary text-subtitle2 q-pa-xs"
+                style="min-height: 200px; border-radius: 4px"
+              >
+                <div class="col-xs-12 self-start text-subtitle1 q-pt-xs">
+                  <q-icon
+                    name="photo"
+                    color="white"
+                    style="margin-top: -4px"
+                    size="lg"
+                  />
+                  <span style="color: white">Cover</span>
+                </div>
+                <q-btn
+                  v-if="
+                    !showCoverPhotoInput &&
+                      user &&
+                      user.scopes &&
+                      user.scopes.includes('edit_locations')
+                  "
+                  class="col-xs-12 self-end"
+                  color="white"
+                  text-color="black"
+                  label="Pick"
+                  icon="expand_more"
+                  dense
+                  @click="showCoverPhotoInput = true"
+                />
+                <q-btn
+                  v-if="
+                    showCoverPhotoInput &&
+                      user &&
+                      user.scopes &&
+                      user.scopes.includes('edit_locations')
+                  "
+                  class="col-xs-12 self-end"
+                  color="white"
+                  text-color="black"
+                  label="Hide"
+                  icon="close"
+                  dense
+                  @click="showCoverPhotoInput = false"
+                />
+              </div>
+            </div>
+            <q-form
+              v-if="
+                showCoverPhotoInput &&
+                  user &&
+                  user.scopes &&
+                  user.scopes.includes('edit_locations')
+              "
+              class="q-pt-sm"
+            >
+              <q-file
+                v-model="pickedPhoto"
+                filled
+                color="indigo"
+                dense
+                label="Pick a photo"
+                accept=".jpg, image/*"
+                :filter="checkPhotoSize"
+                @rejected="onRejected"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="attach_file" />
+                </template>
+                <template v-slot:after>
                   <q-btn
-                    v-if="photo !== ''"
-                    @click="onPhotoUploadClick"
+                    @click="onPhotoUploadClick('cover', court.id)"
+                    color="positive"
                     round
-                    flat
-                    icon="delete"
+                    outline
+                    icon="send"
                     :loading="photoUploadPending"
-                  >
-                    <q-tooltip
-                      content-class="bg-red-5"
-                      content-style="font-size: 14px"
+                    ><q-tooltip
+                      content-style="font-size: 13px"
                       :offset="[10, 10]"
                     >
-                      Delete current photo
-                    </q-tooltip>
-                  </q-btn>
+                      Save as cover photo
+                    </q-tooltip></q-btn
+                  >
                 </template>
               </q-file>
             </q-form>
           </div>
+          <!-- In case the photo couldnt be shown (not yet set any) -->
+          <div
+            class="col-xs-12 col-md-12 q-px-xs q-mb-sm"
+            v-for="(photo, index) in court.photos"
+            :key="index"
+          >
+            <q-img
+              :src="photo.url"
+              placeholder-src="placeholder-image.png"
+              style="border-radius: 4px"
+            >
+              <q-btn
+                class="absolute all-pointer-events"
+                v-if="
+                  user && user.scopes && user.scopes.includes('edit_locations')
+                "
+                icon="delete"
+                color="negative"
+                dense
+                style="top: 8px; left: 8px"
+                @click="deleteThisPhoto(photo.id)"
+              >
+                <q-tooltip content-style="font-size: 13px">
+                  Delete
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                class="absolute all-pointer-events"
+                icon="info"
+                color="info"
+                round
+                dense
+                style="top: 8px; right: 8px"
+              >
+                <q-tooltip content-style="font-size: 13px; color: white">
+                  By {{ photo.username }}
+                </q-tooltip>
+              </q-btn>
+              <template v-slot:error>
+                <!-- <div class="full-width"> -->
+                <q-btn
+                  v-if="
+                    user &&
+                      user.scopes &&
+                      user.scopes.includes('edit_locations')
+                  "
+                  icon="delete"
+                  color="negative"
+                  dense
+                  style="top: 8px; left: 8px"
+                  @click="deleteThisPhoto(photo.id)"
+                >
+                  <q-tooltip content-style="font-size: 13px">
+                    Delete
+                  </q-tooltip>
+                </q-btn>
+                <!-- </div> -->
+              </template>
+            </q-img>
+          </div>
           <q-btn
+            v-if="user && user.scopes && user.scopes.includes('edit_locations')"
             class="col-xs-12"
             color="primary"
             push
             icon="add"
             label="Add photo"
-            @click="photos.length <= 9 ? photos.push('') : noMorePhotosDialog()"
+            @click="showNewPhotoInput = true"
           />
+          <div class="col-xs-12 col-md-12 q-px-xs q-mb-sm">
+            <q-form
+              v-if="
+                showNewPhotoInput &&
+                  user &&
+                  user.scopes &&
+                  user.scopes.includes('edit_locations')
+              "
+              class="q-pt-sm"
+            >
+              <q-file
+                v-model="pickedPhoto"
+                filled
+                color="indigo"
+                dense
+                label="Pick a photo"
+                accept=".jpg, image/*"
+                :filter="checkPhotoSize"
+                @rejected="onRejected"
+              >
+                <template v-slot:prepend>
+                  <q-icon name="attach_file" />
+                </template>
+                <template v-slot:after>
+                  <q-btn
+                    @click="onPhotoUploadClick('new', court.id)"
+                    round
+                    dense
+                    outline
+                    color="positive"
+                    icon="check"
+                    :loading="photoUploadPending"
+                    ><q-tooltip
+                      content-style="font-size: 13px"
+                      :offset="[10, 10]"
+                    >
+                      Add photo to collection
+                    </q-tooltip></q-btn
+                  >
+                </template>
+              </q-file>
+            </q-form>
+          </div>
         </div>
       </div>
-      <div class="col-xs-12 col-md-9 q-mt-lg">
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////// End of Photos ///////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <div class="col-xs-12 col-md-9 q-mt-lg data-column">
         <div class="row justify-center q-mb-lg q-pa-lg">
-          <div class="text-h4">
+          <div style="font-size: 28px">
             {{ court.name }}
+            <q-btn
+              type="a"
+              :href="court.maps_url"
+              label="Location"
+              color="indigo"
+              icon="place"
+              flat
+              class="q-ml-xs"
+            />
           </div>
-          <!-- <div class="q-mt-sm q-mx-sm text-h6">
-            <q-chip square dense :label="court.city" />
-            <q-chip square dense :label="court.region" />
-          </div> -->
         </div>
         <div class="row justify-center ">
           <div class="col-xs-12 col-md-11">
             <div class="row items-start">
-              <div class="col-xs-12 col-md-6 q-mb-md">
+              <div class="col-xs-12 col-md-6 q-mb-md q-px-sm">
                 <div>
-                  <q-icon name="payments" color="indigo" size="26px"></q-icon>
+                  <q-icon
+                    name="payments"
+                    style="color: #85bb65"
+                    size="26px"
+                  ></q-icon>
                   <span
                     class="text-subtitle-1 q-ml-md"
                     style="font-size: 16px"
                     >{{ court.cost }}</span
                   >
                 </div>
+
                 <div class="q-pt-sm">
-                  <q-icon name="wc" color="indigo" size="26px"></q-icon>
+                  <q-icon name="map" color="accent" size="26px"></q-icon>
+                  <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">
+                    {{ court.city + ", " + court.region }}
+                  </span>
+                </div>
+                <div class="q-pt-sm">
+                  <q-icon
+                    name="wc"
+                    :color="court.girls_allowed ? 'positive' : 'negative'"
+                    size="26px"
+                  ></q-icon>
                   <span
                     class="text-subtitle-1 q-ml-md"
                     style="font-size: 16px"
@@ -161,32 +378,18 @@
                     }}</span
                   >
                 </div>
-                <div class="q-pt-sm">
-                  <q-icon name="person" color="indigo" size="26px"></q-icon>
-                  <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">
-                    {{ court.city + ", " + court.region }}
-                  </span>
-                </div>
-                <div class="q-mt-md">
+
+                <div class="q-mt-md" v-if="court && court.sport_types">
                   <q-icon
-                    v-for="(sport, index) in court.sport_types"
-                    :key="index"
-                    :name="'sports_' + sport"
-                    :color="
-                      sport === 'basketball'
-                        ? 'primary'
-                        : sport === 'volleyball'
-                        ? 'blue'
-                        : sport === 'soccer'
-                        ? 'black'
-                        : sport === 'badminton'
-                        ? 'grey-9'
-                        : 'indigo'
-                    "
+                    v-for="(sport, index) in sports"
+                    :key="index + 'included_sports'"
+                    :name="sport.icon"
+                    :color="sport.color"
+                    v-show="court.sport_types.includes(sport.val)"
                     size="30px"
                     class="q-mr-xs"
-                    ><q-tooltip content-style="font-size: 12px">{{
-                      sport.charAt(0).toUpperCase() + sport.substring(1)
+                    ><q-tooltip content-style="font-size: 13px">{{
+                      sport.label
                     }}</q-tooltip></q-icon
                   >
                 </div>
@@ -210,16 +413,16 @@
         <!-- Toggle between Edit mode and View mode -->
         <div class="row justify-center q-mt-lg">
           <div class="col-xs-12 col-md-11">
-            <div
-              v-if="
-                user && user.scopes && user.scopes.includes('edit_locations')
-              "
-              class="row justify-end"
-            >
+            <div class="row justify-end">
               <q-btn-toggle
                 v-model="viewEditToggle"
-                class="col-auto q-mb-sm"
+                class="col-auto q-mb-lg"
                 toggle-color="indigo"
+                :disable="
+                  !user ||
+                    !user.scopes ||
+                    !user.scopes.includes('edit_locations')
+                "
                 push
                 size="13px"
                 :options="[
@@ -234,7 +437,16 @@
             </div>
           </div>
         </div>
-        <q-form v-if="viewEditToggle === 'edit'" class="row justify-center">
+        <q-form
+          @submit="updateLocationOnCloud"
+          v-if="
+            viewEditToggle === 'edit' &&
+              user &&
+              user.scopes &&
+              user.scopes.includes('edit_locations')
+          "
+          class="row justify-center"
+        >
           <div class="col-xs-12 col-md-11">
             <div class="row">
               <div class="text-h5 text-grey-7 col-xs-12 q-px-sm">
@@ -246,8 +458,8 @@
                     class="col-auto"
                     label="Girls"
                     color="pink"
-                    v-model="court.girls_allowed"
-                    @input="show()"
+                    :value="court.girls_allowed"
+                    @input="updateLocation('girls_allowed', $event)"
                     size="lg"
                   />
                 </div>
@@ -255,18 +467,20 @@
               <q-input
                 class="col-xs-12 q-px-sm"
                 bottom-slots
-                v-model="text"
+                :value="court.name"
                 label="Name"
                 filled
                 color="indigo"
+                @input="updateLocation('name', $event)"
               />
               <q-input
                 class="col-xs-12 col-md-6 q-px-sm"
                 bottom-slots
-                v-model="text"
+                :value="court.city"
                 label="City"
                 filled
                 color="indigo"
+                @input="updateLocation('city', $event)"
               >
                 <template v-slot:prepend>
                   <q-icon name="location_city" />
@@ -275,10 +489,11 @@
               <q-input
                 class="col-xs-12 col-md-6 q-px-sm"
                 bottom-slots
-                v-model="text"
+                :value="court.region"
                 label="Region"
                 filled
                 color="indigo"
+                @input="updateLocation('region', $event)"
               >
               </q-input>
               <div class="col-xs-12">
@@ -286,10 +501,11 @@
                   <q-input
                     class="col-xs-12 col-md-6 q-px-sm q-mb-md"
                     bottom-slots
-                    v-model="court.maps_url"
+                    :value="court.maps_url"
                     label="Maps URL"
                     filled
                     color="indigo"
+                    @input="updateLocation('maps_url', $event)"
                   >
                     <template v-slot:hint>
                       example: https://goo.gl/maps/yu1X8cn5KcSuYndv6
@@ -302,10 +518,11 @@
                   <q-input
                     class="col-xs-12 col-md-6 q-px-sm q-mb-md"
                     bottom-slots
-                    v-model="text"
+                    :value="court.cost"
                     label="Cost"
                     filled
                     color="indigo"
+                    @input="updateLocation('cost', $event)"
                   >
                     <template v-slot:append>
                       <q-icon name="payments" />
@@ -320,74 +537,40 @@
                 label="Meta"
                 filled
                 color="indigo"
+                @input="updateLocation('meta', $event)"
               >
                 <template v-slot:prepend>
                   <q-icon name="more_vert" />
                 </template>
               </q-input>
-              <!-- @input="updateUser('sport_types', $event)" -->
               <q-checkbox
+                v-for="(sport, index) in sports"
+                :key="index + sport"
                 class="q-mt-lg"
                 :value="court.sport_types"
-                val="basketball"
-                color="primary"
+                :val="sport.val"
+                :color="sport.color"
+                @input="updateLocation('sport_types', $event)"
                 ><q-icon
-                  color="primary"
+                  :color="sport.color"
                   style="margin-top: -5px"
                   class="q-mr-md"
                   size="25px"
-                  name="sports_basketball"
-                />
-              </q-checkbox>
-              <q-checkbox
-                class="q-mt-lg"
-                :value="court.sport_types"
-                val="volleyball"
-                color="blue"
-              >
-                <q-icon
-                  color="blue"
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="sports_volleyball"
-                />
-              </q-checkbox>
-              <q-checkbox
-                class="q-mt-lg"
-                :value="court.sport_types"
-                val="soccer"
-                color="black"
-                ><q-icon
-                  color="black"
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="sports_soccer"
-                />
-              </q-checkbox>
-              <q-checkbox
-                class="q-mt-lg"
-                :value="court.sport_types"
-                val="badminton"
-                color="grey-9"
-                ><q-icon
-                  style="margin-top: -5px"
-                  class="q-mr-md"
-                  size="25px"
-                  name="img:badminton.png"
+                  :name="sport.icon"
                 />
               </q-checkbox>
               <div class="col-xs-12">
                 <div class="row justify-end">
                   <q-btn
+                    :loading="updatePending"
                     label="Save"
+                    type="submit"
                     :disable="
                       !user ||
                         !user.scopes ||
                         !user.scopes.includes('edit_locations')
                     "
-                    class="q-mt-md"
+                    class="q-mt-md q-mb-lg"
                     color="indigo"
                   ></q-btn>
                 </div>
@@ -396,10 +579,16 @@
           </div>
         </q-form>
         <div class="row justify-center q-mt-md">
-          <div class="text-h5 q-mb-lg text-grey-7 col-xs-12 col-md-11">
+          <div
+            v-if="court.comments && court.comments.length > 0"
+            class="text-h5 q-mb-lg text-grey-7 col-xs-12 col-md-11"
+          >
             Comments
           </div>
-          <div class="col-xs-12 col-md-11" v-if="court.comments">
+          <div
+            class="col-xs-12 col-md-11"
+            v-if="court.comments && court.comments.length > 0"
+          >
             <q-card
               v-for="(comment, index) in court.comments"
               :key="index + comment.username"
@@ -426,7 +615,7 @@
                 </q-item-section>
                 <q-item-section side>
                   <q-rating
-                    v-model="comment.rating"
+                    :value="comment.rating"
                     :max="4"
                     size="2.3em"
                     color="primary"
@@ -435,35 +624,59 @@
                 </q-item-section>
               </q-item>
 
-              <!-- <q-separator /> -->
+              <q-separator />
 
               <q-card-section class="q-pa-none">
                 <div class="row">
                   <div class="col-xs-12">
                     <q-input
-                      class="full-width"
-                      style="max-height: 200px; min-height: 60px; border-bottom: none"
+                      class="full-width q-pl-md"
+                      style="max-height: 200px; border-bottom: none; height: 100px"
                       readonly
                       square
                       type="textarea"
                       color="indigo"
-                      filled
+                      borderless=""
                       :value="comment.text"
                     >
                       <template v-slot:append>
-                        <q-chip
+                        <div class="column items-end">
+                          <q-chip
+                            class="bg-grey-3"
+                            square
+                            dense
+                            :label="getFullDate(comment.created_at)"
+                          />
+                          <q-chip
+                            class="q-mt-none bg-grey-3"
+                            square
+                            dense
+                            :label="getTime(comment.created_at)"
+                          />
+                        </div>
+                      </template>
+                      <template v-slot:prepend>
+                        <q-btn-dropdown
+                          color="indigo"
+                          flat
                           dense
-                          square
-                          style="background-color: white"
-                          :label="getFullDate(comment.created_at)"
-                        ></q-chip> </template
+                          icon="more_horiz"
+                        >
+                          <q-btn
+                            color="negative"
+                            label="Delete"
+                            icon="delete"
+                            @click="deleteComment(comment.id, court.id)"
+                            v-if="comment && user"
+                          />
+                        </q-btn-dropdown> </template
                     ></q-input>
                   </div>
                 </div>
               </q-card-section>
             </q-card>
           </div>
-          <q-card class="col-xs-12 col-md-11 q-mb-lg" flat bordered>
+          <q-card v-if="user" class="col-xs-12 col-md-11 q-mb-sm" flat bordered>
             <q-item>
               <q-item-section avatar>
                 <q-avatar>
@@ -491,24 +704,35 @@
                 />
               </q-item-section>
             </q-item>
-
-            <!-- <q-separator /> -->
-
+            <q-separator />
             <q-card-section class="q-pa-none">
               <div class="row">
                 <div class="col-xs-12">
                   <q-input
                     class="full-width"
                     style="max-height: 200px; min-height: 60px"
-                    filled
                     type="textarea"
+                    borderless
+                    filled
                     color="indigo"
                     placeholder="Add comment ..."
-                    :value="newComment.text"
+                    v-model="newComment.text"
                   >
-                    <template v-slot:prepend>
-                      <q-icon name="edit"></q-icon> </template
-                  ></q-input>
+                    <template v-slot:prepend> <q-icon name="edit" /> </template>
+                  </q-input>
+                </div>
+                <q-separator />
+                <div class="col-xs-12">
+                  <div class="row justify-end">
+                    <q-btn
+                      color="indigo"
+                      class="q-ma-sm"
+                      icon="comment"
+                      label="Send"
+                      @click="sendNewComment()"
+                      :loading="commentPending"
+                    />
+                  </div>
                 </div>
               </div>
             </q-card-section>
@@ -518,9 +742,14 @@
   ></q-page>
 </template>
 <script>
+import { QSpinnerFacebook } from "quasar";
+import { sports } from "../store/sports";
 export default {
   data() {
     return {
+      showCoverPhotoInput: false,
+      showNewPhotoInput: false,
+      pickedPhoto: null,
       newComment: {
         text: ``,
         rating: 3
@@ -533,48 +762,186 @@ export default {
         "sentiment_very_satisfied"
       ],
       photosInputToShow: null,
-      photos: ["kejsc_pic_1.jpg", "kejsc_pic_2.PNG"],
       viewEditToggle: "view",
       text: "",
-      court: {
-        id: 12315,
-        name: "Bagh Ghadir",
-        maps_url: "https://goo.gl/maps/yu1X8cn5KcSuYndv6",
-        city: "Esfahan",
-        region: "Bagh Ghadir",
-        photo: "bagh_ghadir.png",
-        cost: "120,000t Entrance Fee",
-        // created_at: Date.new(),
-        created_by: 1122,
-        sport_types: ["basketball", "volleyball", "soccer"],
-        photos: ["kejsc_pic_1.jpg", "kejsc_pic_2.PNG"],
-        updated_at: "",
-        updated_by: "",
-        girls_allowed: false,
-        meta: `No WC,
-Good environment
-One rim 3m high, the other 2.80`,
-        comments: [
-          {
-            username: "Hossein",
-            text: `Such nice people
-it's mostly overpopulated tho.`,
-            rating: 4,
-            created_at: "2020-05-19 10:00:40",
-            photo: "http://localhost:3060/users/hossein4563022476681.png",
-            first_name: "Hossein",
-            last_name: "Heidari"
-          }
-        ]
-      }
+      sports: sports
     };
   },
   computed: {
     user() {
       return this.$store.state.user.data;
+    },
+    court() {
+      return this.$store.state.courts.thisCourt;
+    },
+    updatePending() {
+      return this.$store.state.courts.updatePending;
+    },
+    commentPending() {
+      return this.$store.state.courts.commentPending;
+    },
+    photoUploadPending() {
+      return this.$store.state.courts.photoUploadPending;
+    }
+  },
+  watch: {
+    $route(to, from) {
+      if (to.params.id !== "new") {
+        this.fetchCourt(to.params.id);
+      }
     }
   },
   methods: {
+    deleteComment(comment_id, location_id) {
+      this.$store
+        .dispatch("courts/deleteComment", {
+          comment_id,
+          location_id
+        })
+        .then(({ status, message }) => {
+          this.newComment.text = "";
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "delete",
+              message: message
+            });
+          }
+        });
+    },
+    sendNewComment() {
+      if (
+        this.newComment.text !== "" &&
+        !this.newComment.text.trim().length == 0
+      ) {
+        this.$store
+          .dispatch("courts/comment", {
+            location_id: this.court.id,
+            text: this.newComment.text,
+            rating: this.newComment.rating
+          })
+          .then(({ status, message }) => {
+            this.newComment.text = "";
+            if (status === "error") {
+              this.$q.notify({
+                color: "red-5",
+                icon: "warning",
+                message: message
+              });
+            } else if (status === "success") {
+              this.$q.notify({
+                color: "green-4",
+                icon: "cloud_done",
+                message: message
+              });
+            }
+          });
+      }
+    },
+    onPhotoUploadClick(index, courtId) {
+      if (this.pickedPhoto) {
+        const formData = new FormData();
+        formData.append("photo", this.pickedPhoto);
+        // formData.append("index", index);
+        this.$store
+          .dispatch("courts/uploadPhoto", {
+            formData,
+            index,
+            location_id: courtId
+          })
+          .then(({ status, message }) => {
+            if (status === "error") {
+              this.$q.notify({
+                color: "red-5",
+                icon: "warning",
+                message: message
+              });
+            } else if (status === "success") {
+              this.$q.notify({
+                color: "green-4",
+                icon: "cloud_done",
+                message: message
+              });
+            }
+            this.pickedPhoto = null;
+            this.showCoverPhotoInput = false;
+            this.showNewPhotoInput = false;
+          });
+      }
+    },
+    deleteThisPhoto(photoId) {
+      this.$store
+        .dispatch("courts/deletePhoto", { locationId: this.court.id, photoId })
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "delete",
+              message: message
+            });
+          }
+        });
+    },
+    fetchCourt(id) {
+      this.$q.loading.show({
+        spinner: QSpinnerFacebook,
+        spinnerColor: "primary",
+        spinnerSize: 140,
+        backgroundColor: "indigo",
+        message: "Fetching location. Hang on...",
+        messageColor: "primary"
+      });
+      this.$store
+        .dispatch("courts/fetchCourt", id)
+        .then(({ status, message }) => {
+          this.$q.loading.hide();
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+            this.$router.push("/");
+          }
+        });
+    },
+    updateLocation(key, value) {
+      this.$store.commit("courts/updateLoactionObj", { key, value });
+    },
+    updateLocationOnCloud() {
+      this.$store
+        .dispatch("courts/update", this.court)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "cloud_done",
+              message: message
+            });
+          }
+        });
+    },
+    checkPhotoSize(files) {
+      return files.filter(file => file.size < 2000000);
+    },
     onRejected(rejectedEntries) {
       this.$q.notify({
         color: "red-5",
@@ -623,7 +990,29 @@ it's mostly overpopulated tho.`,
         "Dec"
       ];
       return `${months[month]} ${day}. ${year}`;
+    },
+    getTime(timestamp) {
+      let date = new Date(timestamp);
+      return (
+        date.getHours() + " : " + date.getMinutes() + " : " + date.getSeconds()
+      );
+    }
+  },
+  mounted() {
+    if (this.$route.params.id !== "new") {
+      this.fetchCourt(this.$route.params.id);
     }
   }
 };
 </script>
+<style lang="sass" scoped>
+.photos-column
+  order: 0
+.data-column
+  order: 1
+@media (max-width: 1023px)
+  .photos-column
+    order: 1
+  .data-column
+    order: 0
+</style>
