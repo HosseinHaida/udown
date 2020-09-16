@@ -3,6 +3,7 @@
     class="q-pa-md"
     :class="!user ? 'row items-center justify-evenly' : ''"
   >
+    <!-- //////////// In case nobody's logged in ///////////// -->
     <div v-if="!user" class="col-xs-12 text-center text-h4">
       Please login first
     </div>
@@ -65,15 +66,24 @@
               >
               <!-- Modal to show big Photo -->
               <q-dialog v-if="user.photo" v-model="showPhoto">
-                <q-card style="width: 700px; max-width: 80vw;">
-                  <q-bar class="bg-white">
-                    <span class="text-subtitle1">{{ user.first_name }}</span>
+                <q-card
+                  class="bg-transparent"
+                  style="width: 750px; max-width: 90vw;"
+                  flat
+                >
+                  <q-card-section class="row items-center q-pb-md">
+                    <!-- <div class="text-h6">Close icon</div> -->
                     <q-space />
-
-                    <q-btn size="14px" dense flat icon="close" v-close-popup>
-                      <q-tooltip>Close</q-tooltip>
-                    </q-btn>
-                  </q-bar>
+                    <q-btn
+                      size="lg"
+                      color="white"
+                      text-color="black"
+                      icon="close"
+                      round
+                      dense
+                      v-close-popup
+                    />
+                  </q-card-section>
                   <q-card-section style="padding: 0">
                     <q-img class="full-width" contain :src="user.photo"></q-img>
                   </q-card-section>

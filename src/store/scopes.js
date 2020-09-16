@@ -11,12 +11,12 @@ export const scopes = [
     icon: "event_note",
     color: "secondary"
   },
-  {
-    name: "add_locations",
-    desc: "Add locations",
-    icon: "add_location",
-    color: "primary"
-  },
+  // {
+  //   name: "add_locations",
+  //   desc: "Add locations",
+  //   icon: "add_location",
+  //   color: "primary"
+  // },
   {
     name: "edit_locations",
     desc: "Edit locations",

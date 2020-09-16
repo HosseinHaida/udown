@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md" v-if="courts">
-    <div class="row items-start">
+    <div class="row items-center">
       <div class="col-xs-12 q-ma-none">
         <q-input
           filled
@@ -29,7 +29,12 @@
         :key="index"
       >
         <q-card>
-          <q-img class="court-poster" :src="court.photo" />
+          <q-img
+            :ratio="4 / 3"
+            placeholder-src="placeholder-image.png"
+            class="court-poster"
+            :src="court.photo"
+          />
 
           <q-card-section>
             <q-btn
