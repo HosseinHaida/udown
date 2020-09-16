@@ -8,7 +8,7 @@
       Please login first
     </div>
 
-    <q-card v-if="user" flat bordered>
+    <q-card v-if="user" flat>
       <q-tabs
         v-model="tab"
         dense
@@ -307,7 +307,7 @@
           <div class="col"></div>
           <q-btn-toggle
             v-model="usersType"
-            class="col-auto q-mb-sm"
+            class="col-auto q-mt-md q-mb-sm"
             toggle-color="indigo"
             push
             size="13px"

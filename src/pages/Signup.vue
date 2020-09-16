@@ -3,7 +3,7 @@
     <div class="row justify-center">
       <q-form
         @submit="onSubmit"
-        class="q-gutter-sm col-sm-9 col-xs-12 col-md-4 q-pt-md"
+        class="q-gutter-sm col-sm-9 col-xs-12 col-md-5 q-pt-md"
       >
         <q-img
           src="udown-logo.png"

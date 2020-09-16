@@ -3,13 +3,16 @@
     <div class="row justify-center">
       <q-form
         @submit="onSubmit"
-        class="q-gutter-sm col-sm-9 col-xs-12 col-md-4 q-pt-md"
+        class="q-gutter-sm col-sm-9 col-xs-12 col-md-5 q-pt-md"
       >
-        <q-img
-          src="udown-logo.png"
-          class="q-ml-lg q-mt-md q-mb-md"
-          style="max-width: 120px; min-width: 80px; float: right"
-        />
+        <div class="row justify-end">
+          <q-img
+            src="udown-logo.png"
+            class="q-ml-lg q-mt-md q-mb-md"
+            style="max-width: 120px; min-width: 80px"
+          />
+        </div>
+
         <q-input
           filled
           v-model="username"

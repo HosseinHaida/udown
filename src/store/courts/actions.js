@@ -111,7 +111,7 @@ export async function insert({ rootState, commit }, newLocation) {
 
         return {
           status: "success",
-          message: "Created " + res.data.location.name
+          message: "Successfully created new location"
         };
       },
       error => {

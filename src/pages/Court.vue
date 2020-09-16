@@ -105,7 +105,6 @@
                 v-model="pickedPhoto"
                 filled
                 color="indigo"
-                dense
                 label="Pick a photo"
                 accept=".jpg, image/*"
                 :filter="checkPhotoSize"
@@ -117,7 +116,6 @@
                 <template v-slot:after>
                   <q-btn
                     @click="onPhotoUploadClick('cover', court.id)"
-                    dense
                     round
                     outline
                     color="positive"
@@ -195,7 +193,6 @@
                 v-model="pickedPhoto"
                 filled
                 color="indigo"
-                dense
                 label="Pick a photo"
                 accept=".jpg, image/*"
                 :filter="checkPhotoSize"
@@ -210,7 +207,7 @@
                     color="positive"
                     round
                     outline
-                    icon="send"
+                    icon="check"
                     :loading="photoUploadPending"
                     ><q-tooltip
                       content-style="font-size: 13px"
@@ -323,7 +320,6 @@
                 v-model="pickedPhoto"
                 filled
                 color="indigo"
-                dense
                 label="Pick a photo"
                 accept=".jpg, image/*"
                 :filter="checkPhotoSize"
@@ -336,7 +332,6 @@
                   <q-btn
                     @click="onPhotoUploadClick('new', court.id)"
                     round
-                    dense
                     outline
                     color="positive"
                     icon="check"
@@ -487,8 +482,8 @@
         <!-- ///////////////////////////////////////////////// -->
         <!-- ///////// Toggle between Edit and View ////////// -->
         <!-- ///////////////////////////////////////////////// -->
-        <div v-if="!newLocationMode" class="row justify-center q-mt-md q-mb-lg">
-          <div class="col-xs-12 col-md-11">
+        <div v-if="!newLocationMode" class="row justify-center q-mt-md">
+          <div class="col-xs-12 col-md-11 q-mb-lg">
             <div class="row justify-end">
               <q-btn-toggle
                 v-model="viewEditToggle"
@@ -1056,6 +1051,7 @@ export default {
                 icon: "cloud_done",
                 message: message
               });
+              this.$router.push("/");
             }
           });
       } else {
