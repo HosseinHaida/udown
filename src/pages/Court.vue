@@ -6,7 +6,10 @@
       <!-- //////////////////// Photos ///////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
-      <div class="col-xs-12 col-sm-6 col-md-3 q-pa-xs photos-column">
+      <div
+        v-if="!newLocationMode"
+        class="col-xs-12 col-sm-6 col-md-4 q-pa-xs photos-column"
+      >
         <div class="row">
           <div class="text-h5 q-mb-lg q-mt-md text-grey-7 col-xs-12 q-px-sm">
             Photos
@@ -27,11 +30,26 @@
                 text-color="black"
                 dense
                 style="top: 8px; left: 8px"
-                push
+                size="13px"
                 @click="showCoverPhotoInput = true"
               >
                 <q-tooltip content-style="font-size: 13px">
                   Pick a cover photo
+                </q-tooltip>
+              </q-btn>
+              <!-- /////////////////////// -->
+              <q-btn
+                style="top: 8px; right: 8px"
+                class="absolute all-pointer-events"
+                icon="aspect_ratio"
+                color="white"
+                text-color="black"
+                dense
+                size="13px"
+                @click="expandThisPhoto(court.photo)"
+              >
+                <q-tooltip content-style="font-size: 13px">
+                  Expand photo
                 </q-tooltip>
               </q-btn>
               <div class="absolute-bottom text-subtitle1 text-center">
@@ -205,7 +223,7 @@
               </q-file>
             </q-form>
           </div>
-          <!-- In case the photo couldnt be shown (not yet set any) -->
+          <!-- In case the photo couldnt be shown -->
           <div
             class="col-xs-12 col-md-12 q-px-xs q-mb-sm"
             v-for="(photo, index) in court.photos"
@@ -224,6 +242,7 @@
                 icon="delete"
                 color="negative"
                 dense
+                size="13px"
                 style="top: 8px; left: 8px"
                 @click="deleteThisPhoto(photo.id)"
               >
@@ -231,20 +250,37 @@
                   Delete
                 </q-tooltip>
               </q-btn>
-              <q-btn
-                class="absolute all-pointer-events"
-                icon="info"
-                color="info"
-                round
-                dense
+              <span
                 style="top: 8px; right: 8px"
+                class="absolute all-pointer-events"
               >
-                <q-tooltip content-style="font-size: 13px; color: white">
-                  By {{ photo.username }}
-                </q-tooltip>
-              </q-btn>
+                <q-btn
+                  icon="alternate_email"
+                  color="white"
+                  text-color="black"
+                  round
+                  dense
+                  size="13px"
+                >
+                  <q-tooltip content-style="font-size: 13px; color: white">
+                    By {{ photo.username }}
+                  </q-tooltip>
+                </q-btn>
+                <q-btn
+                  icon="aspect_ratio"
+                  color="white"
+                  text-color="black"
+                  class="q-ml-sm"
+                  dense
+                  size="13px"
+                  @click="expandThisPhoto(photo.url)"
+                >
+                  <q-tooltip content-style="font-size: 13px">
+                    Expand photo
+                  </q-tooltip>
+                </q-btn>
+              </span>
               <template v-slot:error>
-                <!-- <div class="full-width"> -->
                 <q-btn
                   v-if="
                     user &&
@@ -261,7 +297,6 @@
                     Delete
                   </q-tooltip>
                 </q-btn>
-                <!-- </div> -->
               </template>
             </q-img>
           </div>
@@ -319,13 +354,43 @@
           </div>
         </div>
       </div>
+      <q-dialog v-model="expandPhoto" :maximized="expandPhoto">
+        <q-card class="bg-black" flat>
+          <q-card-section class="row items-center q-pb-none">
+            <!-- <div class="text-h6">Close icon</div> -->
+            <q-space />
+            <q-btn
+              size="lg"
+              color="white"
+              text-color="black"
+              icon="close"
+              round
+              dense
+              v-close-popup
+            />
+          </q-card-section>
+
+          <q-card-section>
+            <q-img :src="expandedPhoto" />
+          </q-card-section>
+        </q-card>
+      </q-dialog>
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////// End of Photos ///////////////// -->
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
-      <div class="col-xs-12 col-md-9 q-mt-lg data-column">
-        <div class="row justify-center q-mb-lg q-pa-lg">
+      <!------------------------------------------------------->
+      <!------------------------------------------------------->
+      <!------------------------------------------------------->
+      <!------------------------------------------------------->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- //////////// View mode general info ///////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <!-- ///////////////////////////////////////////////// -->
+      <div class="col-xs-12 col-md-8 q-mt-lg data-column">
+        <div v-if="!newLocationMode" class="row justify-center q-mb-lg q-pa-lg">
           <div style="font-size: 28px">
             {{ court.name }}
             <q-btn
@@ -339,7 +404,7 @@
             />
           </div>
         </div>
-        <div class="row justify-center ">
+        <div v-if="!newLocationMode" class="row justify-center ">
           <div class="col-xs-12 col-md-11">
             <div class="row items-start">
               <div class="col-xs-12 col-md-6 q-mb-md q-px-sm">
@@ -410,13 +475,24 @@
             </div>
           </div>
         </div>
-        <!-- Toggle between Edit mode and View mode -->
-        <div class="row justify-center q-mt-lg">
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////// End of view mode general info ///////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////// Toggle between Edit and View ////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <div v-if="!newLocationMode" class="row justify-center q-mt-md q-mb-lg">
           <div class="col-xs-12 col-md-11">
             <div class="row justify-end">
               <q-btn-toggle
                 v-model="viewEditToggle"
-                class="col-auto q-mb-lg"
+                class="col-auto"
                 toggle-color="indigo"
                 :disable="
                   !user ||
@@ -437,8 +513,20 @@
             </div>
           </div>
         </div>
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///// End of Toggle between Edit and View  ////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- /////////////////// Edit form /////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
         <q-form
-          @submit="updateLocationOnCloud"
+          @submit="submitForm"
           v-if="
             viewEditToggle === 'edit' &&
               user &&
@@ -450,7 +538,7 @@
           <div class="col-xs-12 col-md-11">
             <div class="row">
               <div class="text-h5 text-grey-7 col-xs-12 q-px-sm">
-                Edit
+                {{ newLocationMode ? "New" : "Edit" }}
               </div>
               <div class="col-xs-12 q-px-sm q-pb-sm">
                 <div class="row justify-end">
@@ -578,7 +666,21 @@
             </div>
           </div>
         </q-form>
-        <div class="row justify-center q-mt-md">
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- /////////////// End of edit form //////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!------------------------------------------------------->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- /////////////////// Comments //////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <!-- ///////////////////////////////////////////////// -->
+        <div v-if="!newLocationMode" class="row justify-center q-mt-md">
           <div
             v-if="court.comments && court.comments.length > 0"
             class="text-h5 q-mb-lg text-grey-7 col-xs-12 col-md-11"
@@ -747,6 +849,8 @@ import { sports } from "../store/sports";
 export default {
   data() {
     return {
+      expandPhoto: false,
+      expandedPhoto: "",
       showCoverPhotoInput: false,
       showNewPhotoInput: false,
       pickedPhoto: null,
@@ -763,8 +867,8 @@ export default {
       ],
       photosInputToShow: null,
       viewEditToggle: "view",
-      text: "",
-      sports: sports
+      sports: sports,
+      newLocationMode: false
     };
   },
   computed: {
@@ -772,7 +876,11 @@ export default {
       return this.$store.state.user.data;
     },
     court() {
-      return this.$store.state.courts.thisCourt;
+      if (this.$route.params.id === "new") {
+        return this.$store.state.courts.newLocation;
+      } else {
+        return this.$store.state.courts.thisCourt;
+      }
     },
     updatePending() {
       return this.$store.state.courts.updatePending;
@@ -788,10 +896,17 @@ export default {
     $route(to, from) {
       if (to.params.id !== "new") {
         this.fetchCourt(to.params.id);
+      } else {
+        this.viewEditToggle = "edit";
+        this.newLocationMode = true;
       }
     }
   },
   methods: {
+    expandThisPhoto(url) {
+      this.expandedPhoto = url;
+      this.expandPhoto = true;
+    },
     deleteComment(comment_id, location_id) {
       this.$store
         .dispatch("courts/deleteComment", {
@@ -918,26 +1033,50 @@ export default {
         });
     },
     updateLocation(key, value) {
-      this.$store.commit("courts/updateLoactionObj", { key, value });
+      if (this.newLocationMode) {
+        this.$store.commit("courts/updateNewLoactionObj", { key, value });
+      } else {
+        this.$store.commit("courts/updateLoactionObj", { key, value });
+      }
     },
-    updateLocationOnCloud() {
-      this.$store
-        .dispatch("courts/update", this.court)
-        .then(({ status, message }) => {
-          if (status === "error") {
-            this.$q.notify({
-              color: "red-5",
-              icon: "warning",
-              message: message
-            });
-          } else if (status === "success") {
-            this.$q.notify({
-              color: "green-4",
-              icon: "cloud_done",
-              message: message
-            });
-          }
-        });
+    submitForm() {
+      if (this.newLocationMode) {
+        this.$store
+          .dispatch("courts/insert", this.court)
+          .then(({ status, message }) => {
+            if (status === "error") {
+              this.$q.notify({
+                color: "red-5",
+                icon: "warning",
+                message: message
+              });
+            } else if (status === "success") {
+              this.$q.notify({
+                color: "green-4",
+                icon: "cloud_done",
+                message: message
+              });
+            }
+          });
+      } else {
+        this.$store
+          .dispatch("courts/update", this.court)
+          .then(({ status, message }) => {
+            if (status === "error") {
+              this.$q.notify({
+                color: "red-5",
+                icon: "warning",
+                message: message
+              });
+            } else if (status === "success") {
+              this.$q.notify({
+                color: "green-4",
+                icon: "cloud_done",
+                message: message
+              });
+            }
+          });
+      }
     },
     checkPhotoSize(files) {
       return files.filter(file => file.size < 2000000);
@@ -1001,6 +1140,9 @@ export default {
   mounted() {
     if (this.$route.params.id !== "new") {
       this.fetchCourt(this.$route.params.id);
+    } else {
+      this.viewEditToggle = "edit";
+      this.newLocationMode = true;
     }
   }
 };

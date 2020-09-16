@@ -94,6 +94,42 @@ export async function update({ rootState, commit }, location) {
     );
 }
 
+export async function insert({ rootState, commit }, newLocation) {
+  commit("setUpdatePending", true);
+  return await axios
+    .post(apiUrl + "/location/insert", newLocation, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        commit("setUpdatePending", false);
+        if (res.data.location) {
+          commit("fillThisLocation", res.data.location);
+        }
+
+        return {
+          status: "success",
+          message: "Created " + res.data.location.name
+        };
+      },
+      error => {
+        commit("setUpdatePending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
 export async function comment({ rootState, commit }, comment) {
   commit("setUpdatePending", true);
   return await axios

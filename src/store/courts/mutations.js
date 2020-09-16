@@ -17,6 +17,9 @@ export function setCourtData(state, court) {
 export function updateLoactionObj(state, { key, value }) {
   state.thisCourt[key] = value;
 }
+export function updateNewLoactionObj(state, { key, value }) {
+  state.newLocation[key] = value;
+}
 export function setUpdatePending(state, status) {
   state.updatePending = status;
 }
