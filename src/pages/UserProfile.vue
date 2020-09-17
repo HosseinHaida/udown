@@ -35,13 +35,7 @@
 
       <q-separator />
 
-      <q-tab-panels
-        v-model="tab"
-        transition-prev="jump-up"
-        transition-next="jump-down"
-        animated
-        style="min-height: 450px"
-      >
+      <q-tab-panels v-model="tab" style="min-height: 450px">
         <q-tab-panel name="personal" class="row justify-between">
           <div class="col-md-4 col-sm-5 col-xs-12 q-px-md">
             <div class="column">

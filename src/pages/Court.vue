@@ -415,14 +415,15 @@
                     >{{ court.cost }}</span
                   >
                 </div>
-
-                <div class="q-pt-sm">
+                <q-separator spaced inset />
+                <div>
                   <q-icon name="map" color="accent" size="26px"></q-icon>
                   <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">
                     {{ court.city + ", " + court.region }}
                   </span>
                 </div>
-                <div class="q-pt-sm">
+                <q-separator spaced inset />
+                <div>
                   <q-icon
                     name="wc"
                     :color="court.girls_allowed ? 'positive' : 'negative'"
@@ -438,7 +439,7 @@
                     }}</span
                   >
                 </div>
-
+                <q-separator spaced inset />
                 <div class="q-mt-md" v-if="court && court.sport_types">
                   <q-icon
                     v-for="(sport, index) in sports"
@@ -446,7 +447,7 @@
                     :name="sport.icon"
                     :color="sport.color"
                     v-show="court.sport_types.includes(sport.val)"
-                    size="30px"
+                    size="26px"
                     class="q-mr-xs"
                     ><q-tooltip content-style="font-size: 13px">{{
                       sport.label
@@ -461,6 +462,7 @@
                   readonly
                   style="font-size: 16px"
                   color="indigo"
+                  filled
                   borderless
                   ><template v-slot:prepend>
                     <q-icon size="26px" name="more_vert" />
@@ -485,26 +487,26 @@
         <div v-if="!newLocationMode" class="row justify-center q-mt-md">
           <div class="col-xs-12 col-md-11 q-mb-lg">
             <div class="row justify-end">
-              <q-btn-toggle
-                v-model="viewEditToggle"
-                class="col-auto"
-                toggle-color="indigo"
-                :disable="
-                  !user ||
-                    !user.scopes ||
-                    !user.scopes.includes('edit_locations')
-                "
-                push
-                size="13px"
-                :options="[
-                  {
-                    label: 'Edit',
-                    value: 'edit',
-                    class: 'q-pb-xs'
-                  },
-                  { value: 'view', label: 'View' }
-                ]"
-              />
+              <div>
+                <q-btn-toggle
+                  v-model="viewEditToggle"
+                  toggle-color="indigo"
+                  :disable="
+                    !user ||
+                      !user.scopes ||
+                      !user.scopes.includes('edit_locations')
+                  "
+                  push
+                  :options="[
+                    {
+                      label: 'Edit',
+                      value: 'edit',
+                      class: 'q-pb-xs'
+                    },
+                    { value: 'view', label: 'View' }
+                  ]"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -628,7 +630,7 @@
               </q-input>
               <q-checkbox
                 v-for="(sport, index) in sports"
-                :key="index + sport"
+                :key="index"
                 class="q-mt-lg"
                 :value="court.sport_types"
                 :val="sport.val"
@@ -680,11 +682,73 @@
             v-if="court.comments && court.comments.length > 0"
             class="text-h5 q-mb-lg text-grey-7 col-xs-12 col-md-11"
           >
-            Comments
+            <q-toggle color="indigo" size="lg" v-model="showComments" />
+            <span>Comments</span>
           </div>
+          <q-card v-if="user" class="col-xs-12 col-md-11 q-mb-sm" flat bordered>
+            <q-item>
+              <q-item-section avatar>
+                <q-avatar>
+                  <q-img :ratio="1" :src="user.photo" />
+                  <span class="user-photo-placeholder">{{
+                    user.first_name.charAt(0).toUpperCase() +
+                      user.last_name.charAt(0).toUpperCase()
+                  }}</span>
+                </q-avatar>
+              </q-item-section>
+
+              <q-item-section>
+                <q-item-label>{{ user.username }}</q-item-label>
+                <q-item-label caption>
+                  {{ user.first_name + " " + user.last_name }}
+                </q-item-label>
+              </q-item-section>
+              <q-item-section side>
+                <q-rating
+                  v-model="newComment.rating"
+                  :max="4"
+                  size="2.3em"
+                  color="primary"
+                  :icon="ratingIcons"
+                />
+              </q-item-section>
+            </q-item>
+            <q-separator />
+            <q-card-section class="q-pa-none">
+              <div class="row">
+                <div class="col-xs-12">
+                  <q-input
+                    class="full-width"
+                    style="max-height: 200px; min-height: 60px"
+                    type="textarea"
+                    borderless
+                    filled
+                    color="indigo"
+                    placeholder="Add comment ..."
+                    v-model="newComment.text"
+                  >
+                    <template v-slot:prepend> <q-icon name="edit" /> </template>
+                  </q-input>
+                </div>
+                <q-separator />
+                <div class="col-xs-12">
+                  <div class="row justify-end">
+                    <q-btn
+                      color="indigo"
+                      class="q-ma-sm"
+                      icon="comment"
+                      label="Send"
+                      @click="sendNewComment()"
+                      :loading="commentPending"
+                    />
+                  </div>
+                </div>
+              </div>
+            </q-card-section>
+          </q-card>
           <div
-            class="col-xs-12 col-md-11"
-            v-if="court.comments && court.comments.length > 0"
+            class="col-xs-12 col-md-11 q-mt-sm"
+            v-if="court.comments && court.comments.length > 0 && showComments"
           >
             <q-card
               v-for="(comment, index) in court.comments"
@@ -773,67 +837,6 @@
               </q-card-section>
             </q-card>
           </div>
-          <q-card v-if="user" class="col-xs-12 col-md-11 q-mb-sm" flat bordered>
-            <q-item>
-              <q-item-section avatar>
-                <q-avatar>
-                  <q-img :ratio="1" :src="user.photo" />
-                  <span class="user-photo-placeholder">{{
-                    user.first_name.charAt(0).toUpperCase() +
-                      user.last_name.charAt(0).toUpperCase()
-                  }}</span>
-                </q-avatar>
-              </q-item-section>
-
-              <q-item-section>
-                <q-item-label>{{ user.username }}</q-item-label>
-                <q-item-label caption>
-                  {{ user.first_name + " " + user.last_name }}
-                </q-item-label>
-              </q-item-section>
-              <q-item-section side>
-                <q-rating
-                  v-model="newComment.rating"
-                  :max="4"
-                  size="2.3em"
-                  color="primary"
-                  :icon="ratingIcons"
-                />
-              </q-item-section>
-            </q-item>
-            <q-separator />
-            <q-card-section class="q-pa-none">
-              <div class="row">
-                <div class="col-xs-12">
-                  <q-input
-                    class="full-width"
-                    style="max-height: 200px; min-height: 60px"
-                    type="textarea"
-                    borderless
-                    filled
-                    color="indigo"
-                    placeholder="Add comment ..."
-                    v-model="newComment.text"
-                  >
-                    <template v-slot:prepend> <q-icon name="edit" /> </template>
-                  </q-input>
-                </div>
-                <q-separator />
-                <div class="col-xs-12">
-                  <div class="row justify-end">
-                    <q-btn
-                      color="indigo"
-                      class="q-ma-sm"
-                      icon="comment"
-                      label="Send"
-                      @click="sendNewComment()"
-                      :loading="commentPending"
-                    />
-                  </div>
-                </div>
-              </div>
-            </q-card-section>
-          </q-card>
         </div>
       </div></div
   ></q-page>
@@ -844,6 +847,7 @@ import { sports } from "../store/sports";
 export default {
   data() {
     return {
+      showComments: true,
       expandPhoto: false,
       expandedPhoto: "",
       showCoverPhotoInput: false,

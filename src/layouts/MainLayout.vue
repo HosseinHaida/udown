@@ -150,6 +150,22 @@
         </q-item>
 
         <q-item
+          v-if="user"
+          to="/events"
+          clickable
+          v-ripple
+          active-class="active-drawer-link"
+        >
+          <q-item-section avatar>
+            <q-icon size="28px" name="date_range" />
+          </q-item-section>
+
+          <q-item-section>
+            Profile
+          </q-item-section>
+        </q-item>
+
+        <q-item
           to="/players"
           clickable
           v-ripple
