@@ -399,10 +399,10 @@
             />
           </div>
         </div>
-        <div v-if="!newLocationMode" class="row justify-center ">
-          <div class="col-xs-12 col-md-11">
+        <div v-if="!newLocationMode" class="row justify-center">
+          <div class="col-xs-12 col-md-11 q-mb-md">
             <div class="row items-start">
-              <div class="col-xs-12 col-md-6 q-mb-md q-px-sm">
+              <div class="col-xs-12 col-md-6 q-px-sm q-pb-md">
                 <div>
                   <q-icon
                     name="payments"
@@ -460,10 +460,10 @@
                   type="textarea"
                   :value="court.meta"
                   readonly
+                  class="bg-grey-1"
                   style="font-size: 16px"
                   color="indigo"
-                  filled
-                  borderless
+                  outlined
                   ><template v-slot:prepend>
                     <q-icon size="26px" name="more_vert" />
                   </template>
@@ -663,6 +663,17 @@
             </div>
           </div>
         </q-form>
+        <div
+          class="row items-center justify-center text-h4"
+          v-if="
+            newLocationMode &&
+              user &&
+              user.scopes &&
+              !user.scopes.includes('edit_locations')
+          "
+        >
+          You can't manipulate location
+        </div>
         <!-- ///////////////////////////////////////////////// -->
         <!-- ///////////////////////////////////////////////// -->
         <!-- /////////////// End of edit form //////////////// -->

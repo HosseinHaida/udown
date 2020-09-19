@@ -82,8 +82,8 @@
                 class="q-mt-md"
                 type="textarea"
                 label="Bio"
+                outlined
                 style="background-color: #fafad2"
-                filled
                 color="indigo"
                 readonly
               />
@@ -161,7 +161,7 @@
           </q-item-section>
 
           <q-item-section>
-            Profile
+            Events
           </q-item-section>
         </q-item>
 

@@ -5,6 +5,7 @@ const routes = [
     children: [
       { path: "/courts", component: () => import("pages/CourtsList.vue") },
       { path: "/courts/:id", component: () => import("pages/Court.vue") },
+      { path: "/events", component: () => import("pages/EventsList.vue") },
       { path: "/players", component: () => import("pages/PlayersList.vue") },
       { path: "/profile", component: () => import("pages/UserProfile.vue") },
       { path: "", redirect: "/courts" }
@@ -24,9 +25,6 @@ const routes = [
       }
     ]
   },
-
-  // Always leave this as last one,
-  // but you can also remove it
   {
     path: "*",
     component: () => import("pages/Error404.vue")
