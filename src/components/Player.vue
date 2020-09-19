@@ -69,28 +69,28 @@
                   {{ user.username }}
                 </q-chip>
               </div>
-
-              <q-checkbox
-                v-for="(scope, index) in scopes"
-                :key="index"
-                v-model="userScopes"
-                :val="scope.name"
-                :color="scope.color"
-                class="q-pl-xs q-pr-md"
-                :disable="
-                  (isMyself && !canEditScopes) || (!isMyself && !canEditScopes)
-                "
-              >
-                <q-icon
-                  class="col-auto q-mr-sm"
-                  size="sm"
-                  :name="scope.icon"
+              <span v-for="(scope, index) in scopes" :key="index">
+                <q-checkbox
+                  v-if="user.scopes.includes(scope.name) || canEditScopes "
+                  v-model="userScopes"
+                  :val="scope.name"
                   :color="scope.color"
-                  text-color="white"
-                />
-                <span class="col-auto">{{ scope.desc }}</span>
-              </q-checkbox>
-
+                  class="q-pl-xs q-pr-md"
+                  :disable="
+                    (isMyself && !canEditScopes) ||
+                      (!isMyself && !canEditScopes)
+                  "
+                >
+                  <q-icon
+                    class="col-auto q-mr-sm"
+                    size="sm"
+                    :name="scope.icon"
+                    :color="scope.color"
+                    text-color="white"
+                  />
+                  <span class="col-auto">{{ scope.desc }}</span>
+                </q-checkbox>
+              </span>
               <q-btn
                 color="positive"
                 class="q-mx-sm q-mb-xs q-mt-md"
