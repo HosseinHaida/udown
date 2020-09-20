@@ -26,7 +26,8 @@
                   user &&
                     user.scopes &&
                     (user.scopes.includes('edit_locations') ||
-                      user.scopes.includes('add_locations'))
+                      (user.scopes.includes('add_locations') &&
+                        user.id === court.created_by))
                 "
                 icon="attach_file"
                 color="white"
@@ -101,7 +102,8 @@
                   user &&
                   user.scopes &&
                   (user.scopes.includes('edit_locations') ||
-                    user.scopes.includes('add_locations'))
+                    (user.scopes.includes('add_locations') &&
+                      user.id === court.created_by))
               "
               class="q-pt-sm"
             >
@@ -158,7 +160,8 @@
                       user &&
                       user.scopes &&
                       (user.scopes.includes('edit_locations') ||
-                        user.scopes.includes('add_locations'))
+                        (user.scopes.includes('add_locations') &&
+                          user.id === court.created_by))
                   "
                   class="col-xs-12 self-end"
                   color="white"
@@ -174,7 +177,8 @@
                       user &&
                       user.scopes &&
                       (user.scopes.includes('edit_locations') ||
-                        user.scopes.includes('add_locations'))
+                        (user.scopes.includes('add_locations') &&
+                          user.id === court.created_by))
                   "
                   class="col-xs-12 self-end"
                   color="white"
@@ -192,7 +196,8 @@
                   user &&
                   user.scopes &&
                   (user.scopes.includes('edit_locations') ||
-                    user.scopes.includes('add_locations'))
+                    (user.scopes.includes('add_locations') &&
+                      user.id === court.created_by))
               "
               class="q-pt-sm"
             >
@@ -244,7 +249,8 @@
                   user &&
                     user.scopes &&
                     (user.scopes.includes('edit_locations') ||
-                      user.scopes.includes('add_locations'))
+                      (user.scopes.includes('add_locations') &&
+                        user.id === court.created_by))
                 "
                 icon="delete"
                 color="negative"
@@ -293,7 +299,8 @@
                     user &&
                       user.scopes &&
                       (user.scopes.includes('edit_locations') ||
-                        user.scopes.includes('add_locations'))
+                        (user.scopes.includes('add_locations') &&
+                          user.id === court.created_by))
                   "
                   icon="delete"
                   color="negative"
@@ -313,7 +320,8 @@
               user &&
                 user.scopes &&
                 (user.scopes.includes('edit_locations') ||
-                  user.scopes.includes('add_locations'))
+                  (user.scopes.includes('add_locations') &&
+                    user.id === court.created_by))
             "
             class="col-xs-12"
             color="primary"
@@ -329,7 +337,8 @@
                   user &&
                   user.scopes &&
                   (user.scopes.includes('edit_locations') ||
-                    user.scopes.includes('add_locations'))
+                    (user.scopes.includes('add_locations') &&
+                      user.id === court.created_by))
               "
               class="q-pt-sm"
             >
@@ -505,6 +514,20 @@
           <div class="col-xs-12 col-md-11 q-mb-lg">
             <div class="row justify-end">
               <div>
+                <q-btn-dropdown flat class="q-mr-sm" icon="more_horiz">
+                  <q-btn
+                    label="Delete location"
+                    color="negative"
+                    icon="delete"
+                    :disable="
+                      !user ||
+                        !user.scopes ||
+                        (!user.scopes.includes('edit_locations') &&
+                          (!user.scopes.includes('add_locations') ||
+                            user.id !== court.created_by))
+                    "
+                  />
+                </q-btn-dropdown>
                 <q-btn-toggle
                   v-model="viewEditToggle"
                   toggle-color="indigo"
@@ -512,7 +535,8 @@
                     !user ||
                       !user.scopes ||
                       (!user.scopes.includes('edit_locations') &&
-                        !user.scopes.includes('add_locations'))
+                        (!user.scopes.includes('add_locations') ||
+                          user.id !== court.created_by))
                   "
                   push
                   :options="[
@@ -547,7 +571,8 @@
               user &&
               user.scopes &&
               (user.scopes.includes('edit_locations') ||
-                user.scopes.includes('add_locations'))
+                (user.scopes.includes('add_locations') &&
+                  (user.id === court.created_by || newLocationMode)))
           "
           class="row justify-center"
         >
@@ -673,7 +698,8 @@
                       !user ||
                         !user.scopes ||
                         (!user.scopes.includes('edit_locations') &&
-                          !user.scopes.includes('add_locations'))
+                          (!user.scopes.includes('add_locations') ||
+                            (user.id !== court.created_by && !newLocationMode)))
                     "
                     class="q-mt-md q-mb-lg"
                     color="indigo"
