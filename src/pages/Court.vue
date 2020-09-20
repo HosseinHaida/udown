@@ -22,13 +22,7 @@
             >
               <q-btn
                 class="absolute all-pointer-events"
-                v-if="
-                  user &&
-                    user.scopes &&
-                    (user.scopes.includes('edit_locations') ||
-                      (user.scopes.includes('add_locations') &&
-                        user.id === court.created_by))
-                "
+                v-if="showElementIfAuthorized"
                 icon="attach_file"
                 color="white"
                 text-color="black"
@@ -97,14 +91,7 @@
               </template>
             </q-img>
             <q-form
-              v-if="
-                showCoverPhotoInput &&
-                  user &&
-                  user.scopes &&
-                  (user.scopes.includes('edit_locations') ||
-                    (user.scopes.includes('add_locations') &&
-                      user.id === court.created_by))
-              "
+              v-if="showCoverPhotoInput && showElementIfAuthorized"
               class="q-pt-sm"
             >
               <q-file
@@ -155,14 +142,7 @@
                   <span style="color: white">Cover</span>
                 </div>
                 <q-btn
-                  v-if="
-                    !showCoverPhotoInput &&
-                      user &&
-                      user.scopes &&
-                      (user.scopes.includes('edit_locations') ||
-                        (user.scopes.includes('add_locations') &&
-                          user.id === court.created_by))
-                  "
+                  v-if="!showCoverPhotoInput && showElementIfAuthorized"
                   class="col-xs-12 self-end"
                   color="white"
                   text-color="black"
@@ -172,14 +152,7 @@
                   @click="showCoverPhotoInput = true"
                 />
                 <q-btn
-                  v-if="
-                    showCoverPhotoInput &&
-                      user &&
-                      user.scopes &&
-                      (user.scopes.includes('edit_locations') ||
-                        (user.scopes.includes('add_locations') &&
-                          user.id === court.created_by))
-                  "
+                  v-if="showCoverPhotoInput && showElementIfAuthorized"
                   class="col-xs-12 self-end"
                   color="white"
                   text-color="black"
@@ -191,14 +164,7 @@
               </div>
             </div>
             <q-form
-              v-if="
-                showCoverPhotoInput &&
-                  user &&
-                  user.scopes &&
-                  (user.scopes.includes('edit_locations') ||
-                    (user.scopes.includes('add_locations') &&
-                      user.id === court.created_by))
-              "
+              v-if="showCoverPhotoInput && showElementIfAuthorized"
               class="q-pt-sm"
             >
               <q-file
@@ -245,13 +211,7 @@
             >
               <q-btn
                 class="absolute all-pointer-events"
-                v-if="
-                  user &&
-                    user.scopes &&
-                    (user.scopes.includes('edit_locations') ||
-                      (user.scopes.includes('add_locations') &&
-                        user.id === court.created_by))
-                "
+                v-if="showElementIfAuthorized"
                 icon="delete"
                 color="negative"
                 dense
@@ -295,13 +255,7 @@
               </span>
               <template v-slot:error>
                 <q-btn
-                  v-if="
-                    user &&
-                      user.scopes &&
-                      (user.scopes.includes('edit_locations') ||
-                        (user.scopes.includes('add_locations') &&
-                          user.id === court.created_by))
-                  "
+                  v-if="showElementIfAuthorized"
                   icon="delete"
                   color="negative"
                   dense
@@ -316,13 +270,7 @@
             </q-img>
           </div>
           <q-btn
-            v-if="
-              user &&
-                user.scopes &&
-                (user.scopes.includes('edit_locations') ||
-                  (user.scopes.includes('add_locations') &&
-                    user.id === court.created_by))
-            "
+            v-if="showElementIfAuthorized"
             class="col-xs-12"
             color="primary"
             push
@@ -332,14 +280,7 @@
           />
           <div class="col-xs-12 col-md-12 q-px-xs q-mb-sm">
             <q-form
-              v-if="
-                showNewPhotoInput &&
-                  user &&
-                  user.scopes &&
-                  (user.scopes.includes('edit_locations') ||
-                    (user.scopes.includes('add_locations') &&
-                      user.id === court.created_by))
-              "
+              v-if="showNewPhotoInput && showElementIfAuthorized"
               class="q-pt-sm"
             >
               <q-file
@@ -518,26 +459,13 @@
                   <q-btn
                     label="Delete location"
                     color="negative"
-                    icon="delete"
-                    :disable="
-                      !user ||
-                        !user.scopes ||
-                        (!user.scopes.includes('edit_locations') &&
-                          (!user.scopes.includes('add_locations') ||
-                            user.id !== court.created_by))
-                    "
+                    :disable="disableForNonAuthorized"
                   />
                 </q-btn-dropdown>
                 <q-btn-toggle
                   v-model="viewEditToggle"
                   toggle-color="indigo"
-                  :disable="
-                    !user ||
-                      !user.scopes ||
-                      (!user.scopes.includes('edit_locations') &&
-                        (!user.scopes.includes('add_locations') ||
-                          user.id !== court.created_by))
-                  "
+                  :disable="disableForNonAuthorized"
                   push
                   :options="[
                     {
@@ -566,14 +494,7 @@
         <!-- ///////////////////////////////////////////////// -->
         <q-form
           @submit="submitForm"
-          v-if="
-            viewEditToggle === 'edit' &&
-              user &&
-              user.scopes &&
-              (user.scopes.includes('edit_locations') ||
-                (user.scopes.includes('add_locations') &&
-                  (user.id === court.created_by || newLocationMode)))
-          "
+          v-if="viewEditToggle === 'edit' && showElementIfAuthorized"
           class="row justify-center"
         >
           <div class="col-xs-12 col-md-11">
@@ -694,13 +615,7 @@
                     :loading="updatePending"
                     label="Save"
                     type="submit"
-                    :disable="
-                      !user ||
-                        !user.scopes ||
-                        (!user.scopes.includes('edit_locations') &&
-                          (!user.scopes.includes('add_locations') ||
-                            (user.id !== court.created_by && !newLocationMode)))
-                    "
+                    :disable="disableForNonAuthorized"
                     class="q-mt-md q-mb-lg"
                     color="indigo"
                   ></q-btn>
@@ -946,6 +861,24 @@ export default {
     },
     photoUploadPending() {
       return this.$store.state.courts.photoUploadPending;
+    },
+    disableForNonAuthorized() {
+      return (
+        !this.user ||
+        !this.user.scopes ||
+        (!this.user.scopes.includes("edit_locations") &&
+          (!this.user.scopes.includes("add_locations") ||
+            (this.user.id !== this.court.created_by && !this.newLocationMode)))
+      );
+    },
+    showElementIfAuthorized() {
+      return (
+        this.user &&
+        this.user.scopes &&
+        (this.user.scopes.includes("edit_locations") ||
+          (this.user.scopes.includes("add_locations") &&
+            (this.user.id === this.court.created_by || this.newLocationMode)))
+      );
     }
   },
   watch: {
