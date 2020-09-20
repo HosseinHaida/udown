@@ -23,7 +23,10 @@
               <q-btn
                 class="absolute all-pointer-events"
                 v-if="
-                  user && user.scopes && user.scopes.includes('edit_locations')
+                  user &&
+                    user.scopes &&
+                    (user.scopes.includes('edit_locations') ||
+                      user.scopes.includes('add_locations'))
                 "
                 icon="attach_file"
                 color="white"
@@ -97,7 +100,8 @@
                 showCoverPhotoInput &&
                   user &&
                   user.scopes &&
-                  user.scopes.includes('edit_locations')
+                  (user.scopes.includes('edit_locations') ||
+                    user.scopes.includes('add_locations'))
               "
               class="q-pt-sm"
             >
@@ -153,7 +157,8 @@
                     !showCoverPhotoInput &&
                       user &&
                       user.scopes &&
-                      user.scopes.includes('edit_locations')
+                      (user.scopes.includes('edit_locations') ||
+                        user.scopes.includes('add_locations'))
                   "
                   class="col-xs-12 self-end"
                   color="white"
@@ -168,7 +173,8 @@
                     showCoverPhotoInput &&
                       user &&
                       user.scopes &&
-                      user.scopes.includes('edit_locations')
+                      (user.scopes.includes('edit_locations') ||
+                        user.scopes.includes('add_locations'))
                   "
                   class="col-xs-12 self-end"
                   color="white"
@@ -185,7 +191,8 @@
                 showCoverPhotoInput &&
                   user &&
                   user.scopes &&
-                  user.scopes.includes('edit_locations')
+                  (user.scopes.includes('edit_locations') ||
+                    user.scopes.includes('add_locations'))
               "
               class="q-pt-sm"
             >
@@ -234,7 +241,10 @@
               <q-btn
                 class="absolute all-pointer-events"
                 v-if="
-                  user && user.scopes && user.scopes.includes('edit_locations')
+                  user &&
+                    user.scopes &&
+                    (user.scopes.includes('edit_locations') ||
+                      user.scopes.includes('add_locations'))
                 "
                 icon="delete"
                 color="negative"
@@ -282,7 +292,8 @@
                   v-if="
                     user &&
                       user.scopes &&
-                      user.scopes.includes('edit_locations')
+                      (user.scopes.includes('edit_locations') ||
+                        user.scopes.includes('add_locations'))
                   "
                   icon="delete"
                   color="negative"
@@ -298,7 +309,12 @@
             </q-img>
           </div>
           <q-btn
-            v-if="user && user.scopes && user.scopes.includes('edit_locations')"
+            v-if="
+              user &&
+                user.scopes &&
+                (user.scopes.includes('edit_locations') ||
+                  user.scopes.includes('add_locations'))
+            "
             class="col-xs-12"
             color="primary"
             push
@@ -312,7 +328,8 @@
                 showNewPhotoInput &&
                   user &&
                   user.scopes &&
-                  user.scopes.includes('edit_locations')
+                  (user.scopes.includes('edit_locations') ||
+                    user.scopes.includes('add_locations'))
               "
               class="q-pt-sm"
             >
@@ -494,7 +511,8 @@
                   :disable="
                     !user ||
                       !user.scopes ||
-                      !user.scopes.includes('edit_locations')
+                      (!user.scopes.includes('edit_locations') &&
+                        !user.scopes.includes('add_locations'))
                   "
                   push
                   :options="[
@@ -528,7 +546,8 @@
             viewEditToggle === 'edit' &&
               user &&
               user.scopes &&
-              user.scopes.includes('edit_locations')
+              (user.scopes.includes('edit_locations') ||
+                user.scopes.includes('add_locations'))
           "
           class="row justify-center"
         >
@@ -653,7 +672,8 @@
                     :disable="
                       !user ||
                         !user.scopes ||
-                        !user.scopes.includes('edit_locations')
+                        (!user.scopes.includes('edit_locations') &&
+                          !user.scopes.includes('add_locations'))
                     "
                     class="q-mt-md q-mb-lg"
                     color="indigo"
@@ -669,10 +689,10 @@
             newLocationMode &&
               user &&
               user.scopes &&
-              !user.scopes.includes('edit_locations')
+              !user.scopes.includes('add_locations')
           "
         >
-          You can't manipulate location
+          You may not be authorized here
         </div>
         <!-- ///////////////////////////////////////////////// -->
         <!-- ///////////////////////////////////////////////// -->
