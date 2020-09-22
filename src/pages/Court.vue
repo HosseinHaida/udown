@@ -351,7 +351,7 @@
       <!-- //////////// View mode general info ///////////// -->
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
-      <div class="col-xs-12 col-md-8 q-mt-lg data-column">
+      <div class="col-xs-12 col-md-8 data-column">
         <div v-if="!newLocationMode" class="row justify-center q-mb-lg q-pa-lg">
           <div style="font-size: 28px">
             {{ court.name }}
@@ -455,11 +455,26 @@
           <div class="col-xs-12 col-md-11 q-mb-lg">
             <div class="row justify-end">
               <div>
-                <q-btn-dropdown flat class="q-mr-sm" icon="more_horiz">
+                <q-btn-dropdown
+                  flat
+                  class="q-mr-sm q-pr-sm"
+                  dropdown-icon="more_horiz"
+                >
+                  <q-btn
+                    class="full-width"
+                    :label="
+                      court.verified ? 'Remove verification' : 'Verify location'
+                    "
+                    :icon="court.verified ? 'remove' : 'beenhere'"
+                    color="positive"
+                    :disable="disableForNonAuthorized"
+                  /><br />
                   <q-btn
                     label="Delete location"
                     color="negative"
+                    icon="delete"
                     :disable="disableForNonAuthorized"
+                    class="full-width q-mt-xs"
                   />
                 </q-btn-dropdown>
                 <q-btn-toggle
