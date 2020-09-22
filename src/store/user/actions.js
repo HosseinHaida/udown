@@ -1,13 +1,23 @@
 import axios from "axios";
 import { apiUrl } from "../variables";
-export async function signup({ state, commit }, newUser) {
+export async function signup({ commit }, newUser) {
   commit("setSignupPending", true);
   return await axios.post(apiUrl + "/auth/signup", newUser).then(
     res => {
       commit("setSignupPending", false);
       if (res.data.user) {
         commit("setUserData", res.data.user);
-        commit("setCookie", res.data.user);
+        commit("setCookie", res.data.user.token);
+        if (res.data.user.outbound_requests) {
+          commit("setUserRequests", res.data.user.outbound_requests);
+        }
+        if (res.data.user.inbound_requests) {
+          commit("setUserRequestsInbound", res.data.user.inbound_requests);
+          commit(
+            "setUserInboundRequestsCount",
+            res.data.user.inbound_requests.length
+          );
+        }
       }
       return {
         status: "success",
@@ -30,14 +40,24 @@ export async function signup({ state, commit }, newUser) {
   );
 }
 
-export async function signin({ state, commit }, userCredentials) {
+export async function signin({ commit }, userCredentials) {
   commit("setSigninPending", true);
   return await axios.post(apiUrl + "/auth/signin", userCredentials).then(
     res => {
       commit("setSigninPending", false);
       if (res.data.user) {
         commit("setUserData", res.data.user);
-        commit("setCookie", res.data.user);
+        commit("setCookie", res.data.user.token);
+        if (res.data.user.outbound_requests) {
+          commit("setUserRequests", res.data.user.outbound_requests);
+        }
+        if (res.data.user.inbound_requests) {
+          commit("setUserRequestsInbound", res.data.user.inbound_requests);
+          commit(
+            "setUserInboundRequestsCount",
+            res.data.user.inbound_requests.length
+          );
+        }
       }
 
       return {
@@ -87,6 +107,16 @@ export async function fetchUserData({ state, commit }) {
           if (res.data && res.data.user) {
             commit("setUserData", res.data.user);
             commit("setToken", t);
+            if (res.data.user.outbound_requests) {
+              commit("setUserRequests", res.data.user.outbound_requests);
+            }
+            if (res.data.user.inbound_requests) {
+              commit("setUserRequestsInbound", res.data.user.inbound_requests);
+              commit(
+                "setUserInboundRequestsCount",
+                res.data.user.inbound_requests.length
+              );
+            }
           }
           return {
             status: "success",

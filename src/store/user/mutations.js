@@ -36,14 +36,17 @@ export function setPhotoUploadPending(state, status) {
 
 export function logout(state) {
   state.data = null;
+  state.t = null;
+  state.inboundRequestsCount = null;
   document.cookie = "t=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/";
 }
 
-export function setCookie(state, user) {
+export function setCookie(state, token) {
   let d = new Date();
   d.setTime(d.getTime() + 14 * 24 * 60 * 60 * 1000);
   let expires = d.toUTCString();
-  document.cookie = "t=" + user.token + ";expires=" + expires + ";path=/";
+  document.cookie = "t=" + token + ";expires=" + expires + ";path=/";
+  state.t = token;
 }
 
 export function setUserFriends(state, userFriends) {
