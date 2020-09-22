@@ -1,11 +1,10 @@
 <template>
-  <q-page
-    class="q-pa-md"
-    :class="!user ? 'row items-center justify-evenly' : ''"
-  >
+  <q-page class="q-pa-md" :class="!user ? 'row justify-evenly' : ''">
     <!-- //////////// In case nobody's logged in ///////////// -->
-    <div v-if="!user" class="col-xs-12 text-center text-h4">
-      Please login first
+    <div v-if="!user" class="col-xs-12 text-center q-mt-md">
+      <span class="text-subtitle1 q-py-sm q-px-md custom-warning-tip">
+        No currently logged in user found
+      </span>
     </div>
 
     <q-card v-if="user" flat>
