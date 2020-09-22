@@ -11,16 +11,22 @@ export const scopes = [
     icon: "event_note",
     color: "secondary"
   },
-  // {
-  //   name: "add_locations",
-  //   desc: "Add locations",
-  //   icon: "add_location",
-  //   color: "primary"
-  // },
+  {
+    name: "add_locations",
+    desc: "Add locations",
+    icon: "add_location",
+    color: "primary"
+  },
   {
     name: "edit_locations",
-    desc: "Edit locations",
+    desc: "Edit any location",
     icon: "edit_location",
+    color: "primary"
+  },
+  {
+    name: "verify_locations",
+    desc: "Verify locations",
+    icon: "beenhere",
     color: "primary"
   },
   {
@@ -33,6 +39,12 @@ export const scopes = [
     name: "suspend_admins",
     desc: "Suspend admins",
     icon: "local_police",
+    color: "dark"
+  },
+  {
+    name: "verify_users",
+    desc: "Verify users",
+    icon: "verified_user",
     color: "dark"
   },
   {
