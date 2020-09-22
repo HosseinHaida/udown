@@ -1,3 +1,44 @@
+import axios from "axios";
+import { apiUrl } from "../variables";
+
+export async function fetchEventsList({ rootState, commit }, which) {
+  commit("setEventsFetchPending", true);
+  const url = `${apiUrl}/events/list/${which.page}/${which.howMany}/${which.searchText}`;
+  return await axios
+    .get(url, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        commit("setEventsFetchPending", false);
+        commit("setEventsList", res.data.events);
+        commit("setEventsListTotals", {
+          pages: res.data.pages,
+          count: res.data.total
+        });
+        return {
+          status: "success",
+          message: "Fetched List"
+        };
+      },
+      error => {
+        commit("setEventsFetchPending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
 export function findEventsByCourtId({ state, commit }, courtId) {
   // make the call
   commit("setResults", [
