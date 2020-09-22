@@ -41,3 +41,6 @@ export function updateLocationPhoto(state, path) {
 export function updateLocationPhotos(state, photos) {
   state.thisCourt.photos = photos;
 }
+export function setLocationVerificationStatus(state, status) {
+  state.thisCourt.verified = status;
+}

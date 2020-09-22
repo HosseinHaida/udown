@@ -131,7 +131,7 @@ export async function insert({ rootState, commit }, newLocation) {
 }
 
 export async function comment({ rootState, commit }, comment) {
-  commit("setUpdatePending", true);
+  commit("setCommentPending", true);
   return await axios
     .post(apiUrl + "/location/comment", comment, {
       headers: {
@@ -265,6 +265,74 @@ export async function deletePhoto(
       },
       error => {
         commit("setPhotoUploadPending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function verifyLocation({ rootState, commit }, id) {
+  return await axios
+    .post(
+      apiUrl + "/location/verify",
+      { id },
+      {
+        headers: {
+          token: rootState.user.t
+        }
+      }
+    )
+    .then(
+      res => {
+        if (res.data) {
+          commit("setLocationVerificationStatus", true);
+        }
+        return {
+          status: "success",
+          message: "Verified"
+        };
+      },
+      error => {
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function removeLocationVerification({ rootState, commit }, id) {
+  return await axios
+    .delete(apiUrl + "/location/remove/verification/" + id, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        if (res.data) {
+          commit("setLocationVerificationStatus", false);
+        }
+        return {
+          status: "success",
+          message: "Removed verification"
+        };
+      },
+      error => {
         if (!error.response) {
           return {
             status: "error",

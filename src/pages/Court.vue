@@ -354,6 +354,12 @@
       <div class="col-xs-12 col-md-8 data-column">
         <div v-if="!newLocationMode" class="row justify-center q-mb-lg q-pa-lg">
           <div style="font-size: 28px">
+            <q-icon
+              name="beenhere"
+              color="positive"
+              v-if="court.verified"
+              size="20px"
+            />
             {{ court.name }}
             <q-btn
               type="a"
@@ -467,7 +473,11 @@
                     "
                     :icon="court.verified ? 'remove' : 'beenhere'"
                     color="positive"
-                    :disable="disableForNonAuthorized"
+                    @click="
+                      court.verified
+                        ? removeLocationVerification()
+                        : verifyLocation()
+                    "
                   /><br />
                   <q-btn
                     label="Delete location"
@@ -907,6 +917,44 @@ export default {
     }
   },
   methods: {
+    verifyLocation() {
+      this.$store
+        .dispatch("courts/verifyLocation", this.court.id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "cloud_done",
+              message: message
+            });
+          }
+        });
+    },
+    removeLocationVerification() {
+      this.$store
+        .dispatch("courts/removeLocationVerification", this.court.id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "delete",
+              message: message
+            });
+          }
+        });
+    },
     expandThisPhoto(url) {
       this.expandedPhoto = url;
       this.expandPhoto = true;
