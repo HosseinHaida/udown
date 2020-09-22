@@ -7,7 +7,7 @@
           <q-avatar>
             <img src="udown-logo.png" />
           </q-avatar>
-          U Down?
+          <q-btn dense to="/" size="23px" flat label="U Down?" no-caps />
         </q-toolbar-title>
 
         <!-- User Pic -->
@@ -24,7 +24,6 @@
         />
         <q-btn-dropdown
           v-if="user"
-          class="q-mr-sm"
           size="13px"
           color="grey-1"
           push
@@ -91,13 +90,13 @@
           </div>
         </q-btn-dropdown>
 
-        <q-btn
+        <!-- <q-btn
           dense
           flat
           round
           icon="menu"
           @click="rightDrawerStatus = !rightDrawerStatus"
-        />
+        /> -->
       </q-toolbar>
 
       <!-- <q-tabs align="left">
@@ -150,7 +149,6 @@
         </q-item>
 
         <q-item
-          v-if="user"
           to="/events"
           clickable
           v-ripple
@@ -182,10 +180,9 @@
       </q-list>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawerStatus" side="right" elevated>
-      <!-- drawer content -->
+    <!-- <q-drawer v-model="rightDrawerStatus" side="right" elevated>
       <events-list></events-list>
-    </q-drawer>
+    </q-drawer> -->
 
     <q-page-container>
       <router-view />
@@ -227,28 +224,10 @@ export default {
       });
       this.$router.push("/login");
     }
-  },
-  beforeMount() {
-    this.$store.dispatch("user/fetchUserData").then(({ status, message }) => {
-      if (status === "error") {
-        this.$q.notify({
-          color: "red-5",
-          icon: "warning",
-          message: message
-        });
-      }
-      // else if (status === "success") {
-      //   this.$q.notify({
-      //     color: "light-blue-4",
-      //     icon: "cloud_download",
-      //     message: message
-      //   });
-      // }
-    });
-  },
-  components: {
-    "events-list": eventsList
   }
+  // components: {
+  //   "events-list": eventsList
+  // }
 };
 </script>
 <style lang="sass" scoped>
