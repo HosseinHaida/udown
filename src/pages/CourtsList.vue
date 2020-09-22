@@ -29,6 +29,15 @@
         :key="index"
       >
         <q-card>
+          <q-badge
+            v-if="court.verified === true"
+            style="z-index: 1; border-radius: 4px"
+            floating
+            class="q-pa-xs"
+            color="positive"
+          >
+            <q-icon size="17px" name="beenhere" color="white"></q-icon>
+          </q-badge>
           <q-img
             :ratio="4 / 3"
             placeholder-src="placeholder-image.png"
