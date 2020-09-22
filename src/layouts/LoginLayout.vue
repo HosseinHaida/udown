@@ -6,7 +6,7 @@
           <q-avatar>
             <img src="udown-logo.png" />
           </q-avatar>
-          U Down?
+          <q-btn dense to="/" size="23px" flat label="U Down?" no-caps />
         </q-toolbar-title>
       </q-toolbar>
       <!-- <q-tabs align="left">
