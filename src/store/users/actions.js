@@ -55,13 +55,85 @@ export async function updateUserScopes({ rootState, commit }, { scopes, id }) {
       res => {
         commit("setUserScopesUpdatePending", false);
         commit("setUserScopes", { scopes: res.data.scopes, id: id });
+        let message = "Updated";
+        if (id === rootState.user.data.id) {
+          message = "Reload page to have your new scopes in effect";
+        }
         return {
           status: "success",
-          message: "Updated their scopes"
+          message
         };
       },
       error => {
         commit("setUserScopesUpdatePending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function verifyUser({ rootState, commit }, id) {
+  return await axios
+    .post(
+      apiUrl + "/auth/verify",
+      { id },
+      {
+        headers: {
+          token: rootState.user.t
+        }
+      }
+    )
+    .then(
+      res => {
+        if (res.data) {
+          commit("setUserVerificationStatus", { id, status: true });
+        }
+        return {
+          status: "success",
+          message: "Verified"
+        };
+      },
+      error => {
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function removeUserVerification({ rootState, commit }, id) {
+  return await axios
+    .delete(apiUrl + "/auth/remove/verification/" + id, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        if (res.data) {
+          commit("setUserVerificationStatus", { id, status: false });
+        }
+        return {
+          status: "success",
+          message: "Removed verification"
+        };
+      },
+      error => {
         if (!error.response) {
           return {
             status: "error",

@@ -71,7 +71,7 @@
               </div>
               <span v-for="(scope, index) in scopes" :key="index">
                 <q-checkbox
-                  v-if="user.scopes.includes(scope.name) || canEditScopes "
+                  v-if="user.scopes.includes(scope.name) || canEditScopes"
                   v-model="userScopes"
                   :val="scope.name"
                   :color="scope.color"
@@ -80,6 +80,7 @@
                     (isMyself && !canEditScopes) ||
                       (!isMyself && !canEditScopes)
                   "
+                  style="min-width: 250px"
                 >
                   <q-icon
                     class="col-auto q-mr-sm"
@@ -108,11 +109,11 @@
       <div class="col lt-sm"></div>
 
       <q-item-section
-        v-if="isUserLoggedIn && !isMyself && haveFriends"
+        v-if="isUserLoggedIn && !isMyself"
         side
         class="q-ml-md col-auto"
       >
-        <div class="text-grey-8 q-gutter-xs">
+        <div class="text-grey-8 q-gutter-xs column">
           <q-btn
             class="bg-grey-2"
             size="12px"
@@ -136,13 +137,31 @@
                 : "Request"
             }}</span>
           </q-btn>
-          <br />
-          <q-btn
-            class="lt-sm"
-            @click="showScopesMenu(user.scopes)"
-            icon="settings"
+          <q-btn-dropdown
             flat
-          />
+            dense
+            class="q-pr-sm q-ml-xs"
+            style="margin-left: auto"
+            dropdown-icon="more_horiz"
+          >
+            <div class="column">
+              <q-btn
+                class="lt-sm"
+                @click="showScopesMenu(user.scopes)"
+                icon="admin_panel_settings"
+                label="Scopes"
+                color="primary"
+              />
+              <q-btn
+                class="q-mt-xs"
+                :label="user.verified ? 'Remove verification' : 'Verify user'"
+                :icon="user.verified ? 'remove' : 'verified_user'"
+                :disable="!canVerifyUsers"
+                color="positive"
+                @click="user.verified ? removeUserVerification() : verifyUser()"
+              />
+            </div>
+          </q-btn-dropdown>
         </div>
       </q-item-section>
     </q-item>
@@ -164,6 +183,7 @@ export default {
     "user",
     "type",
     "isFriend",
+    "canVerifyUsers",
     "isUserLoggedIn",
     "isMyself",
     "haveFriends",
@@ -172,6 +192,44 @@ export default {
     "canEditScopes"
   ],
   methods: {
+    verifyUser() {
+      this.$store
+        .dispatch("users/verifyUser", this.user.id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "cloud_done",
+              message: message
+            });
+          }
+        });
+    },
+    removeUserVerification() {
+      this.$store
+        .dispatch("users/removeUserVerification", this.user.id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "delete",
+              message: message
+            });
+          }
+        });
+    },
     showScopesMenu(scopes) {
       this.fillThisUsersScopes(scopes);
       this.showScopes = !this.showScopes;

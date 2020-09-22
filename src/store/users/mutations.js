@@ -21,3 +21,14 @@ export function setUserScopes(state, { scopes, id }) {
     }
   });
 }
+
+export function setUserVerificationStatus(state, { id, status }) {
+  state.list.filter(user => {
+    if (user.id === id) {
+      user.verified = status;
+    }
+  });
+}
+// export function setLoggedInUserScopes(rootState, scopes) {
+//   rootState.user.data.scopes = scopes;
+// }
