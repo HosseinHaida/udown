@@ -22,6 +22,11 @@
           :key="index"
           :user="user"
           :type="type"
+          :canVerifyUsers="
+            loggedInUser &&
+              loggedInUser.scopes &&
+              loggedInUser.scopes.includes('verify_users')
+          "
           :isUserLoggedIn="loggedInUser ? true : false"
           :haveFriends="loggedInUser && loggedInUser.friends ? true : false"
           :isMyself="loggedInUser && loggedInUser.id !== user.id ? false : true"
