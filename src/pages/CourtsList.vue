@@ -104,7 +104,6 @@
           <q-separator />
 
           <q-card-actions>
-            <!-- <q-btn flat round icon="event" /> -->
             <q-btn
               flat
               icon="event"
