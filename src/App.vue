@@ -15,6 +15,9 @@ export default {
           message: message
         });
       }
+      // if (status === "success") {
+      //   console.log("fetched user");
+      // }
     });
   }
 };
