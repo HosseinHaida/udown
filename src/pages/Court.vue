@@ -16,20 +16,20 @@
         class="col-xs-12 col-sm-6 col-md-4 q-pa-xs photos-column"
       >
         <div class="row">
-          <!-- <div
-            class="q-mb-md col-xs-12"
+          <div
+            class="q-mb-sm col-xs-12 bg-indigo text-grey-4"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
             <div class="row full-height justify-start items-center q-px-md">
-              <div class="col-auto" style="font-size: 28px">
+              <div class="col-auto text-h5">
                 Photos
               </div>
             </div>
-          </div> -->
-          <div class="text-h5 q-mb-md q-mt-md text-grey-7 col-xs-12 q-px-sm">
-            Photos
           </div>
-          <div v-if="court.photo" class="col-xs-12 col-md-12 q-px-xs q-mb-sm">
+          <!-- <div class="text-h5 q-mb-md q-mt-md text-grey-7 col-xs-12 q-px-sm">
+            Photos
+          </div> -->
+          <div v-if="court.photo" class="col-xs-12 col-md-12 q-mb-sm">
             <q-img
               :src="court.photo"
               placeholder-src="placeholder-image.png"
@@ -369,7 +369,7 @@
       <div class="col-xs-12 col-md-8 data-column">
         <div v-if="!newLocationMode" class="row justify-center q-pa-xs">
           <div
-            class="q-mb-md col-xs-12"
+            class="q-mb-sm col-xs-12 bg-indigo text-white"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
             <div class="row full-height justify-center items-center">
@@ -398,8 +398,8 @@
         </div>
         <div v-if="!newLocationMode" class="row justify-center">
           <div class="col-xs-12 col-md-11 q-mb-md">
-            <div class="row items-start">
-              <div class="col-xs-12 col-md-6 q-px-sm q-pb-md">
+            <div class="row items-stretch">
+              <div class="col-xs-12 col-md-6 q-px-sm">
                 <div class="q-my-xs row items-center">
                   <q-icon color="indigo" name="launch" size="25px"></q-icon>
                   <q-btn
@@ -413,20 +413,21 @@
                     style="margin-left: 12px"
                   />
                 </div>
+                <!-- <q-separator spaced inset /> -->
                 <div class="q-my-xs row items-center">
                   <q-icon name="payments" color="indigo" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">{{
                     court.cost
                   }}</span>
                 </div>
-                <!-- <q-separator inset /> -->
+                <!-- <q-separator spaced inset /> -->
                 <div class="q-my-xs row items-center">
                   <q-icon color="indigo" name="map" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">
                     {{ court.city + ", " + court.region }}
                   </span>
                 </div>
-                <!-- <q-separator inset /> -->
+                <!-- <q-separator spaced inset /> -->
                 <div class="q-my-xs row items-center">
                   <q-icon color="indigo" name="wc" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">{{
@@ -435,7 +436,7 @@
                       : "Girls aren't allowed"
                   }}</span>
                 </div>
-                <!-- <q-separator inset /> -->
+                <!-- <q-separator spaced inset /> -->
                 <div
                   v-if="court && court.sport_types"
                   class="q-my-xs q-pr-xs row items-center"
@@ -465,7 +466,7 @@
                   readonly
                   style="font-size: 16px"
                   color="indigo"
-                  outlined
+                  borderless
                   ><template v-slot:prepend>
                     <q-icon size="26px" name="more_vert" />
                   </template>
