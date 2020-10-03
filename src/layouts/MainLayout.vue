@@ -133,6 +133,7 @@
 
         <q-item
           to="/events"
+          v-if="user"
           clickable
           v-ripple
           active-class="active-drawer-link"
