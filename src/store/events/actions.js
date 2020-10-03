@@ -3,7 +3,7 @@ import { apiUrl } from "../variables";
 
 export async function fetchEventsList({ rootState, commit }, which) {
   commit("setEventsFetchPending", true);
-  const url = `${apiUrl}/events/list/${which.type}?page=${which.page}&how_many=${which.howMany}&search_text=${which.searchText}`;
+  const url = `${apiUrl}/events/list/${which.type}/${which.showCanceled}?page=${which.page}&how_many=${which.howMany}&search_text=${which.searchText}`;
   return await axios
     .get(url, {
       headers: {

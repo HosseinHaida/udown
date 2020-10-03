@@ -71,6 +71,23 @@
                   </div>
                   <q-separator />
                 </div>
+                <div>
+                  <div class="row q-py-xs q-ml-xs q-pr-md">
+                    <q-checkbox
+                      v-model="showCanceled"
+                      label="Show canceled events too"
+                      color="primary"
+                      @input="fetchEvents($event)"
+                    /><q-space />
+                    <q-icon
+                      class="col-auto"
+                      size="25px"
+                      color="primary"
+                      name="warning"
+                      style="margin-top: 7px"
+                    />
+                  </div>
+                </div>
               </q-list>
             </q-btn-dropdown>
             <q-btn icon="add" to="courts" class="q-ml-xs" color="indigo"
@@ -223,14 +240,12 @@
             </q-item-section> -->
                 <q-badge
                   color="negative"
-                  class="absolute-right q-pa-md"
-                  style="opacity: 0.35"
+                  class="absolute-bottom-right q-px-sm q-py-xs"
+                  style="opacity: 0.7"
                   v-if="event.canceled"
-                  ><span class="full-width text-center text-subtitle1">
-                    <q-icon size="md" name="close" />
-                    Canceled</span
-                  ></q-badge
-                >
+                  ><span class="full-width text-center text-subtitle2">
+                    <q-icon size="xs" name="warning" /> </span
+                ></q-badge>
               </q-item>
 
               <q-separator spaced />
@@ -273,6 +288,7 @@ export default {
   name: "EventsList",
   data() {
     return {
+      showCanceled: false,
       filterOptions: [
         { val: "all", color: "primary", label: "All", icon: "list" },
         {
@@ -334,7 +350,8 @@ export default {
           page: this.which.page,
           howMany: this.howMany,
           searchText: this.searchText,
-          type: this.eventsType
+          type: this.eventsType,
+          showCanceled: this.showCanceled
         })
         .then(({ status, message }) => {
           if (status === "error") {
