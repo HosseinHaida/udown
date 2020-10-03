@@ -1,6 +1,11 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="row">
+    <div v-if="!user" class="col-xs-12 text-center">
+      <span class="text-subtitle1 q-py-sm q-px-md custom-warning-tip">
+        Please login or reload the page if you're already logged in
+      </span>
+    </div>
+    <div class="row" v-if="user">
       <div class="col-xs-12">
         <div class="row">
           <q-input
@@ -10,7 +15,7 @@
             v-model="searchText"
             hint="Location, sport, creator"
             @input="fetchEvents(true)"
-            class="q-mb-sm col"
+            class="q-mb-md col"
             debounce="200"
             :loading="eventsFetchPending"
             bottom-slots
@@ -18,27 +23,61 @@
             <template v-slot:prepend><q-icon name="search"/></template
           ></q-input>
           <div class="col-auto">
-            <q-btn icon="event" class="q-ml-sm" color="indigo">
-              <q-popup-proxy
-                @before-show="updateProxy"
-                transition-show="scale"
-                transition-hide="scale"
-              >
-                <q-date color="indigo" v-model="proxyDate">
-                  <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn label="Cancel" color="primary" flat v-close-popup />
-                    <q-btn
-                      label="OK"
-                      color="primary"
-                      flat
-                      @click="save"
-                      v-close-popup
+            <!-- <q-btn icon="event" class="q-ml-sm" color="indigo">
+                <q-popup-proxy
+                  @before-show="updateProxy"
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date color="indigo" v-model="proxyDate">
+                    <div class="row items-center justify-end q-gutter-sm">
+                      <q-btn label="Cancel" color="primary" flat v-close-popup />
+                      <q-btn
+                        label="OK"
+                        color="primary"
+                        flat
+                        @click="save"
+                        v-close-popup
+                      />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+                <q-tooltip content-style="font-size: 13px">Select date</q-tooltip>
+              </q-btn> -->
+
+            <q-btn-dropdown
+              dropdown-icon="filter_alt"
+              class="q-ml-sm q-pr-sm"
+              color="primary"
+            >
+              <q-list>
+                <div v-for="(radio, index) in filterOptions" :key="index">
+                  <div class="row q-py-xs q-ml-xs q-pr-md">
+                    <q-radio
+                      v-model="eventsType"
+                      :val="radio.val"
+                      :color="radio.color"
+                      :label="radio.label"
+                      @input="fetchEvents($event)"
+                      class="col q-pr-md text-subtitle2"
+                    /><q-space />
+                    <q-icon
+                      class="col-auto"
+                      size="25px"
+                      :color="radio.color"
+                      :name="radio.icon"
+                      style="margin-top: 7px"
                     />
                   </div>
-                </q-date>
-              </q-popup-proxy>
-              <q-tooltip content-style="font-size: 13px">Select date</q-tooltip>
-            </q-btn>
+                  <q-separator />
+                </div>
+              </q-list>
+            </q-btn-dropdown>
+            <q-btn icon="add" to="courts" class="q-ml-xs" color="indigo"
+              ><q-tooltip content-style="font-size: 13px">
+                Create New Event</q-tooltip
+              ></q-btn
+            >
           </div>
         </div>
 
@@ -48,18 +87,50 @@
           /></q-item-label>
           <div v-if="user">
             <span v-for="(event, index) in list" :key="index">
-              <q-item clickable class="q-py-md">
+              <q-item
+                clickable
+                :to="'/events/' + event.id"
+                class="q-py-md"
+                :class="
+                  event.is_public
+                    ? ''
+                    : event.only_close_friends
+                    ? 'bg-deep-purple-1'
+                    : !event.is_public && !event.only_close_friends
+                    ? 'bg-green-1'
+                    : ''
+                "
+              >
                 <q-badge
-                  v-if="isExpired(event.happens_at)"
-                  class="q-py-xs"
-                  color="negative"
+                  class="q-py-xs q-pr-xs"
+                  :color="
+                    event.is_public
+                      ? 'indigo'
+                      : event.only_close_friends
+                      ? 'deep-purple'
+                      : !event.is_public && !event.only_close_friends
+                      ? 'green'
+                      : ''
+                  "
                   floating
                   ><q-icon
-                    name="warning"
+                    size="xs"
+                    :name="
+                      event.is_public
+                        ? 'public'
+                        : event.only_close_friends
+                        ? 'loyalty'
+                        : !event.is_public && !event.only_close_friends
+                        ? 'group'
+                        : ''
+                    "
                     class="q-mr-xs"
                     color="white"
-                  />Expired</q-badge
-                >
+                  />
+                  <span class="q-pr-xs" v-if="event.username === user.username"
+                    >Yours</span
+                  >
+                </q-badge>
                 <q-item-section avatar top>
                   <q-chip
                     dense
@@ -69,7 +140,20 @@
                     size="xl"
                     class="time-chip"
                     :label="getTime(event.happens_at)"
-                  />
+                  >
+                    <q-badge
+                      v-if="isExpired(event.happens_at)"
+                      class="q-py-xs"
+                      style="margin-top: -10px; margin-right: -5px"
+                      color="warning"
+                      floating
+                      ><q-icon
+                        name="warning"
+                        class="q-mr-xs"
+                        color="white"
+                      />Exp</q-badge
+                    ></q-chip
+                  >
                   <q-item-label
                     class="q-mt-xs text-center "
                     style="border-radius: 4px"
@@ -97,9 +181,7 @@
 
                 <q-item-section top>
                   <q-item-label lines="1">
-                    <span
-                      class="text-weight-medium text-primary text-subtitle1"
-                    >
+                    <span class="text-primary text-subtitle2">
                       {{ event.username }}</span
                     ><q-icon
                       name="verified"
@@ -133,12 +215,22 @@
                 </q-item-section>
 
                 <!-- <q-item-section side>
-            <div class="text-grey-8 q-gutter-xs">
-              <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
-              <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
-              <q-btn size="12px" flat dense round icon="more_vert" />
-            </div>
-          </q-item-section> -->
+              <div class="text-grey-8 q-gutter-xs">
+                <q-btn class="gt-xs" size="12px" flat dense round icon="delete" />
+                <q-btn class="gt-xs" size="12px" flat dense round icon="done" />
+                <q-btn size="12px" flat dense round icon="more_vert" />
+              </div>
+            </q-item-section> -->
+                <q-badge
+                  color="negative"
+                  class="absolute-right q-pa-md"
+                  style="opacity: 0.35"
+                  v-if="event.canceled"
+                  ><span class="full-width text-center text-subtitle1">
+                    <q-icon size="md" name="close" />
+                    Canceled</span
+                  ></q-badge
+                >
               </q-item>
 
               <q-separator spaced />
@@ -168,6 +260,9 @@
             ><span class="q-ml-xs">Events</span></q-chip
           >
         </div>
+        <!-- <div class="row justify-end fixed-bottom q-px-md q-py-sm bg-grey-3">
+          <q-btn push icon="event" label="New event" color="accent" />
+        </div> -->
       </div>
     </div>
   </q-page>
@@ -178,10 +273,38 @@ export default {
   name: "EventsList",
   data() {
     return {
+      filterOptions: [
+        { val: "all", color: "primary", label: "All", icon: "list" },
+        {
+          val: "public",
+          color: "indigo",
+          label: "Public events",
+          icon: "public"
+        },
+        {
+          val: "friends",
+          color: "positive",
+          label: "Invited you as friends",
+          icon: "group"
+        },
+        {
+          val: "close",
+          color: "deep-purple",
+          label: "Invited you as close friends",
+          icon: "loyalty"
+        },
+        {
+          val: "self",
+          color: "warning",
+          label: "Events you are/were in",
+          icon: "folder_shared"
+        }
+      ],
       date: null,
+      eventsType: "all",
       proxyDate: "2019/02/20",
       searchText: "",
-      howMany: 25,
+      howMany: 10,
       which: {
         page: 1
       }
@@ -210,7 +333,8 @@ export default {
         .dispatch("events/fetchEventsList", {
           page: this.which.page,
           howMany: this.howMany,
-          searchText: this.searchText
+          searchText: this.searchText,
+          type: this.eventsType
         })
         .then(({ status, message }) => {
           if (status === "error") {
@@ -277,9 +401,8 @@ export default {
               "Nov",
               "Dec"
             ][event.getMonth()] +
-            ". " +
-            event.getDay() +
-            "."
+            " " +
+            event.getDate()
           );
         }
       } else {
@@ -298,6 +421,7 @@ export default {
     }
   },
   mounted() {
+    // console.log("EventsList mounted()");
     this.fetchEvents(true);
   }
 };
@@ -306,6 +430,4 @@ export default {
 .time-span
   background-color: $indigo
   border-radius: 4px
-.time-chip
-  font-family: monospace
 </style>
