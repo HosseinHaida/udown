@@ -11,7 +11,17 @@
         class="col-xs-12 col-sm-6 col-md-4 q-pa-xs photos-column"
       >
         <div class="row">
-          <div class="text-h5 q-mb-lg q-mt-md text-grey-7 col-xs-12 q-px-sm">
+          <!-- <div
+            class="q-mb-md col-xs-12"
+            style="border-radius: 4px 4px 0 0; min-height: 86px"
+          >
+            <div class="row full-height justify-start items-center q-px-md">
+              <div class="col-auto" style="font-size: 28px">
+                Photos
+              </div>
+            </div>
+          </div> -->
+          <div class="text-h5 q-mb-md q-mt-md text-grey-7 col-xs-12 q-px-sm">
             Photos
           </div>
           <div v-if="court.photo" class="col-xs-12 col-md-12 q-px-xs q-mb-sm">
@@ -352,80 +362,82 @@
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
       <div class="col-xs-12 col-md-8 data-column">
-        <div v-if="!newLocationMode" class="row justify-center q-mb-lg q-pa-lg">
-          <div style="font-size: 28px">
-            <q-icon
-              name="beenhere"
-              color="positive"
-              v-if="court.verified"
-              size="20px"
-            />
-            {{ court.name }}
-            <q-btn
-              type="a"
-              :href="court.maps_url"
-              label="Location"
-              color="indigo"
-              icon="place"
-              flat
-              class="q-ml-xs"
-            />
+        <div v-if="!newLocationMode" class="row justify-center q-mb-md q-pa-xs">
+          <div
+            class="q-mb-md col-xs-12"
+            style="border-radius: 4px 4px 0 0; min-height: 86px"
+          >
+            <div class="row full-height justify-center items-center">
+              <div class="col-auto" style="font-size: 28px">
+                <q-icon
+                  name="beenhere"
+                  color="positive"
+                  v-if="court.verified"
+                  size="20px"
+                />
+                {{ court.name }}
+              </div>
+              <div class="col-auto q-ml-xs">
+                <q-btn
+                  type="a"
+                  :href="court.maps_url"
+                  color="indigo"
+                  label="Go to"
+                  flat
+                  icon="place"
+                  class="q-ml-xs"
+                />
+              </div>
+            </div>
           </div>
         </div>
         <div v-if="!newLocationMode" class="row justify-center">
           <div class="col-xs-12 col-md-11 q-mb-md">
             <div class="row items-start">
               <div class="col-xs-12 col-md-6 q-px-sm q-pb-md">
-                <div>
-                  <q-icon
-                    name="payments"
-                    style="color: #85bb65"
-                    size="26px"
-                  ></q-icon>
-                  <span
-                    class="text-subtitle-1 q-ml-md"
-                    style="font-size: 16px"
-                    >{{ court.cost }}</span
-                  >
+                <div class="q-my-xs row items-center">
+                  <q-icon name="payments" color="indigo" size="25px"></q-icon>
+                  <span class="q-ml-md" style="font-size: 15px">{{
+                    court.cost
+                  }}</span>
                 </div>
-                <q-separator spaced inset />
-                <div>
-                  <q-icon name="map" color="accent" size="26px"></q-icon>
-                  <span class="text-subtitle-1 q-ml-md" style="font-size: 16px">
+                <!-- <q-separator inset /> -->
+                <div class="q-my-xs row items-center">
+                  <q-icon color="indigo" name="map" size="25px"></q-icon>
+                  <span class="q-ml-md" style="font-size: 15px">
                     {{ court.city + ", " + court.region }}
                   </span>
                 </div>
-                <q-separator spaced inset />
-                <div>
-                  <q-icon
-                    name="wc"
-                    :color="court.girls_allowed ? 'positive' : 'negative'"
-                    size="26px"
-                  ></q-icon>
-                  <span
-                    class="text-subtitle-1 q-ml-md"
-                    style="font-size: 16px"
-                    >{{
-                      court.girls_allowed
-                        ? "Girls are allowed"
-                        : "Girls aren't allowed"
-                    }}</span
-                  >
+                <!-- <q-separator inset /> -->
+                <div class="q-my-xs row items-center">
+                  <q-icon color="indigo" name="wc" size="25px"></q-icon>
+                  <span class="q-ml-md" style="font-size: 15px">{{
+                    court.girls_allowed
+                      ? "Girls are allowed"
+                      : "Girls aren't allowed"
+                  }}</span>
                 </div>
-                <q-separator spaced inset />
-                <div class="q-mt-md" v-if="court && court.sport_types">
+                <!-- <q-separator inset /> -->
+                <div
+                  v-if="court && court.sport_types"
+                  class="q-my-xs q-pr-xs row items-center"
+                >
                   <q-icon
+                    name="sports"
+                    color="indigo"
+                    class="q-mr-sm"
+                    size="28px"
+                  ></q-icon>
+                  <q-chip
                     v-for="(sport, index) in sports"
                     :key="index + 'included_sports'"
-                    :name="sport.icon"
                     :color="sport.color"
+                    outline
+                    square
+                    :label="sport.label"
+                    dense
                     v-show="court.sport_types.includes(sport.val)"
-                    size="26px"
-                    class="q-mr-xs"
-                    ><q-tooltip content-style="font-size: 13px">{{
-                      sport.label
-                    }}</q-tooltip></q-icon
-                  >
+                  />
                 </div>
               </div>
               <div class="col-xs-12 col-md-6">
@@ -433,7 +445,6 @@
                   type="textarea"
                   :value="court.meta"
                   readonly
-                  class="bg-grey-1"
                   style="font-size: 16px"
                   color="indigo"
                   outlined
@@ -457,13 +468,20 @@
         <!-- ///////////////////////////////////////////////// -->
         <!-- ///////// Toggle between Edit and View ////////// -->
         <!-- ///////////////////////////////////////////////// -->
-        <div v-if="!newLocationMode" class="row justify-center q-mt-md">
+        <div v-if="!newLocationMode" class="row justify-center q-mt-xs">
           <div class="col-xs-12 col-md-11 q-mb-lg">
-            <div class="row justify-end">
+            <div class="row justify-end items-center">
               <div>
+                <q-btn
+                  :to="'/events/new/' + court.id"
+                  color="primary"
+                  size="17px"
+                  round
+                  icon="event"
+                />
                 <q-btn-dropdown
                   flat
-                  class="q-mr-sm q-pr-sm"
+                  class="q-mx-sm q-pr-sm"
                   dropdown-icon="more_horiz"
                 >
                   <q-btn
@@ -477,6 +495,10 @@
                       court.verified
                         ? removeLocationVerification()
                         : verifyLocation()
+                    "
+                    :disable="
+                      disableForNonAuthorized ||
+                        !user.scopes.includes('verify_locations')
                     "
                   /><br />
                   <q-btn
@@ -525,7 +547,7 @@
           <div class="col-xs-12 col-md-11">
             <div class="row">
               <div class="text-h5 text-grey-7 col-xs-12 q-px-sm">
-                {{ newLocationMode ? "New" : "Edit" }}
+                {{ newLocationMode ? "New location" : "Edit" }}
               </div>
               <div class="col-xs-12 q-px-sm q-pb-sm">
                 <div class="row justify-end">
@@ -650,7 +672,7 @@
           </div>
         </q-form>
         <div
-          class="row items-center justify-center text-h4"
+          class="row items-center justify-center"
           v-if="
             newLocationMode &&
               user &&
@@ -658,7 +680,9 @@
               !user.scopes.includes('add_locations')
           "
         >
-          You may not be authorized here
+          <span class="text-subtitle1 q-py-sm q-px-md custom-warning-tip">
+            You are not authorized to add locations
+          </span>
         </div>
         <!-- ///////////////////////////////////////////////// -->
         <!-- ///////////////////////////////////////////////// -->
@@ -677,7 +701,7 @@
         <div v-if="!newLocationMode" class="row justify-center q-mt-md">
           <div
             v-if="court.comments && court.comments.length > 0"
-            class="text-h5 q-mb-lg text-grey-7 col-xs-12 col-md-11"
+            class="text-h5 q-mb-md text-grey-7 col-xs-12 col-md-11"
           >
             <q-toggle color="indigo" size="lg" v-model="showComments" />
             <span>Comments</span>
