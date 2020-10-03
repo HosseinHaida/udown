@@ -39,6 +39,44 @@ export async function fetchUsersList({ rootState, commit }, which) {
     );
 }
 
+export async function fetchUsersListAsOptions({ commit }, searchText) {
+  const url = `${apiUrl}/users/list/options/${searchText}`;
+  return await axios.get(url).then(
+    res => {
+      let users = [];
+      if (res.data && res.data.users) {
+        users = res.data.users.map(user => {
+          return {
+            label: `<span class="text-subtitle2">${user.username}</span>
+            <span class="text-grey-7 q-px-xs">-</span>
+            <span class="text-grey-7">${user.first_name} ${user.last_name}</span>`,
+            value: user.id
+          };
+        });
+      }
+      return {
+        status: "success",
+        message: "Fetched List",
+        users
+      };
+    },
+    error => {
+      if (!error.response) {
+        return {
+          status: "error",
+          message: "No connection",
+          users: []
+        };
+      }
+      return {
+        status: "error",
+        message: error.response.data.error,
+        users: []
+      };
+    }
+  );
+}
+
 export async function updateUserScopes({ rootState, commit }, { scopes, id }) {
   commit("setUserScopesUpdatePending", true);
   return await axios
