@@ -1,27 +1,26 @@
 <template>
   <q-page class="q-pa-md" v-if="courts">
     <div class="row items-center">
-      <div class="col-xs-12 q-ma-none">
-        <q-input
-          filled
-          dense
-          placeholder="Search"
-          v-model="searchText"
-          @input="fetchCourts(true)"
-          class="q-mb-sm"
-          debounce="200"
-          :loading="locationsFetchPending"
-          hint="Name, city, region"
-          bottom-slots
-        >
-          <template v-slot:prepend> <q-icon name="search"/></template
-          ><template v-slot:after>
-            <q-btn
-              icon="add"
-              to="/courts/new"
-              label="New"
-              color="indigo"/></template
-        ></q-input>
+      <div class="col-xs-12">
+        <div class="row">
+          <q-input
+            filled
+            dense
+            placeholder="Search"
+            v-model="searchText"
+            @input="fetchCourts(true)"
+            debounce="200"
+            class="q-mb-md col"
+            :loading="locationsFetchPending"
+            hint="Name, city, region"
+            bottom-slots
+          >
+            <template v-slot:prepend> <q-icon name="search"/></template
+          ></q-input>
+          <div class="col-auto">
+            <q-btn class="q-ml-sm" icon="add" to="/courts/new" color="indigo" />
+          </div>
+        </div>
       </div>
       <div
         class="court-card col-md-4 col-sm-6 col-xs-12 q-pa-sm"
@@ -108,10 +107,11 @@
             <!-- <q-btn flat round icon="event" /> -->
             <q-btn
               flat
+              icon="event"
+              :to="'/events/new/' + court.id"
               color="primary"
-              @click="thisCourt(court.name, court.id)"
+              label="New event"
             >
-              I'm Down
             </q-btn>
             <q-btn flat color="indigo" :to="'/courts/' + court.id">
               View
@@ -165,23 +165,12 @@ export default {
     return {
       which: {
         page: 1,
-        howMany: 25
+        howMany: 6
       },
       searchText: ""
     };
   },
   methods: {
-    thisCourt(courtName, courtId) {
-      this.$store.commit("main/setRightDrawerStatus", true);
-      if (courtName) {
-        this.$store.commit("events/setSearchText", courtName);
-        this.$store.commit("events/setSearchType", "courtId");
-        this.$store.dispatch("events/findEventsByCourtId", courtId);
-      } else {
-        this.$store.commit("events/setSearchText", courtName);
-        return;
-      }
-    },
     fetchCourts(goToFirstPage) {
       if (goToFirstPage === true) {
         this.which.page = 1;
