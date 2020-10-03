@@ -37,6 +37,13 @@
               ? true
               : false
           "
+          :isCloseFriend="
+            loggedInUser &&
+            loggedInUser.close_friends &&
+            loggedInUser.close_friends.includes(user.id)
+              ? true
+              : false
+          "
           :isRequested="
             loggedInUser &&
             loggedInUser.outbound_requests &&
@@ -78,6 +85,8 @@
               ? "Requests"
               : type === "friends"
               ? "Friends"
+              : type === "close"
+              ? "Close friends"
               : "Users"
           }}</span></q-chip
         >

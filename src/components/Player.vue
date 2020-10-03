@@ -9,15 +9,53 @@
               user.last_name.charAt(0).toUpperCase()
           }}</span>
         </q-avatar>
+        <q-badge
+          v-if="isCloseFriend"
+          class="q-py-xs"
+          floating
+          style="z-index: 1"
+          color="transparent"
+          ><q-icon name="loyalty" size="sm" color="accent" class="q-mr-xs"
+        /></q-badge>
       </q-item-section>
 
-      <q-item-section top class="col-xs-4 col-sm-3 col-md-2 q-mr-sm">
+      <q-item-section
+        top
+        class="col-xs-auto col-sm-3 col-md-2 q-mr-sm username-field"
+      >
         <div>
           <q-item-label class="q-mt-sm"
-            >{{ user.username }}
+            ><span class="text-subtitle2">{{ user.username }}</span>
+            <q-icon
+              v-if="
+                user.scopes.includes('edit_users_scopes') &&
+                  user.scopes.includes('suspend_admins')
+              "
+              size="15px"
+              color="accent"
+              class="q-pl-xs"
+              flat
+              dense
+              round
+              name="all_inclusive"
+            />
+            <q-icon
+              v-if="
+                user.scopes.includes('edit_users_scopes') &&
+                  !user.scopes.includes('suspend_admins')
+              "
+              size="15px"
+              color="accent"
+              class="q-pl-xs"
+              flat
+              dense
+              round
+              name="rule"
+            />
             <q-icon
               v-if="user.verified"
               size="15px"
+              class="q-pl-xs"
               color="positive"
               flat
               dense
@@ -124,7 +162,7 @@
             @click="
               isFriend
                 ? confirmUnfriend(user.id, user.username)
-                : sendFriendRequestTo(user.id)
+                : handleFriendRequest(user.id)
             "
           >
             <span class="q-px-sm gt-sm">{{
@@ -160,6 +198,21 @@
                 color="positive"
                 @click="user.verified ? removeUserVerification() : verifyUser()"
               />
+              <q-btn
+                class="q-mt-xs"
+                :label="
+                  isCloseFriend
+                    ? 'Remove from close friends'
+                    : 'Add to close friends'
+                "
+                :loading="closeFriendPending"
+                :icon="isCloseFriend ? 'remove' : 'loyalty'"
+                v-if="isFriend"
+                color="accent"
+                @click="
+                  isCloseFriend ? removeFromCloseFriends() : addToCloseFriends()
+                "
+              />
             </div>
           </q-btn-dropdown>
         </div>
@@ -189,9 +242,48 @@ export default {
     "haveFriends",
     "isRequested",
     "isRequesting",
-    "canEditScopes"
+    "canEditScopes",
+    "isCloseFriend"
   ],
   methods: {
+    addToCloseFriends() {
+      this.$store
+        .dispatch("user/addToCloseFriends", this.user.id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "loyalty",
+              message: message
+            });
+          }
+        });
+    },
+    removeFromCloseFriends() {
+      this.$store
+        .dispatch("user/removeFromCloseFriends", this.user.id)
+        .then(({ status, message }) => {
+          if (status === "error") {
+            this.$q.notify({
+              color: "red-5",
+              icon: "warning",
+              message: message
+            });
+          } else if (status === "success") {
+            this.$q.notify({
+              color: "green-4",
+              icon: "delete",
+              message: message
+            });
+          }
+        });
+    },
     verifyUser() {
       this.$store
         .dispatch("users/verifyUser", this.user.id)
@@ -272,7 +364,7 @@ export default {
           }
         })
         .onOk(() => {
-          this.sendFriendRequestTo(id);
+          this.handleFriendRequest(id);
         });
     },
     getFullDate(timestamp) {
@@ -307,9 +399,9 @@ export default {
         return "person_add";
       }
     },
-    sendFriendRequestTo(id) {
+    handleFriendRequest(id) {
       this.$store
-        .dispatch("user/sendFriendRequestTo", id)
+        .dispatch("user/handleFriendRequest", id)
         .then(({ status, message }) => {
           if (status === "error") {
             this.$q.notify({
@@ -333,7 +425,15 @@ export default {
     },
     userScopesUpdatePending() {
       return this.$store.state.users.userScopesUpdatePending;
+    },
+    closeFriendPending() {
+      return this.$store.state.user.closeFriendPending;
     }
   }
 };
 </script>
+<style lang="sass" scoped>
+@media (max-width: 321px)
+  .username-field
+    max-width: 110px
+</style>
