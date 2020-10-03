@@ -13,10 +13,6 @@ export async function signup({ commit }, newUser) {
         }
         if (res.data.user.inbound_requests) {
           commit("setUserRequestsInbound", res.data.user.inbound_requests);
-          commit(
-            "setUserInboundRequestsCount",
-            res.data.user.inbound_requests.length
-          );
         }
       }
       return {
@@ -53,10 +49,6 @@ export async function signin({ commit }, userCredentials) {
         }
         if (res.data.user.inbound_requests) {
           commit("setUserRequestsInbound", res.data.user.inbound_requests);
-          commit(
-            "setUserInboundRequestsCount",
-            res.data.user.inbound_requests.length
-          );
         }
       }
 
@@ -188,7 +180,7 @@ export async function update({ state, commit }, user) {
         if (res.data.user) {
           commit("setUserData", res.data.user);
           commit("setToken", res.data.user.token);
-          commit("setCookie", res.data.user);
+          commit("setCookie", res.data.user.token);
         }
 
         return {
@@ -212,7 +204,7 @@ export async function update({ state, commit }, user) {
     );
 }
 
-export async function sendFriendRequestTo({ state, commit }, id) {
+export async function handleFriendRequest({ state, commit }, id) {
   commit("setFriendRequestPending", true);
   return await axios
     .post(
@@ -290,6 +282,82 @@ export async function fetchInboundRequestsCount({ state, commit }) {
         };
       },
       error => {
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function addToCloseFriends({ state, commit }, id) {
+  commit("setCloseFriendPending", true);
+  return await axios
+    .post(
+      apiUrl + "/auth/friend/add/close",
+      { id },
+      {
+        headers: {
+          token: state.t
+        }
+      }
+    )
+    .then(
+      res => {
+        commit("setCloseFriendPending", false);
+        if (res.data) {
+          if (res.data.close_friends) {
+            commit("setUserCloseFriends", res.data.close_friends);
+          }
+        }
+        return {
+          status: "success",
+          message: "Added to close friends"
+        };
+      },
+      error => {
+        commit("setCloseFriendPending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function removeFromCloseFriends({ state, commit }, id) {
+  commit("setCloseFriendPending", true);
+  return await axios
+    .delete(apiUrl + "/auth/friend/remove/close/" + id, {
+      headers: {
+        token: state.t
+      }
+    })
+    .then(
+      res => {
+        commit("setCloseFriendPending", false);
+        if (res.data && res.data.close_friends) {
+          commit("setUserCloseFriends", res.data.close_friends);
+        }
+        return {
+          status: "success",
+          message: "Removed from close friends"
+        };
+      },
+      error => {
+        commit("setCloseFriendPending", false);
         if (!error.response) {
           return {
             status: "error",

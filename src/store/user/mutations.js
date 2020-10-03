@@ -1,3 +1,5 @@
+import state from "../main/state";
+
 export function setSignupPending(state, status) {
   state.signupPending = status;
 }
@@ -62,4 +64,12 @@ export function setUserRequestsInbound(state, requests) {
 
 export function setUserInboundRequestsCount(state, count) {
   state.inboundRequestsCount = count;
+}
+
+export function setCloseFriendPending(state, status) {
+  state.closeFriendPending = status;
+}
+
+export function setUserCloseFriends(state, closeFriends) {
+  state.data.close_friends = closeFriends;
 }
