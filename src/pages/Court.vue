@@ -1,5 +1,10 @@
 <template>
   <q-page class="q-pa-md">
+    <div v-if="!user && newLocationMode" class="col-xs-12 text-center">
+      <span class="text-subtitle1 q-py-sm q-px-md custom-warning-tip">
+        Please login first
+      </span>
+    </div>
     <div class="row justify-evenly" v-if="court">
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
@@ -362,7 +367,7 @@
       <!-- ///////////////////////////////////////////////// -->
       <!-- ///////////////////////////////////////////////// -->
       <div class="col-xs-12 col-md-8 data-column">
-        <div v-if="!newLocationMode" class="row justify-center q-mb-md q-pa-xs">
+        <div v-if="!newLocationMode" class="row justify-center q-pa-xs">
           <div
             class="q-mb-md col-xs-12"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
@@ -377,7 +382,7 @@
                 />
                 {{ court.name }}
               </div>
-              <div class="col-auto q-ml-xs">
+              <!-- <div class="col-auto q-ml-xs">
                 <q-btn
                   type="a"
                   :href="court.maps_url"
@@ -387,7 +392,7 @@
                   icon="place"
                   class="q-ml-xs"
                 />
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -395,6 +400,19 @@
           <div class="col-xs-12 col-md-11 q-mb-md">
             <div class="row items-start">
               <div class="col-xs-12 col-md-6 q-px-sm q-pb-md">
+                <div class="q-my-xs row items-center">
+                  <q-icon color="indigo" name="launch" size="25px"></q-icon>
+                  <q-btn
+                    type="a"
+                    dense
+                    :href="court.maps_url"
+                    color="indigo"
+                    flat
+                    label="Google Maps"
+                    no-caps
+                    style="margin-left: 12px"
+                  />
+                </div>
                 <div class="q-my-xs row items-center">
                   <q-icon name="payments" color="indigo" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">{{
@@ -500,14 +518,15 @@
                       disableForNonAuthorized ||
                         !user.scopes.includes('verify_locations')
                     "
-                  /><br />
+                  />
+                  <!-- <br />
                   <q-btn
                     label="Delete location"
                     color="negative"
                     icon="delete"
                     :disable="disableForNonAuthorized"
                     class="full-width q-mt-xs"
-                  />
+                  /> -->
                 </q-btn-dropdown>
                 <q-btn-toggle
                   v-model="viewEditToggle"
@@ -859,8 +878,9 @@
             </q-card>
           </div>
         </div>
-      </div></div
-  ></q-page>
+      </div>
+    </div>
+  </q-page>
 </template>
 <script>
 import { QSpinnerFacebook } from "quasar";
