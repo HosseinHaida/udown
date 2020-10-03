@@ -17,7 +17,7 @@
       >
         <div class="row">
           <div
-            class="q-mb-sm col-xs-12 bg-indigo text-grey-4"
+            class="q-mb-md col-xs-12 bg-indigo text-grey-4"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
             <div class="row full-height justify-start items-center q-px-md">
@@ -369,7 +369,7 @@
       <div class="col-xs-12 col-md-8 data-column">
         <div v-if="!newLocationMode" class="row justify-center q-pa-xs">
           <div
-            class="q-mb-sm col-xs-12 bg-indigo text-white"
+            class="q-mb-md col-xs-12 bg-indigo text-white"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
             <div class="row full-height justify-center items-center">
@@ -413,21 +413,21 @@
                     style="margin-left: 12px"
                   />
                 </div>
-                <!-- <q-separator spaced inset /> -->
+                <q-separator spaced inset />
                 <div class="q-my-xs row items-center">
                   <q-icon name="payments" color="indigo" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">{{
                     court.cost
                   }}</span>
                 </div>
-                <!-- <q-separator spaced inset /> -->
+                <q-separator spaced inset />
                 <div class="q-my-xs row items-center">
                   <q-icon color="indigo" name="map" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">
                     {{ court.city + ", " + court.region }}
                   </span>
                 </div>
-                <!-- <q-separator spaced inset /> -->
+                <q-separator spaced inset />
                 <div class="q-my-xs row items-center">
                   <q-icon color="indigo" name="wc" size="25px"></q-icon>
                   <span class="q-ml-md" style="font-size: 15px">{{
@@ -436,7 +436,7 @@
                       : "Girls aren't allowed"
                   }}</span>
                 </div>
-                <!-- <q-separator spaced inset /> -->
+                <q-separator spaced inset />
                 <div
                   v-if="court && court.sport_types"
                   class="q-my-xs q-pr-xs row items-center"
@@ -718,7 +718,7 @@
         <!-- /////////////////// Comments //////////////////// -->
         <!-- ///////////////////////////////////////////////// -->
         <!-- ///////////////////////////////////////////////// -->
-        <div v-if="!newLocationMode" class="row justify-center q-mt-md">
+        <div v-if="!newLocationMode" class="row justify-center q-mt-sm q-mb-lg">
           <div
             v-if="court.comments && court.comments.length > 0"
             class="text-h5 q-mb-md text-grey-7 col-xs-12 col-md-11"
