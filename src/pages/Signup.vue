@@ -41,7 +41,6 @@
         ></q-input>
         <q-input
           filled
-          type="password"
           v-model="password"
           label="Password *"
           lazy-rules
@@ -49,7 +48,15 @@
           :rules="[
             val => (val !== null && val !== '') || 'Please type your password'
           ]"
-        />
+          :type="isPwd ? 'password' : 'text'"
+        >
+          <template v-slot:append>
+            <q-icon
+              :name="isPwd ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer q-mr-xs"
+              @click="isPwd = !isPwd"
+            /> </template
+        ></q-input>
         <div class="row q-gutter-sm justify-between q-mb-md">
           <q-checkbox
             v-for="(sport, index) in sport_types"
@@ -126,7 +133,8 @@ export default {
       gender: null,
       height: null,
       sport_types: sports,
-      sports: ["basketball"]
+      sports: ["basketball"],
+      isPwd: true
     };
   },
   methods: {

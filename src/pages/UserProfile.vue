@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-md" :class="!user ? 'row justify-evenly' : ''">
     <!-- //////////// In case nobody's logged in ///////////// -->
-    <div v-if="!user" class="col-xs-12 text-center q-mt-md">
+    <div v-if="!user" class="col-xs-12 text-center">
       <span class="text-subtitle1 q-py-sm q-px-md custom-warning-tip">
-        No currently logged in user found
+        Please login first
       </span>
     </div>
 
@@ -29,14 +29,14 @@
             :label="inboundRequestsCount"
             style="margin-right: -10px"
         /></q-tab>
-        <q-tab name="photos" label="Photos" />
+        <!-- <q-tab name="photos" label="Photos" /> -->
       </q-tabs>
 
       <q-separator />
 
       <q-tab-panels v-model="tab" style="min-height: 450px">
         <q-tab-panel name="personal" class="row justify-between">
-          <div class="col-md-4 col-sm-5 col-xs-12 q-px-md">
+          <div class="col-md-3 col-sm-4 col-xs-12">
             <div class="column">
               <q-avatar
                 style="cursor: pointer"
@@ -110,24 +110,6 @@
                         </q-tooltip></q-btn
                       >
                     </template>
-                    <!-- <template v-slot:before>
-                      <q-btn
-                        @click="onPhotoUploadClick"
-                        round
-                        dense
-                        flat
-                        icon="delete"
-                        :loading="photoUploadPending"
-                      >
-                        <q-tooltip
-                          content-class="bg-red-5"
-                          content-style="font-size: 14px"
-                          :offset="[10, 10]"
-                        >
-                          Delete current photo
-                        </q-tooltip>
-                      </q-btn>
-                    </template> -->
                   </q-file>
                 </q-form>
                 <q-input
@@ -160,10 +142,10 @@
               </div>
             </div>
           </div>
-          <div class="col-md-8 col-xs-12 col-sm-7 q-px-md">
+          <div class="col-md-8 col-xs-12 col-sm-7">
             <q-form
               @submit="onFormSubmit"
-              class="q-gutter-sm row justify-center q-pt-xl q-px-sm"
+              class="q-gutter-sm row justify-center q-pt-xl"
             >
               <div class="col-xs-12">
                 <div class="row">
@@ -211,7 +193,6 @@
                   />
                   <q-input
                     class="col-xs-12 col-md-6 q-px-sm"
-                    type="password"
                     v-model="oldPassword"
                     label="Old password"
                     lazy-rules
@@ -223,9 +204,16 @@
                         val.length === 0 ||
                         'Minimum 8 characters'
                     ]"
-                  /><q-input
+                    :type="isPwd ? 'password' : 'text'"
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer q-mr-xs"
+                        @click="isPwd = !isPwd"
+                      /> </template></q-input
+                  ><q-input
                     class="col-xs-12 col-md-6 q-px-sm"
-                    type="password"
                     v-model="newPassword"
                     label="New password"
                     lazy-rules
@@ -237,7 +225,15 @@
                         val.length === 0 ||
                         'Minimum 8 characters'
                     ]"
-                  />
+                    :type="isNewPwd ? 'password' : 'text'"
+                  >
+                    <template v-slot:append>
+                      <q-icon
+                        :name="isNewPwd ? 'visibility_off' : 'visibility'"
+                        class="cursor-pointer q-mr-xs"
+                        @click="isNewPwd = !isNewPwd"
+                      /> </template
+                  ></q-input>
                   <q-select
                     class="q-mt-sm col-xs-12 col-md-6 q-px-sm"
                     :options="genders"
@@ -296,8 +292,7 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel class="row" name="friends">
-          <div class="col"></div>
+        <q-tab-panel class="row justify-start" name="friends">
           <q-btn-toggle
             v-model="usersType"
             class="col-auto q-mt-md q-mb-sm"
@@ -306,6 +301,7 @@
             size="13px"
             @input="fetchInboundRequestsCount()"
             :options="[
+              { value: 'close', icon: 'loyalty' },
               { value: 'friends', icon: 'list' },
               {
                 label: 'Requests',
@@ -333,10 +329,10 @@
           </div>
         </q-tab-panel>
 
-        <q-tab-panel name="photos">
+        <!-- <q-tab-panel name="photos">
           <div class="text-h6">Movies</div>
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </q-tab-panel>
+        </q-tab-panel> -->
       </q-tab-panels>
     </q-card>
   </q-page>
@@ -355,7 +351,9 @@ export default {
       pickedPhoto: null,
       oldPassword: "",
       newPassword: "",
-      sports: sports
+      sports: sports,
+      isPwd: true,
+      isNewPwd: true
     };
   },
   computed: {
