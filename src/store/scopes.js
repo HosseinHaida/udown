@@ -5,12 +5,12 @@ export const scopes = [
     icon: "insert_invitation",
     color: "secondary"
   },
-  {
-    name: "edit_events",
-    desc: "Edit events",
-    icon: "event_note",
-    color: "secondary"
-  },
+  // {
+  //   name: "edit_events",
+  //   desc: "Edit events",
+  //   icon: "event_note",
+  //   color: "secondary"
+  // },
   {
     name: "add_locations",
     desc: "Add locations",
