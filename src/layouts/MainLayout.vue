@@ -4,10 +4,8 @@
       <q-toolbar>
         <q-btn dense flat round icon="menu" @click="left = !left" />
         <q-toolbar-title>
-          <q-avatar>
-            <img src="udown-logo.png" />
-          </q-avatar>
-          <q-btn dense to="/" size="23px" flat label="U Down?" no-caps />
+          <q-btn dense flat icon="img:udown-logo.png" size="22px" to="/" />
+          U Down?
         </q-toolbar-title>
 
         <!-- User Pic -->
@@ -89,21 +87,7 @@
             </div>
           </div>
         </q-btn-dropdown>
-
-        <!-- <q-btn
-          dense
-          flat
-          round
-          icon="menu"
-          @click="rightDrawerStatus = !rightDrawerStatus"
-        /> -->
       </q-toolbar>
-
-      <!-- <q-tabs align="left">
-        <q-route-tab to="/page1" label="Page One" />
-        <q-route-tab to="/page2" label="Page Two" />
-        <q-route-tab to="/page3" label="Page Three" />
-      </q-tabs> -->
     </q-header>
 
     <q-drawer
@@ -116,7 +100,6 @@
       :breakpoint="500"
       content-class="bg-grey-3"
     >
-      <!-- drawer content -->
       <q-list padding>
         <q-item
           v-if="user"
@@ -180,10 +163,6 @@
       </q-list>
     </q-drawer>
 
-    <!-- <q-drawer v-model="rightDrawerStatus" side="right" elevated>
-      <events-list></events-list>
-    </q-drawer> -->
-
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -191,7 +170,6 @@
 </template>
 
 <script>
-import eventsList from "../components/Events.vue";
 export default {
   name: "MainLayout",
   data() {
