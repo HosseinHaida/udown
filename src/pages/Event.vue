@@ -96,8 +96,8 @@
         </div>
       </div>
       <q-date
-        :value="event.happens_at"
-        mask="YYYY-MM-DDTHH:mm:ss.SSSZ"
+        :value="getFullDateWithDashes(event.happens_at)"
+        mask="YYYY-M-D"
         class="col-md-3 col-xs gt-sm"
         readonly
         :color="eventColor"
@@ -140,8 +140,8 @@
         </div>
       </div>
       <q-time
-        :value="event.happens_at"
-        mask="YYYY-MM-DDTHH:mm:ss.SSSZ"
+        :value="getTime(event.happens_at)"
+        mask="HH:mm"
         :color="eventColor"
         class="col-md-3 col-xs col-sm-4"
         readonly
@@ -301,21 +301,52 @@
                     dropdown-icon="more_horiz"
                     class="q-pr-sm q-mt-xs lt-sm"
                   >
+                    <q-list dense bordered padding class="rounded-borders">
+                      <q-item v-ripple>
+                        <q-item-section>
+                          <q-item-label
+                            v-if="user.created_at"
+                            caption
+                            style="font-size: 13px"
+                            lines="1"
+                          >
+                            Signed {{ getFullDate(user.created_at) }} @
+                            {{ getTime(user.created_at) }}
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item v-if="user.guests > 0">
+                        <q-item-section>
+                          <q-item-label
+                            caption
+                            style="font-size: 13px"
+                            lines="1"
+                          >
+                            Brings {{ user.guests }} guest(s)
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item
+                        v-if="user.will_bring && user.will_bring.length > 0"
+                      >
+                        <q-item-section>
+                          <q-item-label
+                            caption
+                            style="font-size: 13px"
+                            lines="1"
+                          >
+                            <q-chip
+                              v-for="(item, index) in user.will_bring"
+                              :key="index"
+                              dense
+                              square
+                              :label="item"
+                            />
+                          </q-item-label>
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
                   </q-btn-dropdown>
-                  <!-- <q-linear-progress
-                    style="width: 50px"
-                    size="30px"
-                    :value="user.probability / 100"
-                    :color="eventColor"
-                  >
-                    <div class="absolute-full flex flex-center">
-                      <q-badge
-                        color="white"
-                        :text-color="eventColor"
-                        :label="user.probability + '%'"
-                      />
-                    </div>
-                  </q-linear-progress> -->
                 </q-item-section>
               </q-item>
               <q-separator spaced inset />
@@ -390,7 +421,7 @@
                   class="col-xs-8"
                   type="number"
                   placeholder="How sure are you coming?"
-                  hint="100 means you're positive"
+                  hint="between 0 and 100"
                   :rules="[
                     val =>
                       (val && val > 0 && val < 101) ||
@@ -691,6 +722,10 @@ export default {
         "Dec"
       ];
       return `${months[month]} ${day}. ${year}`;
+    },
+    getFullDateWithDashes(timestamp) {
+      let date = new Date(timestamp);
+      return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     },
     getTime(timestamp) {
       let date = new Date(timestamp);
