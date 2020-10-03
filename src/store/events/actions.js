@@ -3,7 +3,7 @@ import { apiUrl } from "../variables";
 
 export async function fetchEventsList({ rootState, commit }, which) {
   commit("setEventsFetchPending", true);
-  const url = `${apiUrl}/events/list/${which.page}/${which.howMany}/${which.searchText}`;
+  const url = `${apiUrl}/events/list/${which.type}?page=${which.page}&how_many=${which.howMany}&search_text=${which.searchText}`;
   return await axios
     .get(url, {
       headers: {
@@ -39,52 +39,132 @@ export async function fetchEventsList({ rootState, commit }, which) {
     );
 }
 
-export function findEventsByCourtId({ state, commit }, courtId) {
-  // make the call
-  commit("setResults", [
-    {
-      id: 1,
-      happens_at: 1598080260997,
-      court_id: 12314,
-      created_by: 1122,
-      guests: 1,
-      username: "hossein"
-    },
-    {
-      id: 2,
-      happens_at: 1598180360997,
-      court_id: 12314,
-      created_by: 1122,
-      guests: 2,
-      username: "hossein"
-    },
-    {
-      id: 3,
-      happens_at: 1598290260997,
-      court_id: 12314,
-      created_by: 1133,
-      guests: 1,
-      username: "parnia"
-    },
-    {
-      id: 4,
-      happens_at: 1599600260997,
-      court_id: 12314,
-      created_by: 1122,
-      guests: 0,
-      username: "hossein"
-    }
-  ]);
-  //   based on event_ids
-  commit("setParticipants", [
-    { event_id: 1, username: "mehran", be_there_at: 1598080287997, guests: 2 },
-    { event_id: 1, username: "parnia", be_there_at: 1598080277997, guests: 1 },
-    {
-      event_id: 1,
-      username: "masoome",
-      be_there_at: 1598090277997,
-      guests: null
-    },
-    { event_id: 2, username: "mehran", be_there_at: 1598080287997, guests: 1 }
-  ]);
+export async function fetchEvent({ rootState, commit }, id) {
+  return await axios
+    .get(apiUrl + "/event/fetch/" + id, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        if (res.data && res.data.event) {
+          commit("setEvent", res.data.event);
+        }
+        return {
+          status: "success",
+          message: "Event fetched"
+        };
+      },
+      error => {
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function signForThisEvent({ rootState, commit }, participant) {
+  return await axios
+    .post(apiUrl + "/event/sign", participant, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        if (res.data && res.data.participants) {
+          commit("setEventParticipants", res.data.participants);
+        }
+        const message = res.data.updated ? "Updated your status" : "Signed";
+        return {
+          status: "success",
+          message
+        };
+      },
+      error => {
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function createNewEvent({ rootState, commit }, event) {
+  commit("setEventInsertPending", true);
+  return await axios
+    .post(apiUrl + "/event/new", event, {
+      headers: {
+        token: rootState.user.t
+      }
+    })
+    .then(
+      res => {
+        commit("setEventInsertPending", false);
+        return {
+          status: "success",
+          message: "Created"
+        };
+      },
+      error => {
+        commit("setEventInsertPending", false);
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
+}
+
+export async function cancelEvent({ rootState }, id) {
+  return await axios
+    .post(
+      apiUrl + "/event/cancel",
+      { id },
+      {
+        headers: {
+          token: rootState.user.t
+        }
+      }
+    )
+    .then(
+      res => {
+        return {
+          status: "success",
+          message: "Successfully canceled this event"
+        };
+      },
+      error => {
+        if (!error.response) {
+          return {
+            status: "error",
+            message: "No connection"
+          };
+        }
+        return {
+          status: "error",
+          message: error.response.data.error
+        };
+      }
+    );
 }
