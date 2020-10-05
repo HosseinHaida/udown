@@ -17,10 +17,12 @@
       >
         <div class="row">
           <div
-            class="q-mb-md col-xs-12 bg-indigo text-grey-4"
+            class="q-mb-md col-xs-12 bg-indigo text-white"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
-            <div class="row full-height justify-start items-center q-px-md">
+            <div
+              class="row full-height justify-start items-end q-px-md q-pb-md"
+            >
               <div class="col-auto text-h5">
                 Photos
               </div>
@@ -334,7 +336,6 @@
       <q-dialog v-model="expandPhoto" :maximized="expandPhoto">
         <q-card class="bg-black" flat>
           <q-card-section class="row items-center q-pb-none">
-            <!-- <div class="text-h6">Close icon</div> -->
             <q-space />
             <q-btn
               size="lg"
@@ -382,17 +383,6 @@
                 />
                 {{ court.name }}
               </div>
-              <!-- <div class="col-auto q-ml-xs">
-                <q-btn
-                  type="a"
-                  :href="court.maps_url"
-                  color="indigo"
-                  label="Go to"
-                  flat
-                  icon="place"
-                  class="q-ml-xs"
-                />
-              </div> -->
             </div>
           </div>
         </div>
