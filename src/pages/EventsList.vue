@@ -75,7 +75,7 @@
                   <div class="row q-py-xs q-ml-xs q-pr-md">
                     <q-checkbox
                       v-model="showCanceled"
-                      label="Show canceled events too"
+                      label="Show canceled events"
                       color="primary"
                       @input="fetchEvents($event)"
                     /><q-space />

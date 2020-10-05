@@ -164,9 +164,11 @@
                 >
                 <q-chip style="opacity: 0.6" dense square
                   >Max
-                  <span v-if="event.max_viable_population > 0">{{
-                    event.max_viable_population
-                  }}</span>
+                  <span
+                    class="q-ml-xs"
+                    v-if="event.max_viable_population > 0"
+                    >{{ event.max_viable_population }}</span
+                  >
                   <span v-else>
                     <q-icon
                       size="16px"
