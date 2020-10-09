@@ -3,9 +3,7 @@
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar>
         <q-toolbar-title>
-          <q-avatar to="/">
-            <img src="udown-logo.png" />
-          </q-avatar>
+          <q-btn dense flat icon="img:udown-logo.png" size="22px" to="/" />
           <!-- <q-btn dense to="/" size="23px" flat label="U Down?" no-caps /> -->
           U Down?
         </q-toolbar-title>
