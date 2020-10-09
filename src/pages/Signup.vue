@@ -60,7 +60,7 @@
         <div class="row q-gutter-sm justify-between q-mb-md">
           <q-checkbox
             v-for="(sport, index) in sport_types"
-            :key="index + sport"
+            :key="index"
             v-model="sports"
             :val="sport.val"
             :color="sport.color"
@@ -76,7 +76,7 @@
         <div class="row justify-between q-gutter-md items-start">
           <q-select
             filled
-            class="q-pt-md col-xs-12 col-md-5"
+            class="q-pt-md col-xs-12 col-md-5 q-pl-sm q-pr-md"
             :options="genders"
             v-model="gender"
             label="Gender *"
@@ -86,7 +86,7 @@
           />
           <q-input
             filled
-            class="q-pt-md col-xs-12 col-md-5"
+            class="q-pt-md col-xs-12 col-md-5 q-pl-sm q-pr-md"
             v-model="height"
             label="Height *"
             lazy-rules

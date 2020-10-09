@@ -22,11 +22,11 @@ export const sports = [
     label: "Badminton",
     icon: "img:badminton.png",
     color: "grey-9"
-  },
-  {
-    val: "tennis",
-    label: "Tennis",
-    icon: "sports_tennis",
-    color: "tennis"
   }
+  // {
+  //   val: "tennis",
+  //   label: "Tennis",
+  //   icon: "sports_tennis",
+  //   color: "tennis"
+  // }
 ];
