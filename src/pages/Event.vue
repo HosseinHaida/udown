@@ -493,6 +493,16 @@
       </div>
     </div>
   </q-page>
+  <div class="q-pa-md" v-else>
+    <div class="row justify-center">
+      <q-btn
+        @click="fetchEvent(eventId)"
+        label="View this event"
+        color="indigo"
+        icon="preview"
+      ></q-btn>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -539,6 +549,9 @@ export default {
     },
     loggedInUser() {
       return this.$store.state.user.data;
+    },
+    eventId() {
+      return this.$route.params.id;
     },
     data() {
       return [
@@ -596,7 +609,7 @@ export default {
               icon: "warning",
               message: message
             });
-            this.$router.push("/");
+            this.$router.push("/events");
           }
         });
     },
@@ -750,7 +763,9 @@ export default {
   //   }
   // },
   mounted() {
-    this.fetchEvent(this.$route.params.id);
+    if (this.loggedInUser) {
+      this.fetchEvent(this.$route.params.id);
+    }
   }
 };
 </script>

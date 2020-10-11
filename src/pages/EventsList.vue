@@ -7,7 +7,7 @@
     </div>
     <div class="row" v-if="user">
       <div class="col-xs-12">
-        <div class="row">
+        <div class="row q-mb-md">
           <q-input
             filled
             dense
@@ -15,7 +15,7 @@
             v-model="searchText"
             hint="Location, sport, creator"
             @input="fetchEvents(true)"
-            class="q-mb-md col"
+            class="col"
             debounce="200"
             :loading="eventsFetchPending"
             bottom-slots
@@ -90,15 +90,17 @@
                 </div>
               </q-list>
             </q-btn-dropdown>
-            <q-btn icon="add" to="courts" class="q-ml-xs" color="indigo"
-              ><q-tooltip content-style="font-size: 13px">
-                Create New Event</q-tooltip
-              ></q-btn
-            >
+            <q-btn icon="add" to="courts" class="q-ml-xs" color="indigo">
+              <q-tooltip content-style="font-size: 13px">
+                Create New Event
+              </q-tooltip>
+            </q-btn>
           </div>
         </div>
-
-        <q-list class="rounded-borders">
+        <!-- <div class="row q-mb-md">
+          <q-btn label="Refresh" color="indigo" icon="refresh"></q-btn>
+        </div> -->
+        <q-list class="rounded-borders" v-if="list && user">
           <q-item-label v-if="date" header
             ><q-chip icon="event" :label="date"
           /></q-item-label>
@@ -257,6 +259,16 @@
             </span>
           </div>
         </q-list>
+        <div v-else>
+          <div class="row justify-center">
+            <q-btn
+              @click="fetchEvents(false)"
+              icon="refresh"
+              label="Refresh"
+              color="indigo"
+            ></q-btn>
+          </div>
+        </div>
         <div class="row">
           <q-pagination
             v-model="which.page"
@@ -438,8 +450,9 @@ export default {
     }
   },
   mounted() {
-    // console.log("EventsList mounted()");
-    this.fetchEvents(true);
+    if (this.user) {
+      this.fetchEvents(true);
+    }
   }
 };
 </script>
