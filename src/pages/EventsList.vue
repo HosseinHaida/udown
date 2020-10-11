@@ -260,7 +260,7 @@
           </div>
         </q-list>
         <div v-else>
-          <div class="row justify-center">
+          <div class="row q-mb-md justify-center">
             <q-btn
               @click="fetchEvents(false)"
               icon="refresh"
