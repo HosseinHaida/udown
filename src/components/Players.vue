@@ -152,6 +152,10 @@ export default {
   },
   mounted() {
     this.fetchUsers(true);
+  },
+  destroyed() {
+    this.$store.commit("users/setUsersList", []);
+    this.$store.commit("users/setUsersListTotals", { pages: 0, count: 0 });
   }
 };
 </script>
