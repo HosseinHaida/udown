@@ -68,10 +68,10 @@
               <q-btn-dropdown
                 v-if="event.created_by === loggedInUser.id"
                 color="negative"
-                dropdown-icon="more_vert"
-                class="q-pr-sm"
+                dropdown-icon="more_horiz"
+                class="q-pr-sm bg-grey-2"
                 dense
-                outline
+                flat
               >
                 <q-btn
                   label="Cancel"
