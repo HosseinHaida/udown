@@ -244,7 +244,7 @@
                 use-input
                 input-debounce="200"
                 label="Search users"
-                :options="users"
+                :options="usersOptions"
                 @filter="filterUsers"
                 use-chips
               >
@@ -283,7 +283,6 @@ export default {
   data() {
     return {
       sports,
-      users: [],
       eventTypes: ["Only friends", "Only close friends", "Public"],
       eventType: "Only friends",
       newItem: "",
@@ -321,6 +320,9 @@ export default {
     },
     is_public() {
       return this.eventType === "Public";
+    },
+    usersOptions() {
+      return this.$store.state.users.usersOptions;
     }
   },
   methods: {
@@ -350,14 +352,14 @@ export default {
     },
     filterUsers(val, update) {
       const searchText = val;
-      if (val === "" || val.trim().length === 0) {
+      if (searchText === "" || searchText.trim().length === 0) {
         update(() => {
-          this.users = [];
+          this.$store.commit("users/setUsersOptions", []);
         });
         return;
       }
       update(() => {
-        this.users = this.fetchUsers(searchText);
+        this.fetchUsers(searchText);
       });
     },
     fetchUsers(searchText) {
@@ -370,9 +372,6 @@ export default {
               icon: "warning",
               message: message
             });
-          }
-          if (status === "success") {
-            this.users = users;
           }
         });
     },
