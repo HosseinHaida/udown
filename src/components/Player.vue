@@ -2,7 +2,7 @@
   <div>
     <q-item>
       <q-item-section avatar top>
-        <q-avatar>
+        <q-avatar size="55px">
           <q-img :ratio="1" :src="user.photo" />
           <span class="user-photo-placeholder">{{
             user.first_name.charAt(0).toUpperCase() +
@@ -66,6 +66,9 @@
           <span class="text-grey-6">{{
             user.first_name + " " + user.last_name
           }}</span>
+          <!-- <br />
+          <q-btn-dropdown label="Bio" dense flat class="q-pl-sm">
+          </q-btn-dropdown> -->
         </div>
       </q-item-section>
 
