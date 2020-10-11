@@ -16,7 +16,7 @@
         class="col-xs-12 col-sm-6 col-md-4 q-pa-xs photos-column"
       >
         <div class="row">
-          <div
+          <!-- <div
             class="q-mb-md col-xs-12 bg-indigo text-white"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
@@ -27,7 +27,7 @@
                 Photos
               </div>
             </div>
-          </div>
+          </div> -->
           <!-- <div class="text-h5 q-mb-md q-mt-md text-grey-7 col-xs-12 q-px-sm">
             Photos
           </div> -->
@@ -370,7 +370,7 @@
       <div class="col-xs-12 col-md-8 data-column">
         <div v-if="!newLocationMode" class="row justify-center q-pa-xs">
           <div
-            class="q-mb-md col-xs-12 bg-indigo text-white"
+            class="q-mb-md col-xs-12 court-name"
             style="border-radius: 4px 4px 0 0; min-height: 86px"
           >
             <div class="row full-height justify-center items-center">
@@ -429,25 +429,23 @@
                 <q-separator spaced inset />
                 <div
                   v-if="court && court.sport_types"
-                  class="q-my-xs q-pr-xs row items-center"
+                  class="q-my-xs row items-center"
                 >
-                  <q-icon
-                    name="sports"
-                    color="indigo"
-                    class="q-mr-sm"
-                    size="28px"
-                  ></q-icon>
-                  <q-chip
-                    v-for="(sport, index) in sports"
-                    :key="index + 'included_sports'"
-                    :color="sport.color"
-                    outline
-                    square
-                    :label="sport.label"
-                    dense
-                    v-show="court.sport_types.includes(sport.val)"
-                  />
+                  <q-icon name="sports" color="indigo" size="28px"></q-icon>
+                  <div style="font-size: 15px" class="q-ml-md">
+                    <span
+                      v-for="(sport, index) in court.sport_types"
+                      :key="index + 'included_sports'"
+                      class="sport-type"
+                    >
+                      <span>{{
+                        sport.charAt(0).toUpperCase() + sport.substring(1)
+                      }}</span>
+                      <span class="sport-type-comma">, </span>
+                    </span>
+                  </div>
                 </div>
+                <q-separator spaced inset />
               </div>
               <div class="col-xs-12 col-md-6">
                 <q-input
@@ -479,15 +477,15 @@
         <!-- ///////////////////////////////////////////////// -->
         <div v-if="!newLocationMode" class="row justify-center q-mt-xs">
           <div class="col-xs-12 col-md-11 q-mb-lg">
-            <div class="row justify-end items-center">
+            <div class="row justify-between items-center">
+              <q-btn
+                :to="'/events/new/' + court.id"
+                color="primary"
+                push
+                size="16px"
+                icon="event"
+              />
               <div>
-                <q-btn
-                  :to="'/events/new/' + court.id"
-                  color="primary"
-                  size="17px"
-                  round
-                  icon="event"
-                />
                 <q-btn-dropdown
                   flat
                   class="q-mx-sm q-pr-sm"
@@ -510,14 +508,6 @@
                         !user.scopes.includes('verify_locations')
                     "
                   />
-                  <!-- <br />
-                  <q-btn
-                    label="Delete location"
-                    color="negative"
-                    icon="delete"
-                    :disable="disableForNonAuthorized"
-                    class="full-width q-mt-xs"
-                  /> -->
                 </q-btn-dropdown>
                 <q-btn-toggle
                   v-model="viewEditToggle"
@@ -1240,6 +1230,10 @@ export default {
   order: 0
 .data-column
   order: 1
+.sport-type:last-child .sport-type-comma
+  display: none
+.court-name
+  border-bottom: 2px dashed $indigo
 @media (max-width: 1023px)
   .photos-column
     order: 1
