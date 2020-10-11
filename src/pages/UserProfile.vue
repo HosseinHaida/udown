@@ -99,8 +99,8 @@
                       <q-btn
                         @click="onPhotoUploadClick"
                         round
-                        flat
-                        icon="send"
+                        outline
+                        icon="check"
                         :loading="photoUploadPending"
                         ><q-tooltip
                           content-style="font-size: 12px"
