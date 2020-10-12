@@ -2,7 +2,7 @@
   <q-page class="q-pa-md">
     <div v-if="!user" class="col-xs-12 text-center">
       <span class="text-subtitle1 q-py-sm q-px-md custom-warning-tip">
-        Please login or reload the page if you're already logged in
+        Please login
       </span>
     </div>
     <div class="row" v-if="user">
