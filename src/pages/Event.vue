@@ -498,10 +498,21 @@
       <q-btn
         class="absolute-center"
         @click="fetchEvent(eventId)"
-        label="View this event"
         color="indigo"
-        icon="event"
-      ></q-btn>
+      >
+        <q-splitter separator-class="bg-white">
+          <template v-slot:before class="full-height">
+            <q-icon left style="margin-top: 12px" size="md" name="event" />
+          </template>
+          <template v-slot:after
+            ><div class="text-left q-pl-md q-py-xs">
+              Click to
+              <br />
+              view this event
+            </div></template
+          >
+        </q-splitter>
+      </q-btn>
     </div>
   </div>
 </template>
