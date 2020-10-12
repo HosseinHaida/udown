@@ -496,10 +496,11 @@
   <div class="q-pa-md" v-else>
     <div class="row justify-center">
       <q-btn
+        class="absolute-center"
         @click="fetchEvent(eventId)"
         label="View this event"
         color="indigo"
-        icon="preview"
+        icon="event"
       ></q-btn>
     </div>
   </div>
