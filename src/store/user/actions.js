@@ -223,6 +223,9 @@ export async function handleFriendRequest({ state, commit }, id) {
           if (res.data.user_friends) {
             commit("setUserFriends", res.data.user_friends);
           }
+          if (res.data.user_close_friends) {
+            commit("setUserCloseFriends", res.data.user_close_friends);
+          }
           if (res.data.outbound_requests) {
             commit("setUserRequests", res.data.outbound_requests);
           }
