@@ -36,7 +36,7 @@
 
       <q-tab-panels v-model="tab" style="min-height: 450px">
         <q-tab-panel name="personal" class="row justify-between">
-          <div class="col-md-3 col-sm-4 col-xs-12">
+          <div class="col-md-4 col-sm-5 col-xs-12 first-column">
             <div class="column">
               <q-avatar
                 style="cursor: pointer"
@@ -87,13 +87,14 @@
                   <q-file
                     v-model="pickedPhoto"
                     filled
+                    dense
                     label="Pick a photo"
                     accept=".jpg, image/*"
                     :filter="checkPhotoSize"
                     @rejected="onRejected"
                   >
                     <template v-slot:prepend>
-                      <q-icon name="attach_file" />
+                      <q-icon dense name="attach_file" />
                     </template>
                     <template v-slot:after>
                       <q-btn
@@ -475,3 +476,8 @@ export default {
   }
 };
 </script>
+<style lang="sass" scoped>
+@media (min-width: 600px)
+  .first-column
+    padding-right: 20px
+</style>
