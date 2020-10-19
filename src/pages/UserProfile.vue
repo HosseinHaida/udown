@@ -37,7 +37,7 @@
       <!-- <q-tab-panel name="personal" class="row justify-between"> -->
       <div class="row justify-between">
         <div class="col-xs-12">
-          <div class="text-h5 q-pb-sm">Personal</div>
+          <div class="text-h5 text-grey-7 q-pb-sm">Personal</div>
           <q-separator />
         </div>
 
