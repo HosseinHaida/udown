@@ -65,6 +65,7 @@
 import PlayersComponent from "../components/Players.vue";
 export default {
   name: "PlayersList",
+  components: { "players-component": PlayersComponent },
   data() {
     return {
       usersType: "all"
@@ -93,6 +94,10 @@ export default {
         });
     }
   },
-  components: { "players-component": PlayersComponent }
+  mounted() {
+    if (this.user) {
+      this.fetchInboundRequestsCount();
+    }
+  }
 };
 </script>
