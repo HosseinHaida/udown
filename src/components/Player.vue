@@ -2,7 +2,7 @@
   <div>
     <q-item>
       <q-item-section avatar top>
-        <q-avatar size="55px">
+        <q-avatar @click="userCard = true" style="cursor: pointer" size="55px">
           <q-img :ratio="1" :src="user.photo" />
           <span class="user-photo-placeholder">{{
             user.first_name.charAt(0).toUpperCase() +
@@ -25,7 +25,12 @@
       >
         <div>
           <q-item-label class="q-mt-sm"
-            ><span class="text-subtitle2">{{ user.username }}</span>
+            ><span
+              @click="userCard = true"
+              style="cursor: pointer"
+              class="text-subtitle2"
+              >{{ user.username }}</span
+            >
             <q-icon
               v-if="
                 user.scopes.includes('edit_users_scopes') &&
@@ -66,11 +71,109 @@
           <span class="text-grey-6">{{
             user.first_name + " " + user.last_name
           }}</span>
-          <!-- <br />
-          <q-btn-dropdown label="Bio" dense flat class="q-pl-sm">
-          </q-btn-dropdown> -->
         </div>
       </q-item-section>
+
+      <!-- Show user card -->
+      <q-dialog v-model="userCard">
+        <q-card>
+          <q-img :src="user.photo" />
+
+          <q-card-section>
+            <div class="row no-wrap items-center">
+              <div class="col text-h6 ellipsis">
+                {{ user.username }}
+              </div>
+              <div
+                v-if="user.city"
+                class="col-auto text-primary text-caption row no-wrap items-center"
+              >
+                <q-icon color="primary" class="q-pr-xs" name="place" />
+                {{ user.city }}
+              </div>
+            </div>
+          </q-card-section>
+
+          <q-card-section class="q-pt-none">
+            <div class="text-subtitle1">
+              {{ user.first_name }}
+              {{ user.last_name }}
+              <q-chip dense square icon="height"> {{ user.height }} cm </q-chip>
+            </div>
+            <div style="min-width: 250px" class="text-caption text-grey">
+              <q-input
+                :value="user.bio ? user.bio : 'No Biography'"
+                class="q-mt-md"
+                type="textarea"
+                label="Bio"
+                outlined
+                style="background-color: #fafad2"
+                color="indigo"
+                readonly
+              />
+            </div>
+          </q-card-section>
+
+          <q-separator />
+
+          <q-card-actions align="right">
+            <span v-for="(sport, index) in sports" :key="index">
+              <q-icon
+                v-if="user.sports.includes(sport.val)"
+                :name="sport.icon"
+                class="q-ml-sm"
+                size="26px"
+                :color="sport.color"
+              ></q-icon>
+            </span>
+            <q-btn-dropdown
+              flat
+              color="indigo"
+              label="Options"
+              class="q-pl-sm"
+              style="margin-left: auto"
+            >
+              <div class="column">
+                <q-btn
+                  class="lt-sm"
+                  @click="showScopesMenu(user.scopes)"
+                  icon="admin_panel_settings"
+                  label="Scopes"
+                  color="primary"
+                />
+                <q-btn
+                  class="q-mt-xs"
+                  :label="user.verified ? 'Remove verification' : 'Verify user'"
+                  :icon="user.verified ? 'remove' : 'verified_user'"
+                  :disable="!canVerifyUsers"
+                  v-if="!isMyself"
+                  color="positive"
+                  @click="
+                    user.verified ? removeUserVerification() : verifyUser()
+                  "
+                />
+                <q-btn
+                  class="q-mt-xs"
+                  :label="
+                    isCloseFriend
+                      ? 'Remove from close friends'
+                      : 'Add to close friends'
+                  "
+                  :loading="closeFriendPending"
+                  :icon="isCloseFriend ? 'remove' : 'loyalty'"
+                  v-if="isFriend && !isMyself"
+                  color="accent"
+                  @click="
+                    isCloseFriend
+                      ? removeFromCloseFriends()
+                      : addToCloseFriends()
+                  "
+                />
+              </div>
+            </q-btn-dropdown>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
 
       <q-item-section class="gt-xs col" top>
         <q-item-label lines="1">
@@ -149,13 +252,10 @@
 
       <div class="col lt-sm"></div>
 
-      <q-item-section
-        v-if="isUserLoggedIn && !isMyself"
-        side
-        class="q-ml-md col-auto"
-      >
+      <q-item-section side class="q-ml-md col-auto">
         <div class="text-grey-8 q-gutter-xs column">
           <q-btn
+            v-if="isUserLoggedIn && !isMyself"
             class="bg-grey-2"
             size="12px"
             flat
@@ -198,6 +298,7 @@
                 :label="user.verified ? 'Remove verification' : 'Verify user'"
                 :icon="user.verified ? 'remove' : 'verified_user'"
                 :disable="!canVerifyUsers"
+                v-if="!isMyself"
                 color="positive"
                 @click="user.verified ? removeUserVerification() : verifyUser()"
               />
@@ -210,7 +311,7 @@
                 "
                 :loading="closeFriendPending"
                 :icon="isCloseFriend ? 'remove' : 'loyalty'"
-                v-if="isFriend"
+                v-if="isFriend && !isMyself"
                 color="accent"
                 @click="
                   isCloseFriend ? removeFromCloseFriends() : addToCloseFriends()
@@ -226,13 +327,16 @@
 </template>
 <script>
 import { scopes } from "../store/scopes";
+import { sports } from "../store/sports";
 export default {
   name: "PlayerComponent",
   data() {
     return {
-      scopes: scopes,
+      scopes,
+      sports,
       showScopes: false,
-      userScopes: []
+      userScopes: [],
+      userCard: false
     };
   },
   props: [

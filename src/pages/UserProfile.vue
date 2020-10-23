@@ -425,7 +425,6 @@ export default {
           message: message
         });
       }
-      this.fetchInboundRequestsCount();
     });
   }
 };
