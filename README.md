@@ -41,7 +41,7 @@ quasar build
 
 ### Download and install the API
 
-Go to [GitHub Repo](https://github.com/HosseinHaida/udown-api))
+Go to [GitHub Repo](https://github.com/HosseinHaida/udown-api)
 
 ### Customize the configuration
 
