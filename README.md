@@ -39,6 +39,10 @@ yarn run lint
 quasar build
 ```
 
+### Download and install the API
+
+Go to [GitHub Repo](https://github.com/HosseinHaida/udown-api))
+
 ### Customize the configuration
 
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
