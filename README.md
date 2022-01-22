@@ -1,7 +1,19 @@
 # UDown? (udown-web)
 
 IF everybody's down, we'd ball...
+
 ![UDown-original](https://user-images.githubusercontent.com/18594048/150648295-c80556bc-682e-43a0-945c-5f12d5de423e.jpg)
+![UDown-Permissions](https://user-images.githubusercontent.com/18594048/150649334-c37d2384-2ca0-487f-bf00-fc7f8b1581bc.png)
+
+## Features
+
+. Simple signup/login
+. User page with simple editable meta fields
+. Create, update and delete sports locations (adding pictures and comments)
+. Create, update and delete custom created events based on locations
+. Events can either be seen publicly, only by friends or close friends.
+. A simple authorization system and different permissions for each player
+. Send friend requests to a player and add them to a close friends list.
 
 ## Install the dependencies
 
