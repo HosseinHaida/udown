@@ -7,13 +7,13 @@ IF everybody's down, we'd ball...
 
 ## Features
 
-[x] Simple signup/login
-[x] User page with simple editable meta fields
-[x] Create, update and delete sports locations (adding pictures and comments)
-[x] Create, update and delete custom created events based on locations
-[x] Events can either be seen publicly, only by friends or close friends.
-[x] A simple authorization system and different permissions for each player
-[x] Send friend requests to a player and add them to a close friends list.
+- [x] Simple signup/login
+- [x] User page with simple editable meta fields
+- [x] Create, update and delete sports locations (adding pictures and comments)
+- [x] Create, update and delete custom created events based on locations
+- [x] Events can either be seen publicly, only by friends or close friends.
+- [x] A simple authorization system and different permissions for each player
+- [x] Send friend requests to a player and add them to a close friends list.
 
 ## Install the dependencies
 
