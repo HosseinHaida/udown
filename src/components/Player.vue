@@ -6,7 +6,7 @@
           <q-img :ratio="1" :src="user.photo" />
           <span class="user-photo-placeholder">{{
             user.first_name.charAt(0).toUpperCase() +
-              user.last_name.charAt(0).toUpperCase()
+            user.last_name.charAt(0).toUpperCase()
           }}</span>
         </q-avatar>
         <q-badge
@@ -34,7 +34,7 @@
             <q-icon
               v-if="
                 user.scopes.includes('edit_users_scopes') &&
-                  user.scopes.includes('suspend_admins')
+                user.scopes.includes('suspend_admins')
               "
               size="15px"
               color="accent"
@@ -47,7 +47,7 @@
             <q-icon
               v-if="
                 user.scopes.includes('edit_users_scopes') &&
-                  !user.scopes.includes('suspend_admins')
+                !user.scopes.includes('suspend_admins')
               "
               size="15px"
               color="accent"
@@ -222,7 +222,7 @@
                   class="q-pl-xs q-pr-md"
                   :disable="
                     (isMyself && !canEditScopes) ||
-                      (!isMyself && !canEditScopes)
+                    (!isMyself && !canEditScopes)
                   "
                   style="min-width: 250px"
                 >
@@ -336,7 +336,7 @@ export default {
       sports,
       showScopes: false,
       userScopes: [],
-      userCard: false
+      userCard: false,
     };
   },
   props: [
@@ -350,7 +350,7 @@ export default {
     "isRequested",
     "isRequesting",
     "canEditScopes",
-    "isCloseFriend"
+    "isCloseFriend",
   ],
   methods: {
     addToCloseFriends() {
@@ -361,13 +361,13 @@ export default {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "loyalty",
-              message: message
+              message: message,
             });
           }
         });
@@ -380,13 +380,13 @@ export default {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "delete",
-              message: message
+              message: message,
             });
           }
         });
@@ -399,13 +399,13 @@ export default {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "cloud_done",
-              message: message
+              message: message,
             });
           }
         });
@@ -418,13 +418,13 @@ export default {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "delete",
-              message: message
+              message: message,
             });
           }
         });
@@ -440,20 +440,20 @@ export default {
       this.$store
         .dispatch("users/updateUserScopes", {
           scopes: this.userScopes,
-          id: userId
+          id: userId,
         })
         .then(({ status, message }) => {
           if (status === "error") {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "cloud_done",
-              message: message
+              message: message,
             });
           }
         });
@@ -467,8 +467,8 @@ export default {
           persistent: true,
           html: true,
           ok: {
-            label: "Yes"
-          }
+            label: "Yes",
+          },
         })
         .onOk(() => {
           this.handleFriendRequest(id);
@@ -491,7 +491,7 @@ export default {
         "Sep",
         "Oct",
         "Nov",
-        "Dec"
+        "Dec",
       ];
       return `${months[month]} ${day}. ${year}`;
     },
@@ -514,17 +514,17 @@ export default {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "cloud_done",
-              message: message
+              message: message,
             });
           }
         });
-    }
+    },
   },
   computed: {
     friendRequestPending() {
@@ -535,8 +535,8 @@ export default {
     },
     closeFriendPending() {
       return this.$store.state.user.closeFriendPending;
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="sass" scoped>

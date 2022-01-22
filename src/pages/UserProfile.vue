@@ -59,14 +59,14 @@
                 </template></q-img
               ><span class="user-photo-placeholder">{{
                 user.first_name.charAt(0).toUpperCase() +
-                  user.last_name.charAt(0).toUpperCase()
+                user.last_name.charAt(0).toUpperCase()
               }}</span></q-avatar
             >
             <!-- Modal to show big Photo -->
             <q-dialog v-if="user.photo" v-model="showPhoto">
               <q-card
                 class="bg-transparent"
-                style="width: 750px; max-width: 90vw;"
+                style="width: 750px; max-width: 90vw"
                 flat
               >
                 <q-card-section class="row items-center q-pb-md">
@@ -164,7 +164,7 @@
                   filled
                   color="indigo"
                   :rules="[
-                    val => (val && val.length > 0) || 'Please type something'
+                    (val) => (val && val.length > 0) || 'Please type something',
                   ]"
                   bottom-slots
                 >
@@ -183,7 +183,7 @@
                   lazy-rules
                   filled
                   color="indigo"
-                  :rules="[val => (val && val.length > 0) || 'Required']"
+                  :rules="[(val) => (val && val.length > 0) || 'Required']"
                   style="min-width: 150px"
                 />
                 <q-input
@@ -194,7 +194,7 @@
                   lazy-rules
                   filled
                   color="indigo"
-                  :rules="[val => (val && val.length > 0) || 'Required']"
+                  :rules="[(val) => (val && val.length > 0) || 'Required']"
                   style="min-width: 150px"
                 />
                 <q-input
@@ -205,10 +205,10 @@
                   filled
                   color="indigo"
                   :rules="[
-                    val =>
+                    (val) =>
                       val.length > 8 ||
                       val.length === 0 ||
-                      'Minimum 8 characters'
+                      'Minimum 8 characters',
                   ]"
                   :type="isPwd ? 'password' : 'text'"
                 >
@@ -226,10 +226,10 @@
                   filled
                   color="indigo"
                   :rules="[
-                    val =>
+                    (val) =>
                       val.length > 8 ||
                       val.length === 0 ||
-                      'Minimum 8 characters'
+                      'Minimum 8 characters',
                   ]"
                   :type="isNewPwd ? 'password' : 'text'"
                 >
@@ -249,7 +249,7 @@
                   lazy-rules
                   filled
                   color="indigo"
-                  :rules="[val => val.length > 0 || 'Please select']"
+                  :rules="[(val) => val.length > 0 || 'Please select']"
                 />
                 <q-input
                   class="q-mt-sm col-xs-12 col-md-6 q-px-sm"
@@ -261,7 +261,8 @@
                   type="number"
                   color="indigo"
                   :rules="[
-                    val => (val > 0 && val < 300) || 'Please type a valid age'
+                    (val) =>
+                      (val > 0 && val < 300) || 'Please type a valid age',
                   ]"
                   hint="cm"
                 />
@@ -331,7 +332,7 @@ export default {
       newPassword: "",
       sports: sports,
       isPwd: true,
-      isNewPwd: true
+      isNewPwd: true,
     };
   },
   computed: {
@@ -349,30 +350,30 @@ export default {
     },
     photoUploadPending() {
       return this.$store.state.user.photoUploadPending;
-    }
+    },
   },
   methods: {
     updateUser(key, value) {
       this.$store.commit("user/updateUserObj", { key, value });
     },
     checkPhotoSize(files) {
-      return files.filter(file => file.size < 2000000);
+      return files.filter((file) => file.size < 2000000);
     },
     onRejected(rejectedEntries) {
       this.$q.notify({
         color: "red-5",
         icon: "warning",
-        message: "Please select an image less than 2 MBs"
+        message: "Please select an image less than 2 MBs",
       });
     },
     onFormSubmit() {
       this.$store.commit("user/updateUserObj", {
         key: "old_password",
-        value: this.oldPassword
+        value: this.oldPassword,
       });
       this.$store.commit("user/updateUserObj", {
         key: "new_password",
-        value: this.newPassword
+        value: this.newPassword,
       });
       this.$store
         .dispatch("user/update", this.user)
@@ -381,13 +382,13 @@ export default {
             this.$q.notify({
               color: "red-5",
               icon: "warning",
-              message: message
+              message: message,
             });
           } else if (status === "success") {
             this.$q.notify({
               color: "green-4",
               icon: "cloud_done",
-              message: message
+              message: message,
             });
           }
         });
@@ -403,18 +404,18 @@ export default {
               this.$q.notify({
                 color: "red-5",
                 icon: "warning",
-                message: message
+                message: message,
               });
             } else if (status === "success") {
               this.$q.notify({
                 color: "green-4",
                 icon: "cloud_done",
-                message: message
+                message: message,
               });
             }
           });
       }
-    }
+    },
   },
   mounted() {
     this.$store.dispatch("user/fetchUserData").then(({ status, message }) => {
@@ -422,11 +423,11 @@ export default {
         this.$q.notify({
           color: "red-5",
           icon: "warning",
-          message: message
+          message: message,
         });
       }
     });
-  }
+  },
 };
 </script>
 <style lang="sass" scoped>
